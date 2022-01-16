@@ -171,6 +171,7 @@ static GLint gear1, gear2, gear3;
 static GLfloat gearAngle = 0.0;
 static GLfloat camAngle = 0.0;
 static GLfloat sunAngle = 0.0;
+static GLfloat sunAngle2 = 0.0;
 static GLfloat piston = 0.0;
 static GLfloat range = 40.0;
 static GLfloat HUDscale = 10.0;
@@ -219,11 +220,6 @@ static void draw(void)
   /**/
   glPushMatrix(); /**/
 
-  //glTranslatef(0.0, 0.0, 40.0);
-  //glRotatef(5.0*piston, 1.0, 0.0, 0.0);
-  //glTranslatef(0.0, 0.0, -40.0);
-  //glTranslatef(0.0, piston, 0.0);
-  //glRotatef(10.0*piston, 1.0, 0.0, 0.0);
   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, yellow);
   glDisable(GL_LIGHTING);
   glDisable(GL_LIGHT0);
@@ -293,40 +289,68 @@ static void draw(void)
   glEnd();
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
-  glTranslatef(0.0, 6.0, 0.0);
+  glTranslatef(0.0, 4.0, 0.0);
   //glRotatef(-90.0,1.0,0.0,0.0);
-  glRotatef(sunAngle,0.0,0.0,1.0);
+  glRotatef(sunAngle,0.0,1.0,0.0);
+  glRotatef(sunAngle2,1.0,0.0,0.0);
   //glRotatef(45.0,0.0,1.0,0.0);
   int j;
   float sunRadius = 8.0;
   float sunThickness = 0.5;
   float c1,c2,c3;
+  // draw Sol
   for (j = 0; j < 2; j += 1) {
-      for (i = 0; i < 6; i += 1) {
-          glBegin(GL_TRIANGLES);
-          //glNormal3f(1.0, 0.0, 0.0);
-          triNorm(&c1,&c2,&c3,
-              1.0, 0.0, 0.0,
-              0.0, sunRadius, 0.0,
-              0.0, 0.0, sunThickness);
-          glNormal3f(c1,c2,c3);
-          glVertex3f(1.0, 0.0, 0.0      );
-          glVertex3f(0.0, sunRadius, 0.0 );
-          glVertex3f(0.0, 0.0, sunThickness);
+      for (i = 0; i < 3; i += 1) {
+          if (i == 2 || 1) {
+              glTranslatef(0.0,2.0,0.0);
+              glBegin(GL_TRIANGLES);
+              //glNormal3f(1.0, 0.0, 0.0);
+              triNorm(&c1,&c2,&c3,
+                  1.0,0.0,0.0,
+                  0.0,sunRadius,0.0,
+                  0.0,0.0,sunThickness);
+              glNormal3f(c1,c2,c3);
+              glVertex3f(1.0,0.0,0.0);
+              glVertex3f(0.0,sunRadius,0.0);
+              glVertex3f(0.0,0.0,sunThickness);
 
-          //glNormal3f(-1.0, 0.0, 0.0);
-          triNorm(&c1,&c2,&c3,
-              -1.0, 0.0, 0.0,
-              0.0, 0.0, sunThickness,
-              0.0, sunRadius, 0.0);
-          glNormal3f(c1,c2,c3);
-          glVertex3f(-1.0, 0.0, 0.0     );
-          glVertex3f(0.0, 0.0, sunThickness);
-          glVertex3f(0.0, sunRadius, 0.0 );
-          glEnd();
-          glRotatef(60.0,0.0,0.0,1.0);
+              // end cap A
+              triNorm(&c1,&c2,&c3,
+                  0.0,0.0,0.0,
+                  1.0,0.0,0.0,
+                  0.0,0.0,sunThickness);
+              glNormal3f(c1,c2,c3);
+              glVertex3f(0.0,0.0,0.0);
+              glVertex3f(1.0,0.0,0.0);
+              glVertex3f(0.0,0.0,sunThickness);
+
+              //glNormal3f(-1.0, 0.0, 0.0);
+              triNorm(&c1,&c2,&c3,
+                  -1.0,0.0,0.0,
+                  0.0,0.0,sunThickness,
+                  0.0,sunRadius,0.0);
+              glNormal3f(c1,c2,c3);
+              glVertex3f(-1.0,0.0,0.0);
+              glVertex3f(0.0,0.0,sunThickness);
+              glVertex3f(0.0,sunRadius,0.0);
+
+              // end cap B
+              triNorm(&c1,&c2,&c3,
+                  -1.0,0.0,0.0,
+                  0.0,0.0,0.0,
+                  0.0,0.0,sunThickness);
+              glNormal3f(c1,c2,c3);
+              glVertex3f(-1.0,0.0,0.0);
+              glVertex3f(0.0,0.0,0.0);
+              glVertex3f(0.0,0.0,sunThickness);
+              glEnd();
+              glTranslatef(0.0,-2.0,0.0);
+          }
+          glRotatef(120.0,0.0,0.0,1.0);
       }
+      glRotatef(180.0,0.0,0.0,1.0);
       glRotatef(180.0,1.0,0.0,0.0);
+      glRotatef(240.0,0.0,0.0,1.0);
   }
   glPopMatrix();
 
@@ -365,12 +389,34 @@ static void draw(void)
 static int animPeriod = 15;
 static int animIndex = 0;
 
+float pulseFunction(float x) {
+    int i = (int) x;
+    if (i % 2 == 0) {
+        float f = x - (float) i;
+        return x + f;
+    } else {
+        return (float) i + 1.0;
+    }
+}
+
+float pulseFunction2(float x) {
+    int i = (int) x;
+    if (i % 2 == 0) {
+        return (float) i;
+    } else {
+        float f = x - (float) i;
+        return (float) i - 1.0 + f + f;
+    }
+}
+
 /* update animation parameters */
 static void animate(void)
 {
   gearAngle = 60.f * (float) glfwGetTime(); /* gear angle */
   camAngle = 10.0 * (float) glfwGetTime();
+  camAngle = 0;
   sunAngle = 20.0 * (float) glfwGetTime();
+  sunAngle2 = 180.0 + 180.0 * (float) pulseFunction2(glfwGetTime());
   piston = fmodf(4.0 * (float) glfwGetTime(),4.f);
   piston = (piston > 2.0 ? 4.0 - piston : piston);
   animIndex += 1;
@@ -519,11 +565,11 @@ int main(int argc, char *argv[])
     // Main loop
     while( !glfwWindowShouldClose(window) )
     {
-        // Draw gears
-        draw();
-
         // Update animation
         animate();
+
+        // Draw gears
+        draw();
 
         // Swap buffers
         glfwSwapBuffers(window);
