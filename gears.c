@@ -219,11 +219,13 @@ static void draw(void)
 
   /**/
   glPushMatrix(); /**/
+  /**/
 
   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, yellow);
   glDisable(GL_LIGHTING);
   glDisable(GL_LIGHT0);
   glColor3f(0.1,0.4,0.8);
+  /* HUD outlines */
   glBegin(GL_LINES);
   glVertex3f( 0.0      , 0.0     , 0.0);
   glVertex3f( xHUDscale, 0.0     , 0.0);
@@ -243,25 +245,16 @@ static void draw(void)
   glVertex3f( 0.0      ,-HUDscale, 0.0);
   glVertex3f( xHUDscale, 0.0     , 0.0);
   glVertex3f( xHUDscale,-HUDscale, 0.0);
-  glColor3f(0.8,0.8,0.8);
-
-  glVertex3f( xCursor + 0.0, yCursor + 0.0, 0.0);
-  glVertex3f( xCursor + 1.0, yCursor + 0.0, 0.0);
-  glVertex3f( xCursor + 0.0, yCursor + 1.0, 0.0);
-  glVertex3f( xCursor + 1.0, yCursor + 1.0, 0.0);
-  glVertex3f( xCursor + 0.0, yCursor + 0.0, 0.0);
-  glVertex3f( xCursor + 0.0, yCursor + 1.0, 0.0);
-  glVertex3f( xCursor + 1.0, yCursor + 0.0, 0.0);
-  glVertex3f( xCursor + 1.0, yCursor + 1.0, 0.0);
+  /* end HUD */
   glEnd();
-
-  glColor3f(0.1,0.8,0.1);
 
   glTranslatef(0.0, -4.0, 0.0);
   glRotatef(camAngle, 0.0, 1.0, 0.0);
   glPushMatrix();
   glBegin(GL_LINES);
   int i;
+  /* green grid */
+  glColor3f(0.1,0.8,0.1);
   for (i = 0; i < 10; i += 1) {
       glVertex3f( 0.0 , (float) i, 0.0);
       glVertex3f( 10.0, (float) i, 0.0);
@@ -286,7 +279,28 @@ static void draw(void)
       glVertex3f( 0.0, (float) i, 0.0);
       glVertex3f( 0.0, (float) i, 10.0);
   }
+  /* end green grid */
+
+  /* cursor */
+  glColor3f(0.8,0.8,0.8);
+  glVertex3f( xCursor + 0.0, yCursor + 0.0, 0.1);
+  glVertex3f( xCursor + 1.0, yCursor + 0.0, 0.1);
+  glVertex3f( xCursor + 0.1, yCursor + 0.1, 0.1);
+  glVertex3f( xCursor + 0.9, yCursor + 0.1, 0.1);
+
+  glVertex3f( xCursor + 0.0, yCursor + 1.0, 0.1);
+  glVertex3f( xCursor + 1.0, yCursor + 1.0, 0.1);
+  glVertex3f( xCursor + 0.1, yCursor + 0.9, 0.1);
+  glVertex3f( xCursor + 0.9, yCursor + 0.9, 0.1);
+
+  glVertex3f( xCursor + 0.0, yCursor + 0.0, 0.1);
+  glVertex3f( xCursor + 0.0, yCursor + 1.0, 0.1);
+
+  glVertex3f( xCursor + 1.0, yCursor + 0.0, 0.1);
+  glVertex3f( xCursor + 1.0, yCursor + 1.0, 0.1);
+  /* end cursor */
   glEnd();
+  
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
   glTranslatef(0.0, 4.0, 0.0);
@@ -389,8 +403,10 @@ static void draw(void)
   /**/
 }
 
-static int animPeriod = 15;
+static int animPeriod = 45;
 static int animIndex = 0;
+
+// pulse function 3a and 3b
 
 float pulseFunction(float x) {
     int i = (int) x;
@@ -419,7 +435,8 @@ static void animate(void)
   camAngle = 10.0 * (float) glfwGetTime();
   camAngle = 0;
   sunAngle = 20.0 * (float) glfwGetTime();
-  sunAngle2 = 180.0 + 180.0 * (float) pulseFunction2(glfwGetTime()/2.0);
+  //sunAngle2 = 180.0 + 180.0 * (float) pulseFunction2(glfwGetTime()/2.0);
+  sunAngle2 = 0.0;
   piston = fmodf(4.0 * (float) glfwGetTime(),4.f);
   piston = (piston > 2.0 ? 4.0 - piston : piston);
   animIndex += 1;
