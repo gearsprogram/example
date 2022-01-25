@@ -210,6 +210,51 @@ static void triNorm(float * d1, float * d2, float * d3,
     //* d1 *= -1; * d2 *= -1; * d3 *= -1;
 }
 
+#define BOLDCOUNT 5
+#define BOLDFINE 25
+
+static void boldline(float x1,float y1,float x2,float y2,
+        float *x1out,float *y1out,float *x2out,float *y2out) {
+    float dx = x2 - x1;
+    float dy = y2 - y1;
+    float mag = sqrt(dx*dx + dy*dy);
+    dx /= mag;
+    dy /= mag;
+    float temp = dx;
+    dx = -dy;
+    dy = temp;
+    dx /= BOLDFINE;
+    dy /= BOLDFINE;
+    x1 -= (BOLDCOUNT / 2) * dx;
+    x2 -= (BOLDCOUNT / 2) * dx;
+    y1 -= (BOLDCOUNT / 2) * dy;
+    y2 -= (BOLDCOUNT / 2) * dy;
+    int i;
+    for (i = 0; i < BOLDCOUNT; i += 1) {
+        x1out[i] = x1;
+        x2out[i] = x2;
+        y1out[i] = y1;
+        y2out[i] = y2;
+        x1 += dx;
+        x2 += dx;
+        y1 += dy;
+        y2 += dy;
+    }
+}
+
+static void drawboldline(float x1,float y1,float x2,float y2) {
+  int i;
+  float x1r[BOLDCOUNT];
+  float x2r[BOLDCOUNT];
+  float y1r[BOLDCOUNT];
+  float y2r[BOLDCOUNT];
+  boldline(x1,y1,x2,y2,x1r,y1r,x2r,y2r);
+  for (i = 0; i < BOLDCOUNT; i += 1) {
+      glVertex3f(x1r[i],y1r[i],0.1);
+      glVertex3f(x2r[i],y2r[i],0.1);
+  }
+}
+
 /* OpenGL draw function & timing */
 static void draw(void)
 {
@@ -299,6 +344,16 @@ static void draw(void)
   glVertex3f( xCursor + 1.0, yCursor + 0.0, 0.1);
   glVertex3f( xCursor + 1.0, yCursor + 1.0, 0.1);
   /* end cursor */
+
+  /* R */
+  int width = 1;
+  drawboldline(0.0        ,8.0,0.0 + width,8.0);
+  drawboldline(0.0 + width,8.0,1.0 + width,7.0);
+  drawboldline(1.0 + width,7.0,0.0 + width,6.0);
+  drawboldline(0.0 + width,6.0,0.0        ,6.0);
+  drawboldline(0.0        ,8.0,0.0        ,4.0);
+  drawboldline(0.0 + width,6.0,1.0 + width,4.0);
+  /* end R */
   glEnd();
   
   glEnable(GL_LIGHTING);
@@ -313,7 +368,7 @@ static void draw(void)
   float sunThickness = 0.5;
   float c1,c2,c3;
   // draw Sol
-  for (k = 0; k < 3; k += 1) {
+  for (k = 0; k < 0; k += 1) {
       for (j = 0; j < 2; j += 1) {
           for (i = 0; i < 3; i += 1) {
               if (i == 2 || 1) {
