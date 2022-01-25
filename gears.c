@@ -331,21 +331,8 @@ static void draw(void)
 
   /* cursor */
   glColor3f(0.8,0.8,0.8);
-  glVertex3f( xCursor + 0.0, yCursor + 0.0, 0.1);
-  glVertex3f( xCursor + 1.0, yCursor + 0.0, 0.1);
-  glVertex3f( xCursor + 0.1, yCursor + 0.1, 0.1);
-  glVertex3f( xCursor + 0.9, yCursor + 0.1, 0.1);
-
-  glVertex3f( xCursor + 0.0, yCursor + 1.0, 0.1);
-  glVertex3f( xCursor + 1.0, yCursor + 1.0, 0.1);
-  glVertex3f( xCursor + 0.1, yCursor + 0.9, 0.1);
-  glVertex3f( xCursor + 0.9, yCursor + 0.9, 0.1);
-
-  glVertex3f( xCursor + 0.0, yCursor + 0.0, 0.1);
-  glVertex3f( xCursor + 0.0, yCursor + 1.0, 0.1);
-
-  glVertex3f( xCursor + 1.0, yCursor + 0.0, 0.1);
-  glVertex3f( xCursor + 1.0, yCursor + 1.0, 0.1);
+  drawboldline(xCursor - 0.5, yCursor - 0.5,xCursor + 0.5, yCursor + 0.5);
+  drawboldline(xCursor - 0.5, yCursor + 0.5,xCursor + 0.5, yCursor - 0.5);
   /* end cursor */
 
   /* R */
