@@ -255,10 +255,11 @@ static void drawboldline(float x1,float y1,float x2,float y2) {
   }
 }
 
+static GLfloat skyblue[4] = {0.6, 0.7, 0.8, 1.0};
+static GLfloat copper[4] = {0.8, 0.6, 0.4, 1.0};
 /* OpenGL draw function & timing */
 static void draw(void)
 {
-  static GLfloat yellow[4] = {0.8, 0.8, 0.1, 1.0};
   glClearColor(0.0, 0.0, 0.0, 0.0);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -266,9 +267,10 @@ static void draw(void)
   glPushMatrix(); /**/
   /**/
 
-  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, yellow);
+  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, skyblue);
   glDisable(GL_LIGHTING);
   glDisable(GL_LIGHT0);
+  /* set HUD color 1 */
   glColor3f(0.1,0.4,0.8);
   /* HUD outlines */
   glBegin(GL_LINES);
@@ -281,6 +283,7 @@ static void draw(void)
   glVertex3f( xHUDscale, 0.0     , 0.0);
   glVertex3f( xHUDscale, HUDscale, 0.0);
 
+  /* set HUD color 2 */
   glColor3f(0.8,0.4,0.1);
   glVertex3f( 0.0      , 0.0     , 0.0);
   glVertex3f( xHUDscale, 0.0     , 0.0);
@@ -346,7 +349,7 @@ static void draw(void)
   /* end cursor */
 
   /* R */
-  int width = 1;
+  int width = 2;
   drawboldline(0.0        ,8.0,0.0 + width,8.0);
   drawboldline(0.0 + width,8.0,1.0 + width,7.0);
   drawboldline(1.0 + width,7.0,0.0 + width,6.0);
@@ -354,6 +357,9 @@ static void draw(void)
   drawboldline(0.0        ,8.0,0.0        ,4.0);
   drawboldline(0.0 + width,6.0,1.0 + width,4.0);
   /* end R */
+  /* apply a general 2D linear transformation
+     to an array of x-y coordinates
+  */
   glEnd();
   
   glEnable(GL_LIGHTING);
@@ -368,7 +374,12 @@ static void draw(void)
   float sunThickness = 0.5;
   float c1,c2,c3;
   // draw Sol
-  for (k = 0; k < 0; k += 1) {
+  for (k = 0; k < 3; k += 1) {
+      if (k % 2 == 0) {
+          glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, skyblue);
+      } else {
+          glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, copper);
+      }
       for (j = 0; j < 2; j += 1) {
           for (i = 0; i < 3; i += 1) {
               if (i == 2 || 1) {
