@@ -369,26 +369,26 @@ static void draw(void)
   glEnd();
   /* end cursor */
 
-  glTranslatef(0.0, -4.0, 0.0);
 
-  /* R */
+  /* marquee R */
   int width = 2;
   glBegin(GL_LINES);
-  drawboldline(0.0        ,8.0,0.0 + width,8.0);
-  drawboldline(0.0 + width,8.0,1.0 + width,7.0);
-  drawboldline(1.0 + width,7.0,0.0 + width,6.0);
-  drawboldline(0.0 + width,6.0,0.0        ,6.0);
-  drawboldline(0.0        ,8.0,0.0        ,4.0);
-  drawboldline(0.0 + width,6.0,1.0 + width,4.0);
-  /* end R */
+  drawboldline(0.0        ,4.0,0.0 + width,4.0);
+  drawboldline(0.0 + width,4.0,1.0 + width,3.0);
+  drawboldline(1.0 + width,3.0,0.0 + width,2.0);
+  drawboldline(0.0 + width,2.0,0.0        ,2.0);
+  drawboldline(0.0        ,4.0,0.0        ,0.0);
+  drawboldline(0.0 + width,2.0,1.0 + width,0.0);
+  glEnd();
+  /* end marquee R */
+
+
   /* apply a general 2D linear transformation
      to an array of x-y coordinates
   */
-  glEnd();
   
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
-  glTranslatef(0.0, 4.0, 0.0);
   //glRotatef(-90.0,1.0,0.0,0.0);
   //glRotatef(sunAngle,0.0,1.0,0.0);
   glRotatef(sunAngle2,1.0,0.0,0.0);
