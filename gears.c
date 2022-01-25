@@ -174,8 +174,12 @@ static GLfloat sunAngle = 0.0;
 static GLfloat sunAngle2 = 0.0;
 static GLfloat piston = 0.0;
 static GLfloat range = 40.0;
-static GLfloat HUDscale = 10.0;
-static GLfloat xHUDscale = 18.0;
+#define HUDWIDTH 36
+#define HUDHEIGHT 20
+static GLfloat xHUDscale = HUDWIDTH / 2;
+static GLfloat HUDscale = HUDHEIGHT / 2;
+//static int xCursor = -(HUDWIDTH / 2);
+//static int yCursor = -(HUDHEIGHT / 2);
 static int xCursor = 0;
 static int yCursor = 0;
 
@@ -257,15 +261,15 @@ static void drawboldline(float x1,float y1,float x2,float y2) {
 
 static GLfloat skyblue[4] = {0.6, 0.7, 0.8, 1.0};
 static GLfloat copper[4] = {0.8, 0.6, 0.4, 1.0};
+static GLfloat forestgreen[4] = {0.1, 0.8, 0.4, 1.0};
 /* OpenGL draw function & timing */
 static void draw(void)
 {
   glClearColor(0.0, 0.0, 0.0, 0.0);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  /**/
-  glPushMatrix(); /**/
-  /**/
+  /* scene */
+  glPushMatrix();
 
   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, skyblue);
   glDisable(GL_LIGHTING);
@@ -274,25 +278,47 @@ static void draw(void)
   glColor3f(0.1,0.4,0.8);
   /* HUD outlines */
   glBegin(GL_LINES);
-  glVertex3f( 0.0      , 0.0     , 0.0);
-  glVertex3f( xHUDscale, 0.0     , 0.0);
-  glVertex3f( 0.0      , HUDscale, 0.0);
-  glVertex3f( xHUDscale, HUDscale, 0.0);
-  glVertex3f( 0.0      , 0.0     , 0.0);
-  glVertex3f( 0.0      , HUDscale, 0.0);
-  glVertex3f( xHUDscale, 0.0     , 0.0);
-  glVertex3f( xHUDscale, HUDscale, 0.0);
+  glVertex3f(0.0      ,0.0     , 0.0);
+  glVertex3f(xHUDscale,0.0     , 0.0);
+  glVertex3f(0.0      ,HUDscale, 0.0);
+  glVertex3f(xHUDscale,HUDscale, 0.0);
+  glVertex3f(0.0      ,0.0     , 0.0);
+  glVertex3f(0.0      ,HUDscale, 0.0);
+  glVertex3f(xHUDscale,0.0     , 0.0);
+  glVertex3f(xHUDscale,HUDscale, 0.0);
 
   /* set HUD color 2 */
   glColor3f(0.8,0.4,0.1);
-  glVertex3f( 0.0      , 0.0     , 0.0);
-  glVertex3f( xHUDscale, 0.0     , 0.0);
-  glVertex3f( 0.0      ,-HUDscale, 0.0);
-  glVertex3f( xHUDscale,-HUDscale, 0.0);
-  glVertex3f( 0.0      , 0.0     , 0.0);
-  glVertex3f( 0.0      ,-HUDscale, 0.0);
-  glVertex3f( xHUDscale, 0.0     , 0.0);
-  glVertex3f( xHUDscale,-HUDscale, 0.0);
+  glVertex3f(0.0      , 0.0     , 0.0);
+  glVertex3f(xHUDscale, 0.0     , 0.0);
+  glVertex3f(0.0      ,-HUDscale, 0.0);
+  glVertex3f(xHUDscale,-HUDscale, 0.0);
+  glVertex3f(0.0      , 0.0     , 0.0);
+  glVertex3f(0.0      ,-HUDscale, 0.0);
+  glVertex3f(xHUDscale, 0.0     , 0.0);
+  glVertex3f(xHUDscale,-HUDscale, 0.0);
+
+  /* set HUD color 3 */
+  glColor3f(0.1,0.8,0.1);
+  glVertex3f(0.0       , 0.0     , 0.0);
+  glVertex3f(-xHUDscale, 0.0     , 0.0);
+  glVertex3f(0.0       ,-HUDscale, 0.0);
+  glVertex3f(-xHUDscale,-HUDscale, 0.0);
+  glVertex3f(0.0       , 0.0     , 0.0);
+  glVertex3f(0.0       ,-HUDscale, 0.0);
+  glVertex3f(-xHUDscale, 0.0     , 0.0);
+  glVertex3f(-xHUDscale,-HUDscale, 0.0);
+
+  /* set HUD color 4 */
+  glColor3f(0.8,0.8,0.1);
+  glVertex3f(0.0       ,0.0     , 0.0);
+  glVertex3f(-xHUDscale,0.0     , 0.0);
+  glVertex3f(0.0       ,HUDscale, 0.0);
+  glVertex3f(-xHUDscale,HUDscale, 0.0);
+  glVertex3f(0.0       ,0.0     , 0.0);
+  glVertex3f(0.0       ,HUDscale, 0.0);
+  glVertex3f(-xHUDscale,0.0     , 0.0);
+  glVertex3f(-xHUDscale,HUDscale, 0.0);
   /* end HUD */
   glEnd();
 
@@ -302,41 +328,52 @@ static void draw(void)
   glBegin(GL_LINES);
   int i;
   /* green grid */
-  glColor3f(0.1,0.8,0.1);
-  for (i = 0; i < 10; i += 1) {
-      glVertex3f( 0.0 , (float) i, 0.0);
-      glVertex3f( 10.0, (float) i, 0.0);
+  if (1) {
+      glColor3f(0.1,0.8,0.1);
+      for (i = 0; i < 10; i += 1) {
+          glVertex3f( 0.0 , (float) i, 0.0);
+          glVertex3f( 10.0, (float) i, 0.0);
+      }
+      for (i = 0; i < 10; i += 1) {
+          glVertex3f((float) i, 0.0 , 0.0);
+          glVertex3f((float) i, 10.0, 0.0);
+      }
+      for (i = 0; i < 10; i += 1) {
+          glVertex3f( 0.0 , 0.0, (float) i);
+          glVertex3f( 10.0, 0.0, (float) i);
+      }
+      for (i = 0; i < 10; i += 1) {
+          glVertex3f((float) i, 0.0 , 0.0);
+          glVertex3f((float) i, 0.0, 10.0);
+      }
+      for (i = 0; i < 10; i += 1) {
+          glVertex3f( 0.0, 0.0 , (float) i);
+          glVertex3f( 0.0, 10.0, (float) i);
+      }
+      for (i = 0; i < 10; i += 1) {
+          glVertex3f( 0.0, (float) i, 0.0);
+          glVertex3f( 0.0, (float) i, 10.0);
+      }
   }
-  for (i = 0; i < 10; i += 1) {
-      glVertex3f((float) i, 0.0 , 0.0);
-      glVertex3f((float) i, 10.0, 0.0);
-  }
-  for (i = 0; i < 10; i += 1) {
-      glVertex3f( 0.0 , 0.0, (float) i);
-      glVertex3f( 10.0, 0.0, (float) i);
-  }
-  for (i = 0; i < 10; i += 1) {
-      glVertex3f((float) i, 0.0 , 0.0);
-      glVertex3f((float) i, 0.0, 10.0);
-  }
-  for (i = 0; i < 10; i += 1) {
-      glVertex3f( 0.0, 0.0 , (float) i);
-      glVertex3f( 0.0, 10.0, (float) i);
-  }
-  for (i = 0; i < 10; i += 1) {
-      glVertex3f( 0.0, (float) i, 0.0);
-      glVertex3f( 0.0, (float) i, 10.0);
-  }
+  glEnd();
   /* end green grid */
 
+  glTranslatef(0.0, 4.0, 0.0);
+
   /* cursor */
+  glBegin(GL_LINES);
   glColor3f(0.8,0.8,0.8);
   drawboldline(xCursor - 0.5, yCursor - 0.5,xCursor + 0.5, yCursor + 0.5);
   drawboldline(xCursor - 0.5, yCursor + 0.5,xCursor + 0.5, yCursor - 0.5);
+  drawboldline(0.0,0.0,xCursor,yCursor);
+  glEnd();
   /* end cursor */
+
+  glTranslatef(0.0, -4.0, 0.0);
 
   /* R */
   int width = 2;
+  glBegin(GL_LINES);
   drawboldline(0.0        ,8.0,0.0 + width,8.0);
   drawboldline(0.0 + width,8.0,1.0 + width,7.0);
   drawboldline(1.0 + width,7.0,0.0 + width,6.0);
@@ -353,7 +390,7 @@ static void draw(void)
   glEnable(GL_LIGHT0);
   glTranslatef(0.0, 4.0, 0.0);
   //glRotatef(-90.0,1.0,0.0,0.0);
-  glRotatef(sunAngle,0.0,1.0,0.0);
+  //glRotatef(sunAngle,0.0,1.0,0.0);
   glRotatef(sunAngle2,1.0,0.0,0.0);
   //glRotatef(45.0,0.0,1.0,0.0);
   int j,k;
@@ -362,10 +399,12 @@ static void draw(void)
   float c1,c2,c3;
   // draw Sol
   for (k = 0; k < 3; k += 1) {
-      if (k % 2 == 0) {
+      if (k == 0) {
           glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, skyblue);
-      } else {
+      } else if (k == 1) {
           glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, copper);
+      } else if (k == 2) {
+          glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, forestgreen);
       }
       for (j = 0; j < 2; j += 1) {
           for (i = 0; i < 3; i += 1) {
@@ -426,11 +465,13 @@ static void draw(void)
 
   /* --- */
 
+  /* gears */
   glPushMatrix();
     glRotatef(view_rotx, 1.0, 0.0, 0.0);
     glRotatef(view_roty, 0.0, 1.0, 0.0);
     glRotatef(view_rotz, 0.0, 0.0, 1.0);
 
+    /*
     glPushMatrix();
       glTranslatef(-3.0, -2.0, 0.0);
       glRotatef(gearAngle, 0.0, 0.0, 1.0);
@@ -448,15 +489,16 @@ static void draw(void)
       glRotatef(-2.f * gearAngle - 25.f, 0.f, 0.f, 1.f);
       glCallList(gear3);
     glPopMatrix();
+    */
 
   glPopMatrix();
+  /* end gears */
 
-  /**/
-  glPopMatrix(); /**/
-  /**/
+  glPopMatrix();
+  /* end scene */
 }
 
-static int animPeriod = 45;
+static int animPeriod = 5;
 static int animIndex = 0;
 
 // pulse function 3a and 3b
@@ -486,19 +528,19 @@ static void animate(void)
 {
   gearAngle = 60.f * (float) glfwGetTime(); /* gear angle */
   camAngle = 10.0 * (float) glfwGetTime();
-  camAngle = 0;
-  sunAngle = 20.0 * (float) glfwGetTime();
-  //sunAngle2 = 180.0 + 180.0 * (float) pulseFunction2(glfwGetTime()/2.0);
+  //camAngle = 0;
+  sunAngle = 5.0 * (float) glfwGetTime();
+  sunAngle2 = 180.0 * (float) pulseFunction2(glfwGetTime()/2.0);
   sunAngle2 = 0.0;
   piston = fmodf(4.0 * (float) glfwGetTime(),4.f);
   piston = (piston > 2.0 ? 4.0 - piston : piston);
   animIndex += 1;
   if (0 == animIndex % animPeriod) {
       xCursor += 1;
-      if (xCursor >= 18) {
-          xCursor = 0;
+      if (xCursor > (HUDWIDTH / 2)) {
+          xCursor = -(HUDWIDTH / 2);
           yCursor += 1;
-          yCursor = yCursor >= 10 ? 0 : yCursor;
+          yCursor = (yCursor > 10 ? -(HUDHEIGHT / 2) : yCursor);
       }
   }
 }
