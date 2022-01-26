@@ -391,35 +391,42 @@ static void draw(void)
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
   //glRotatef(-90.0,1.0,0.0,0.0);
-  //glRotatef(sunAngle,0.0,1.0,0.0);
+  glRotatef(sunAngle,0.0,1.0,0.0);
   glRotatef(sunAngle2,1.0,0.0,0.0);
   //glRotatef(45.0,0.0,1.0,0.0);
   int j,k;
-  float sunRadius = 8.0;
+  float sunRadius = 2.0;
+  float sunRadius2 = 4.0;
   float sunThickness = 0.5;
   float c1,c2,c3;
   // draw Sol
-  for (k = 0; k < 0; k += 1) {
-      if (k == 0) {
+  // CPU utilization notes:
+  //    91% idle @ k = 0..30
+  //    89% idle @ k = 0..300
+  // 88-89% idle @ k = 0..1000
+  // 85-86% idle @ k = 0..3000
+  // 84-85% idle @ k = 0..10000
+  for (k = 0; k < 3; k += 1) {
+      if (k % 3 == 0) {
           glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, skyblue);
-      } else if (k == 1) {
+      } else if (k % 3 == 1) {
           glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, copper);
-      } else if (k == 2) {
+      } else if (k % 3 == 2) {
           glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, forestgreen);
       }
       for (j = 0; j < 2; j += 1) {
           for (i = 0; i < 3; i += 1) {
               if (i == 2 || 1) {
-                  glTranslatef(0.0,2.0,0.0);
+                  glTranslatef(0.0,sunRadius,0.0);
                   glBegin(GL_TRIANGLES);
                   //glNormal3f(1.0, 0.0, 0.0);
                   triNorm(&c1,&c2,&c3,
                       1.0,0.0,0.0,
-                      0.0,sunRadius,0.0,
+                      0.0,sunRadius2,0.0,
                       0.0,0.0,sunThickness);
                   glNormal3f(c1,c2,c3);
                   glVertex3f(1.0,0.0,0.0);
-                  glVertex3f(0.0,sunRadius,0.0);
+                  glVertex3f(0.0,sunRadius2,0.0);
                   glVertex3f(0.0,0.0,sunThickness);
 
                   // end cap A
@@ -436,11 +443,11 @@ static void draw(void)
                   triNorm(&c1,&c2,&c3,
                       -1.0,0.0,0.0,
                       0.0,0.0,sunThickness,
-                      0.0,sunRadius,0.0);
+                      0.0,sunRadius2,0.0);
                   glNormal3f(c1,c2,c3);
                   glVertex3f(-1.0,0.0,0.0);
                   glVertex3f(0.0,0.0,sunThickness);
-                  glVertex3f(0.0,sunRadius,0.0);
+                  glVertex3f(0.0,sunRadius2,0.0);
 
                   // end cap B
                   triNorm(&c1,&c2,&c3,
@@ -452,7 +459,7 @@ static void draw(void)
                   glVertex3f(0.0,0.0,0.0);
                   glVertex3f(0.0,0.0,sunThickness);
                   glEnd();
-                  glTranslatef(0.0,-2.0,0.0);
+                  glTranslatef(0.0,-sunRadius,0.0);
               }
               glRotatef(120.0,0.0,0.0,1.0);
           }
@@ -460,7 +467,8 @@ static void draw(void)
           glRotatef(180.0,1.0,0.0,0.0);
           glRotatef(240.0,0.0,0.0,1.0);
       }
-      glRotatef(120.0,1.0,0.0,0.0);
+      glRotatef(120.0 + 0.0,1.0,0.0,0.0);
+      //glTranslatef(0.0001,0.0,0.0);
   }
   glPopMatrix();
 
@@ -532,7 +540,7 @@ static void animate(void)
   camAngle = 0;
   sunAngle = 5.0 * (float) glfwGetTime();
   sunAngle2 = 180.0 * (float) pulseFunction2(glfwGetTime()/2.0);
-  sunAngle2 = 0.0;
+  //sunAngle2 = 0.0;
   piston = fmodf(4.0 * (float) glfwGetTime(),4.f);
   piston = (piston > 2.0 ? 4.0 - piston : piston);
   animIndex += 1;
