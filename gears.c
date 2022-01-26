@@ -378,7 +378,8 @@ static void draw(void)
   drawboldline(1.0 + width,3.0,0.0 + width,2.0);
   drawboldline(0.0 + width,2.0,0.0        ,2.0);
   drawboldline(0.0        ,4.0,0.0        ,0.0);
-  drawboldline(0.0 + width,2.0,1.0 + width,0.0);
+  drawboldline(0.0 + width,2.0,1.0 + width,1.0);
+  drawboldline(1.0 + width,1.0,1.0 + width,0.0);
   glEnd();
   /* end marquee R */
 
@@ -398,7 +399,7 @@ static void draw(void)
   float sunThickness = 0.5;
   float c1,c2,c3;
   // draw Sol
-  for (k = 0; k < 3; k += 1) {
+  for (k = 0; k < 0; k += 1) {
       if (k == 0) {
           glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, skyblue);
       } else if (k == 1) {
@@ -528,7 +529,7 @@ static void animate(void)
 {
   gearAngle = 60.f * (float) glfwGetTime(); /* gear angle */
   camAngle = 10.0 * (float) glfwGetTime();
-  //camAngle = 0;
+  camAngle = 0;
   sunAngle = 5.0 * (float) glfwGetTime();
   sunAngle2 = 180.0 * (float) pulseFunction2(glfwGetTime()/2.0);
   sunAngle2 = 0.0;
