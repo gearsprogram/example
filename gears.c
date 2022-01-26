@@ -262,6 +262,9 @@ static void drawboldline(float x1,float y1,float x2,float y2) {
 static GLfloat skyblue[4] = {0.6, 0.7, 0.8, 1.0};
 static GLfloat copper[4] = {0.8, 0.6, 0.4, 1.0};
 static GLfloat forestgreen[4] = {0.1, 0.8, 0.4, 1.0};
+static float sunRadius = 2.0;
+static float sunRadius2 = 3.0;
+static float sunThickness = 0.5;
 /* OpenGL draw function & timing */
 static void draw(void)
 {
@@ -319,12 +322,12 @@ static void draw(void)
   glVertex3f(0.0       ,HUDscale, 0.0);
   glVertex3f(-xHUDscale,0.0     , 0.0);
   glVertex3f(-xHUDscale,HUDscale, 0.0);
-  /* end HUD */
-  glEnd();
+  glEnd(); /* end HUD */
 
   glTranslatef(0.0, -4.0, 0.0);
   glRotatef(camAngle, 0.0, 1.0, 0.0);
-  glPushMatrix();
+
+  glPushMatrix(); /* (green grid, cursor, marquee, Sol) */
   glBegin(GL_LINES);
   int i;
   /* green grid */
@@ -369,7 +372,6 @@ static void draw(void)
   glEnd();
   /* end cursor */
 
-
   /* marquee R */
   int width = 2;
   glBegin(GL_LINES);
@@ -392,13 +394,10 @@ static void draw(void)
   glEnable(GL_LIGHT0);
   //glRotatef(-90.0,1.0,0.0,0.0);
   glRotatef(sunAngle,0.0,1.0,0.0);
-  glRotatef(sunAngle2,1.0,0.0,0.0);
   //glRotatef(45.0,0.0,1.0,0.0);
   int j,k;
-  float sunRadius = 2.0;
-  float sunRadius2 = 4.0;
-  float sunThickness = 0.5;
   float c1,c2,c3;
+  int p1,p2,p3;
   // draw Sol
   // CPU utilization notes:
   //    91% idle @ k = 0..30
@@ -406,6 +405,13 @@ static void draw(void)
   // 88-89% idle @ k = 0..1000
   // 85-86% idle @ k = 0..3000
   // 84-85% idle @ k = 0..10000
+
+  for (p1 = 0; p1 < 2; p1 += 1) {
+  for (p2 = 0; p2 < 2; p2 += 1) {
+  for (p3 = 0; p3 < 2; p3 += 1) {
+  glPushMatrix(); /* Sol */
+  glTranslatef(-5.0 + 1.0 * p1,-5.0 + 1.0 * p2,-5.0 + 1.0 * p3);
+  glRotatef(sunAngle2,1.0,0.0,0.0);
   for (k = 0; k < 3; k += 1) {
       if (k % 3 == 0) {
           glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, skyblue);
@@ -470,7 +476,11 @@ static void draw(void)
       glRotatef(120.0 + 0.0,1.0,0.0,0.0);
       //glTranslatef(0.0001,0.0,0.0);
   }
-  glPopMatrix();
+  glPopMatrix(); /* end Sol */
+  }
+  }
+  }
+  glPopMatrix(); /* end (green grid, cursor, marquee, Sol) */
 
   /* --- */
 
