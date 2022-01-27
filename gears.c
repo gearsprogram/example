@@ -263,24 +263,18 @@ static GLfloat skyblue[4] = {0.6, 0.7, 0.8, 1.0};
 static GLfloat copper[4] = {0.8, 0.6, 0.4, 1.0};
 static GLfloat forestgreen[4] = {0.1, 0.8, 0.4, 1.0};
 static float sunRadius = 2.0;
-static float sunRadius2 = 3.0;
+static float sunRadius2 = 1.0;
 static float sunThickness = 0.5;
+
 /* OpenGL draw function & timing */
-static void draw(void)
-{
+static void draw(void) {
   glClearColor(0.0, 0.0, 0.0, 0.0);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-  /* scene */
-  glPushMatrix();
-
   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, skyblue);
   glDisable(GL_LIGHTING);
   glDisable(GL_LIGHT0);
-  /* set HUD color 1 */
-  glColor3f(0.1,0.4,0.8);
-  /* HUD outlines */
-  glBegin(GL_LINES);
+  glColor3f(0.1,0.4,0.8); /* set HUD color 1 */
+  glBegin(GL_LINES); /* HUD outlines */
   glVertex3f(0.0      ,0.0     , 0.0);
   glVertex3f(xHUDscale,0.0     , 0.0);
   glVertex3f(0.0      ,HUDscale, 0.0);
@@ -289,9 +283,7 @@ static void draw(void)
   glVertex3f(0.0      ,HUDscale, 0.0);
   glVertex3f(xHUDscale,0.0     , 0.0);
   glVertex3f(xHUDscale,HUDscale, 0.0);
-
-  /* set HUD color 2 */
-  glColor3f(0.8,0.4,0.1);
+  glColor3f(0.8,0.4,0.1); /* set HUD color 2 */
   glVertex3f(0.0      , 0.0     , 0.0);
   glVertex3f(xHUDscale, 0.0     , 0.0);
   glVertex3f(0.0      ,-HUDscale, 0.0);
@@ -300,9 +292,7 @@ static void draw(void)
   glVertex3f(0.0      ,-HUDscale, 0.0);
   glVertex3f(xHUDscale, 0.0     , 0.0);
   glVertex3f(xHUDscale,-HUDscale, 0.0);
-
-  /* set HUD color 3 */
-  glColor3f(0.1,0.8,0.1);
+  glColor3f(0.1,0.8,0.1); /* set HUD color 3 */
   glVertex3f(0.0       , 0.0     , 0.0);
   glVertex3f(-xHUDscale, 0.0     , 0.0);
   glVertex3f(0.0       ,-HUDscale, 0.0);
@@ -311,9 +301,7 @@ static void draw(void)
   glVertex3f(0.0       ,-HUDscale, 0.0);
   glVertex3f(-xHUDscale, 0.0     , 0.0);
   glVertex3f(-xHUDscale,-HUDscale, 0.0);
-
-  /* set HUD color 4 */
-  glColor3f(0.8,0.8,0.1);
+  glColor3f(0.8,0.8,0.1); /* set HUD color 4 */
   glVertex3f(0.0       ,0.0     , 0.0);
   glVertex3f(-xHUDscale,0.0     , 0.0);
   glVertex3f(0.0       ,HUDscale, 0.0);
@@ -323,14 +311,12 @@ static void draw(void)
   glVertex3f(-xHUDscale,0.0     , 0.0);
   glVertex3f(-xHUDscale,HUDscale, 0.0);
   glEnd(); /* end HUD */
-
-  glTranslatef(0.0, -4.0, 0.0);
   glRotatef(camAngle, 0.0, 1.0, 0.0);
-
+  glPushMatrix(); /* scene */
+  glTranslatef(0.0, -4.0, 0.0);
   glPushMatrix(); /* (green grid, cursor, marquee, Sol) */
-  glBegin(GL_LINES);
+  glBegin(GL_LINES); /* green grid */
   int i;
-  /* green grid */
   if (1) {
       glColor3f(0.1,0.8,0.1);
       for (i = 0; i < 10; i += 1) {
@@ -358,42 +344,29 @@ static void draw(void)
           glVertex3f( 0.0, (float) i, 10.0);
       }
   }
-  glEnd();
-  /* end green grid */
-
+  glEnd(); /* end green grid */
   glTranslatef(0.0, 4.0, 0.0);
-
-  /* cursor */
-  glBegin(GL_LINES);
+  glBegin(GL_LINES); /* cursor */
   glColor3f(0.8,0.8,0.8);
   drawboldline(xCursor - 0.5, yCursor - 0.5,xCursor + 0.5, yCursor + 0.5);
   drawboldline(xCursor - 0.5, yCursor + 0.5,xCursor + 0.5, yCursor - 0.5);
   drawboldline(0.0,0.0,xCursor,yCursor);
-  glEnd();
-  /* end cursor */
-
-  /* marquee R */
-  int width = 2;
-  glBegin(GL_LINES);
-  drawboldline(0.0        ,4.0,0.0 + width,4.0);
-  drawboldline(0.0 + width,4.0,1.0 + width,3.0);
-  drawboldline(1.0 + width,3.0,0.0 + width,2.0);
-  drawboldline(0.0 + width,2.0,0.0        ,2.0);
-  drawboldline(0.0        ,4.0,0.0        ,0.0);
-  drawboldline(0.0 + width,2.0,1.0 + width,1.0);
-  drawboldline(1.0 + width,1.0,1.0 + width,0.0);
-  glEnd();
-  /* end marquee R */
-
-
+  glEnd(); /* end cursor */
+  int Rwidth = 2;
+  glBegin(GL_LINES); /* marquee R */
+  drawboldline(0.0         ,4.0,0.0 + Rwidth,4.0);
+  drawboldline(0.0 + Rwidth,4.0,1.0 + Rwidth,3.0);
+  drawboldline(1.0 + Rwidth,3.0,0.0 + Rwidth,2.0);
+  drawboldline(0.0 + Rwidth,2.0,0.0         ,2.0);
+  drawboldline(0.0         ,4.0,0.0         ,0.0);
+  drawboldline(0.0 + Rwidth,2.0,1.0 + Rwidth,1.0);
+  drawboldline(1.0 + Rwidth,1.0,1.0 + Rwidth,0.0);
+  glEnd(); /* end marquee R */
   /* apply a general 2D linear transformation
-     to an array of x-y coordinates
-  */
-  
+     to an array of x-y coordinates */
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
   //glRotatef(-90.0,1.0,0.0,0.0);
-  glRotatef(sunAngle,0.0,1.0,0.0);
   //glRotatef(45.0,0.0,1.0,0.0);
   int j,k;
   float c1,c2,c3;
@@ -406,6 +379,7 @@ static void draw(void)
   // 85-86% idle @ k = 0..3000
   // 84-85% idle @ k = 0..10000
 
+  glRotatef(sunAngle,0.0,1.0,0.0);
   for (p1 = 0; p1 < 2; p1 += 1) {
   for (p2 = 0; p2 < 2; p2 += 1) {
   for (p3 = 0; p3 < 2; p3 += 1) {
@@ -481,40 +455,7 @@ static void draw(void)
   }
   }
   glPopMatrix(); /* end (green grid, cursor, marquee, Sol) */
-
-  /* --- */
-
-  /* gears */
-  glPushMatrix();
-    glRotatef(view_rotx, 1.0, 0.0, 0.0);
-    glRotatef(view_roty, 0.0, 1.0, 0.0);
-    glRotatef(view_rotz, 0.0, 0.0, 1.0);
-
-    /*
-    glPushMatrix();
-      glTranslatef(-3.0, -2.0, 0.0);
-      glRotatef(gearAngle, 0.0, 0.0, 1.0);
-      glCallList(gear1);
-    glPopMatrix();
-
-    glPushMatrix();
-      glTranslatef(3.1f, -2.f, 0.f);
-      glRotatef(-2.f * gearAngle - 9.f, 0.f, 0.f, 1.f);
-      glCallList(gear2);
-    glPopMatrix();
-
-    glPushMatrix();
-      glTranslatef(-3.1f, 4.2f, 0.f);
-      glRotatef(-2.f * gearAngle - 25.f, 0.f, 0.f, 1.f);
-      glCallList(gear3);
-    glPopMatrix();
-    */
-
-  glPopMatrix();
-  /* end gears */
-
-  glPopMatrix();
-  /* end scene */
+  glPopMatrix(); /* end scene */
 }
 
 static int animPeriod = 5;
@@ -549,7 +490,7 @@ static void animate(void)
   camAngle = 10.0 * (float) glfwGetTime();
   camAngle = 0;
   sunAngle = 5.0 * (float) glfwGetTime();
-  sunAngle2 = 180.0 * (float) pulseFunction2(glfwGetTime()/2.0);
+  sunAngle2 = 180.0 * (float) pulseFunction2(glfwGetTime()/6.0);
   //sunAngle2 = 0.0;
   piston = fmodf(4.0 * (float) glfwGetTime(),4.f);
   piston = (piston > 2.0 ? 4.0 - piston : piston);
