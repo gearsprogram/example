@@ -262,8 +262,8 @@ static void drawboldline(float x1,float y1,float x2,float y2) {
 static GLfloat skyblue[4] = {0.6, 0.7, 0.8, 1.0};
 static GLfloat copper[4] = {0.8, 0.6, 0.4, 1.0};
 static GLfloat forestgreen[4] = {0.1, 0.8, 0.4, 1.0};
-static float sunRadius = 2.0;
-static float sunRadius2 = 1.0;
+static float sunRadius = 1.0;
+static float sunRadius2 = 4.0;
 static float sunThickness = 0.5;
 
 /* OpenGL draw function & timing */
@@ -379,13 +379,19 @@ static void draw(void) {
   // 85-86% idle @ k = 0..3000
   // 84-85% idle @ k = 0..10000
 
+  int pi = 0;
   glRotatef(sunAngle,0.0,1.0,0.0);
   for (p1 = 0; p1 < 2; p1 += 1) {
   for (p2 = 0; p2 < 2; p2 += 1) {
   for (p3 = 0; p3 < 2; p3 += 1) {
+  pi += 1;
   glPushMatrix(); /* Sol */
-  glTranslatef(-5.0 + 1.0 * p1,-5.0 + 1.0 * p2,-5.0 + 1.0 * p3);
+  glTranslatef(-3.0 + 6.0 * p1,-3.0 + 6.0 * p2,-3.0 + 6.0 * p3);
+  glRotatef(pi * 15.0,0.0,1.0,0.0);
+  glRotatef(pi * 15.0,0.0,0.0,1.0);
   glRotatef(sunAngle2,1.0,0.0,0.0);
+  glRotatef(pi * 15.0,0.0,0.0,1.0);
+  glRotatef(pi * 15.0,0.0,1.0,0.0);
   for (k = 0; k < 3; k += 1) {
       if (k % 3 == 0) {
           glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, skyblue);
@@ -490,7 +496,7 @@ static void animate(void)
   camAngle = 10.0 * (float) glfwGetTime();
   camAngle = 0;
   sunAngle = 5.0 * (float) glfwGetTime();
-  sunAngle2 = 180.0 * (float) pulseFunction2(glfwGetTime()/6.0);
+  sunAngle2 = 180.0 * (float) pulseFunction2(glfwGetTime()/2.0);
   //sunAngle2 = 0.0;
   piston = fmodf(4.0 * (float) glfwGetTime(),4.f);
   piston = (piston > 2.0 ? 4.0 - piston : piston);
