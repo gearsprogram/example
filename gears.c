@@ -250,14 +250,14 @@ static void drawboldline2(float x1,float y1,float x2,float y2) {
     glVertex3f(xout[1],yout[1],0.1);
     glVertex3f(xout[3],yout[3],0.1);
 
-    //glNormal3f(0.0,0.0,-1.0);
-    //glVertex3f(xout[0],yout[0],-0.1);
-    //glVertex3f(xout[2],yout[2],-0.1);
-    //glVertex3f(xout[1],yout[1],-0.1);
+    glNormal3f(0.0,0.0,-1.0);
+    glVertex3f(xout[0],yout[0],-0.1);
+    glVertex3f(xout[2],yout[2],-0.1);
+    glVertex3f(xout[1],yout[1],-0.1);
 
-    //glVertex3f(xout[1],yout[1],-0.1);
-    //glVertex3f(xout[2],yout[2],-0.1);
-    //glVertex3f(xout[3],yout[3],-0.1);
+    glVertex3f(xout[1],yout[1],-0.1);
+    glVertex3f(xout[2],yout[2],-0.1);
+    glVertex3f(xout[3],yout[3],-0.1);
 }
 
 static void boldline(float x1,float y1,float x2,float y2,
@@ -399,21 +399,26 @@ static void draw(void) {
   glEnable(GL_LIGHT0);
   //glColor3f(0.8,0.8,0.8);
   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, pink);
-  glBegin(GL_TRIANGLES); /* cursor */
-  drawboldline2(xCursor - 0.5, yCursor - 0.5,xCursor + 0.5, yCursor + 0.5);
-  drawboldline2(xCursor - 0.5, yCursor + 0.5,xCursor + 0.5, yCursor - 0.5);
-  drawboldline2(0.0,0.0,xCursor,yCursor);
-  glEnd(); /* end cursor */
-  int Rwidth = 2;
-  glBegin(GL_TRIANGLES); /* marquee R */
-  drawboldline2(0.0         ,4.0,0.0 + Rwidth,4.0);
-  drawboldline2(0.0 + Rwidth,4.0,1.0 + Rwidth,3.0);
-  drawboldline2(1.0 + Rwidth,3.0,0.0 + Rwidth,2.0);
-  drawboldline2(0.0 + Rwidth,2.0,0.0         ,2.0);
-  drawboldline2(0.0         ,4.0,0.0         ,0.0);
-  drawboldline2(0.0 + Rwidth,2.0,1.0 + Rwidth,1.0);
-  drawboldline2(1.0 + Rwidth,1.0,1.0 + Rwidth,0.0);
-  glEnd(); /* end marquee R */
+  glPushMatrix(); /* (cursor, marquee) */
+  int Rwidth = 3;
+  for (i = 0; i < 8; i += 1) {
+      glBegin(GL_TRIANGLES); /* cursor */
+      drawboldline2(xCursor - 0.5, yCursor - 0.5,xCursor + 0.5, yCursor + 0.5);
+      drawboldline2(xCursor - 0.5, yCursor + 0.5,xCursor + 0.5, yCursor - 0.5);
+      drawboldline2(0.0,0.0,xCursor,yCursor);
+      //glEnd(); /* end cursor */
+      //glBegin(GL_TRIANGLES); /* marquee R */
+      drawboldline2(0.0         ,4.0,0.0 + Rwidth,4.0);
+      drawboldline2(0.0 + Rwidth,4.0,1.0 + Rwidth,3.0);
+      drawboldline2(1.0 + Rwidth,3.0,0.0 + Rwidth,2.0);
+      drawboldline2(0.0 + Rwidth,2.0,0.0         ,2.0);
+      drawboldline2(0.0         ,4.0,0.0         ,0.0);
+      drawboldline2(0.0 + Rwidth,2.0,1.0 + Rwidth,1.0);
+      drawboldline2(1.0 + Rwidth,1.0,1.0 + Rwidth,0.0);
+      glEnd(); /* end marquee R */
+      glRotatef(45.0,0.0,1.0,0.0);
+  }
+  glPopMatrix(); /* (cursor, marquee) */
   //glRotatef(-90.0,1.0,0.0,0.0);
   //glRotatef(45.0,0.0,1.0,0.0);
   int j,k;
@@ -437,7 +442,7 @@ static void draw(void) {
   glTranslatef(-5.0 + 10.0 * p1,-5.0 + 10.0 * p2,-5.0 + 10.0 * p3);
   //glRotatef(pi * 15.0,0.0,1.0,0.0);
   //glRotatef(pi * 15.0,0.0,0.0,1.0);
-  glRotatef(sunAngle2,1.0,0.0,0.0);
+  glRotatef(sunAngle2,0.0,1.0,0.0);
   //glRotatef(pi * 15.0,0.0,0.0,1.0);
   //glRotatef(pi * 15.0,0.0,1.0,0.0);
   for (k = 0; k < 4; k += 1) {
@@ -448,7 +453,7 @@ static void draw(void) {
       } else if (k % 4 == 2) {
           glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, gold);
       } else if (k % 4 == 3) {
-          glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, forestgreen);
+          glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, pink);
       }
       for (j = 0; j < 2; j += 1) {
           for (i = 0; i < 3; i += 1) {
@@ -543,8 +548,8 @@ float pulseFunction2(float x) {
 static void animate(void)
 {
   gearAngle = 60.f * (float) glfwGetTime(); /* gear angle */
-  //camAngle = 20.0 * (float) glfwGetTime();
-  camAngle = 0;
+  camAngle = 20.0 * (float) glfwGetTime();
+  //camAngle = 0;
   sunAngle = 5.0 * (float) glfwGetTime();
   sunAngle = 0;
   sunAngle2 = 45.0 * (float) pulseFunction2(glfwGetTime()/2.0);
