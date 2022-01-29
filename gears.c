@@ -217,6 +217,49 @@ static void triNorm(float * d1, float * d2, float * d3,
 #define BOLDCOUNT 5
 #define BOLDFINE 25
 
+static void boldline2(float x1,float y1,float x2,float y2,
+        float *xout,float *yout) {
+    float dx = x2 - x1;
+    float dy = y2 - y1;
+    float mag = sqrt(dx*dx + dy*dy);
+    dx /= mag;
+    dy /= mag;
+    float temp = dx;
+    dx = -dy;
+    dy = temp;
+    dx /= BOLDFINE;
+    dy /= BOLDFINE;
+    dx *= (float) BOLDCOUNT / 2.0;
+    dy *= (float) BOLDCOUNT / 2.0;
+    xout[0] = x1 + dx; yout[0] = y1 + dy;
+    xout[1] = x1 - dx; yout[1] = y1 - dy;
+    xout[2] = x2 + dx; yout[2] = y2 + dy;
+    xout[3] = x2 - dx; yout[3] = y2 - dy;
+}
+
+static void drawboldline2(float x1,float y1,float x2,float y2) {
+    float xout[4];
+    float yout[4];
+    boldline2(x1,y1,x2,y2,xout,yout);
+    glNormal3f(0.0,0.0,1.0);
+    glVertex3f(xout[0],yout[0],0.1);
+    glVertex3f(xout[1],yout[1],0.1);
+    glVertex3f(xout[2],yout[2],0.1);
+
+    glVertex3f(xout[2],yout[2],0.1);
+    glVertex3f(xout[1],yout[1],0.1);
+    glVertex3f(xout[3],yout[3],0.1);
+
+    //glNormal3f(0.0,0.0,-1.0);
+    //glVertex3f(xout[0],yout[0],-0.1);
+    //glVertex3f(xout[2],yout[2],-0.1);
+    //glVertex3f(xout[1],yout[1],-0.1);
+
+    //glVertex3f(xout[1],yout[1],-0.1);
+    //glVertex3f(xout[2],yout[2],-0.1);
+    //glVertex3f(xout[3],yout[3],-0.1);
+}
+
 static void boldline(float x1,float y1,float x2,float y2,
         float *x1out,float *y1out,float *x2out,float *y2out) {
     float dx = x2 - x1;
@@ -262,6 +305,8 @@ static void drawboldline(float x1,float y1,float x2,float y2) {
 static GLfloat skyblue[4] = {0.6, 0.7, 0.8, 1.0};
 static GLfloat copper[4] = {0.8, 0.6, 0.4, 1.0};
 static GLfloat forestgreen[4] = {0.1, 0.8, 0.4, 1.0};
+static GLfloat gold[4] = {0.8, 0.8, 0.6, 1.0};
+static GLfloat pink[4] = {0.7, 0.2, 0.3, 1.0};
 static float sunRadius = 1.0;
 static float sunRadius2 = 4.0;
 static float sunThickness = 0.5;
@@ -311,8 +356,8 @@ static void draw(void) {
   glVertex3f(-xHUDscale,0.0     , 0.0);
   glVertex3f(-xHUDscale,HUDscale, 0.0);
   glEnd(); /* end HUD */
-  glRotatef(camAngle, 0.0, 1.0, 0.0);
   glPushMatrix(); /* scene */
+  glRotatef(camAngle, 0.0, 1.0, 0.0);
   glTranslatef(0.0, -4.0, 0.0);
   glPushMatrix(); /* (green grid, cursor, marquee, Sol) */
   glBegin(GL_LINES); /* green grid */
@@ -336,36 +381,39 @@ static void draw(void) {
           glVertex3f((float) i, 0.0, 10.0);
       }
       for (i = 0; i < 10; i += 1) {
-          glVertex3f( 0.0, 0.0 , (float) i);
-          glVertex3f( 0.0, 10.0, (float) i);
+          ;
+          //glVertex3f( 0.0, 0.0 , (float) i);
+          //glVertex3f( 0.0, 10.0, (float) i);
       }
       for (i = 0; i < 10; i += 1) {
-          glVertex3f( 0.0, (float) i, 0.0);
-          glVertex3f( 0.0, (float) i, 10.0);
+          ;
+          //glVertex3f( 0.0, (float) i, 0.0);
+          //glVertex3f( 0.0, (float) i, 10.0);
       }
   }
   glEnd(); /* end green grid */
   glTranslatef(0.0, 4.0, 0.0);
-  glBegin(GL_LINES); /* cursor */
-  glColor3f(0.8,0.8,0.8);
-  drawboldline(xCursor - 0.5, yCursor - 0.5,xCursor + 0.5, yCursor + 0.5);
-  drawboldline(xCursor - 0.5, yCursor + 0.5,xCursor + 0.5, yCursor - 0.5);
-  drawboldline(0.0,0.0,xCursor,yCursor);
-  glEnd(); /* end cursor */
-  int Rwidth = 2;
-  glBegin(GL_LINES); /* marquee R */
-  drawboldline(0.0         ,4.0,0.0 + Rwidth,4.0);
-  drawboldline(0.0 + Rwidth,4.0,1.0 + Rwidth,3.0);
-  drawboldline(1.0 + Rwidth,3.0,0.0 + Rwidth,2.0);
-  drawboldline(0.0 + Rwidth,2.0,0.0         ,2.0);
-  drawboldline(0.0         ,4.0,0.0         ,0.0);
-  drawboldline(0.0 + Rwidth,2.0,1.0 + Rwidth,1.0);
-  drawboldline(1.0 + Rwidth,1.0,1.0 + Rwidth,0.0);
-  glEnd(); /* end marquee R */
   /* apply a general 2D linear transformation
      to an array of x-y coordinates */
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
+  //glColor3f(0.8,0.8,0.8);
+  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, pink);
+  glBegin(GL_TRIANGLES); /* cursor */
+  drawboldline2(xCursor - 0.5, yCursor - 0.5,xCursor + 0.5, yCursor + 0.5);
+  drawboldline2(xCursor - 0.5, yCursor + 0.5,xCursor + 0.5, yCursor - 0.5);
+  drawboldline2(0.0,0.0,xCursor,yCursor);
+  glEnd(); /* end cursor */
+  int Rwidth = 2;
+  glBegin(GL_TRIANGLES); /* marquee R */
+  drawboldline2(0.0         ,4.0,0.0 + Rwidth,4.0);
+  drawboldline2(0.0 + Rwidth,4.0,1.0 + Rwidth,3.0);
+  drawboldline2(1.0 + Rwidth,3.0,0.0 + Rwidth,2.0);
+  drawboldline2(0.0 + Rwidth,2.0,0.0         ,2.0);
+  drawboldline2(0.0         ,4.0,0.0         ,0.0);
+  drawboldline2(0.0 + Rwidth,2.0,1.0 + Rwidth,1.0);
+  drawboldline2(1.0 + Rwidth,1.0,1.0 + Rwidth,0.0);
+  glEnd(); /* end marquee R */
   //glRotatef(-90.0,1.0,0.0,0.0);
   //glRotatef(45.0,0.0,1.0,0.0);
   int j,k;
@@ -379,25 +427,27 @@ static void draw(void) {
   // 85-86% idle @ k = 0..3000
   // 84-85% idle @ k = 0..10000
 
-  int pi = 0;
+  //int pi = 0;
   glRotatef(sunAngle,0.0,1.0,0.0);
   for (p1 = 0; p1 < 2; p1 += 1) {
   for (p2 = 0; p2 < 2; p2 += 1) {
   for (p3 = 0; p3 < 2; p3 += 1) {
-  pi += 1;
+  //pi += 1;
   glPushMatrix(); /* Sol */
-  glTranslatef(-3.0 + 6.0 * p1,-3.0 + 6.0 * p2,-3.0 + 6.0 * p3);
-  glRotatef(pi * 15.0,0.0,1.0,0.0);
-  glRotatef(pi * 15.0,0.0,0.0,1.0);
+  glTranslatef(-5.0 + 10.0 * p1,-5.0 + 10.0 * p2,-5.0 + 10.0 * p3);
+  //glRotatef(pi * 15.0,0.0,1.0,0.0);
+  //glRotatef(pi * 15.0,0.0,0.0,1.0);
   glRotatef(sunAngle2,1.0,0.0,0.0);
-  glRotatef(pi * 15.0,0.0,0.0,1.0);
-  glRotatef(pi * 15.0,0.0,1.0,0.0);
-  for (k = 0; k < 3; k += 1) {
-      if (k % 3 == 0) {
+  //glRotatef(pi * 15.0,0.0,0.0,1.0);
+  //glRotatef(pi * 15.0,0.0,1.0,0.0);
+  for (k = 0; k < 4; k += 1) {
+      if (k % 4 == 0) {
           glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, skyblue);
-      } else if (k % 3 == 1) {
+      } else if (k % 4 == 1) {
           glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, copper);
-      } else if (k % 3 == 2) {
+      } else if (k % 4 == 2) {
+          glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, gold);
+      } else if (k % 4 == 3) {
           glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, forestgreen);
       }
       for (j = 0; j < 2; j += 1) {
@@ -453,7 +503,7 @@ static void draw(void) {
           glRotatef(180.0,1.0,0.0,0.0);
           glRotatef(240.0,0.0,0.0,1.0);
       }
-      glRotatef(120.0 + 0.0,1.0,0.0,0.0);
+      glRotatef(90.0 + 0.0,1.0,0.0,0.0);
       //glTranslatef(0.0001,0.0,0.0);
   }
   glPopMatrix(); /* end Sol */
@@ -464,7 +514,7 @@ static void draw(void) {
   glPopMatrix(); /* end scene */
 }
 
-static int animPeriod = 5;
+static int animPeriod = 45;
 static int animIndex = 0;
 
 // pulse function 3a and 3b
@@ -493,10 +543,11 @@ float pulseFunction2(float x) {
 static void animate(void)
 {
   gearAngle = 60.f * (float) glfwGetTime(); /* gear angle */
-  camAngle = 10.0 * (float) glfwGetTime();
+  //camAngle = 20.0 * (float) glfwGetTime();
   camAngle = 0;
   sunAngle = 5.0 * (float) glfwGetTime();
-  sunAngle2 = 180.0 * (float) pulseFunction2(glfwGetTime()/2.0);
+  sunAngle = 0;
+  sunAngle2 = 45.0 * (float) pulseFunction2(glfwGetTime()/2.0);
   //sunAngle2 = 0.0;
   piston = fmodf(4.0 * (float) glfwGetTime(),4.f);
   piston = (piston > 2.0 ? 4.0 - piston : piston);
