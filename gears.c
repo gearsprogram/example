@@ -302,11 +302,11 @@ static void drawboldline(float x1,float y1,float x2,float y2) {
   }
 }
 
-static GLfloat skyblue[4] = {0.6, 0.7, 0.8, 1.0};
-static GLfloat copper[4] = {0.8, 0.6, 0.4, 1.0};
+static GLfloat skyblue[4] = {0.525, 0.8, 0.925, 1.0};
+static GLfloat copper[4] = {0.725 * 0.8, 0.45 * 0.8, 0.2 * 0.8, 1.0};
 static GLfloat forestgreen[4] = {0.1, 0.8, 0.4, 1.0};
-static GLfloat gold[4] = {0.8, 0.8, 0.6, 1.0};
-static GLfloat pink[4] = {0.7, 0.2, 0.3, 1.0};
+static GLfloat canary[4] = {1.0, 1.0, 0.6, 1.0};
+static GLfloat pink[4] = {0.7/0.8, 0.2/0.8, 0.3/0.8, 1.0};
 static float sunRadius = 1.0;
 static float sunRadius2 = 4.0;
 static float sunThickness = 0.5;
@@ -400,8 +400,8 @@ static void draw(void) {
   //glColor3f(0.8,0.8,0.8);
   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, pink);
   glPushMatrix(); /* (cursor, marquee) */
-  int Rwidth = 3;
-  for (i = 0; i < 8; i += 1) {
+  int Rwidth = 1;
+  for (i = 0; i < 1; i += 1) {
       glBegin(GL_TRIANGLES); /* cursor */
       drawboldline2(xCursor - 0.5, yCursor - 0.5,xCursor + 0.5, yCursor + 0.5);
       drawboldline2(xCursor - 0.5, yCursor + 0.5,xCursor + 0.5, yCursor - 0.5);
@@ -432,17 +432,31 @@ static void draw(void) {
   // 85-86% idle @ k = 0..3000
   // 84-85% idle @ k = 0..10000
 
-  //int pi = 0;
+  int pi = 0;
   glRotatef(sunAngle,0.0,1.0,0.0);
   for (p1 = 0; p1 < 2; p1 += 1) {
   for (p2 = 0; p2 < 2; p2 += 1) {
   for (p3 = 0; p3 < 2; p3 += 1) {
-  //pi += 1;
+  pi += 1;
   glPushMatrix(); /* Sol */
   glTranslatef(-5.0 + 10.0 * p1,-5.0 + 10.0 * p2,-5.0 + 10.0 * p3);
   //glRotatef(pi * 15.0,0.0,1.0,0.0);
   //glRotatef(pi * 15.0,0.0,0.0,1.0);
-  glRotatef(sunAngle2,0.0,1.0,0.0);
+  int rsgn = 1;
+  if (pi % 2 == 0) {
+      rsgn = -1;
+  }
+  float asgn = 0.0;
+  float bsgn = 0.0;
+  float csgn = 0.0;
+  if (pi % 6 < 2) {
+      asgn = 1.0;
+  } else if (pi % 6 < 4) {
+      bsgn = 1.0;
+  } else {
+      csgn = 1.0;
+  }
+  glRotatef(rsgn * sunAngle2,asgn,bsgn,csgn);
   //glRotatef(pi * 15.0,0.0,0.0,1.0);
   //glRotatef(pi * 15.0,0.0,1.0,0.0);
   for (k = 0; k < 4; k += 1) {
@@ -451,7 +465,7 @@ static void draw(void) {
       } else if (k % 4 == 1) {
           glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, copper);
       } else if (k % 4 == 2) {
-          glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, gold);
+          glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, canary);
       } else if (k % 4 == 3) {
           glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, pink);
       }
@@ -545,12 +559,11 @@ float pulseFunction2(float x) {
 }
 
 /* update animation parameters */
-static void animate(void)
-{
+static void animate(void) {
   gearAngle = 60.f * (float) glfwGetTime(); /* gear angle */
-  camAngle = 20.0 * (float) glfwGetTime();
+  camAngle = 15.0 * (float) glfwGetTime();
   //camAngle = 0;
-  sunAngle = 5.0 * (float) glfwGetTime();
+  //sunAngle = 5.0 * (float) glfwGetTime();
   sunAngle = 0;
   sunAngle2 = 45.0 * (float) pulseFunction2(glfwGetTime()/2.0);
   //sunAngle2 = 0.0;
@@ -569,8 +582,7 @@ static void animate(void)
 
 
 /* change view angle, exit upon ESC */
-void key( GLFWwindow* window, int k, int s, int action, int mods )
-{
+void key( GLFWwindow* window, int k, int s, int action, int mods ) {
   if( action != GLFW_PRESS ) return;
 
   switch (k) {
@@ -602,8 +614,7 @@ void key( GLFWwindow* window, int k, int s, int action, int mods )
 
 
 /* new window size */
-void reshape( GLFWwindow* window, int width, int height )
-{
+void reshape( GLFWwindow* window, int width, int height ) {
   GLfloat h = (GLfloat) height / (GLfloat) width;
   GLfloat xmax, znear, zfar;
 
