@@ -316,6 +316,7 @@ static GLfloat skyblue[4] =     {      0.525,        0.8,     0.925, 1.0};
 static GLfloat tigger[4] =      {0.725 / 0.8, 0.45 / 0.8, 0.2 / 0.8, 1.0};
 static GLfloat canary[4] =      {        1.0,        1.0,       0.6, 1.0};
 static GLfloat pink[4] =        {  0.7 / 0.8,  0.2 / 0.8, 0.3 / 0.8, 1.0};
+static GLfloat indigo[4] =      {  0.3 / 0.8,        0.0, 0.5 / 0.8, 1.0};
 
 //static GLfloat skyblue2[4] = {0.525 * 0.8, 0.8 * 0.8, 0.925 * 0.8, 1.0};
 //static GLfloat tigger2[4] =  {0.725      ,      0.45,         0.2, 1.0};
@@ -327,8 +328,10 @@ static GLfloat skyblue2[4] =     {0.525 * 0.64, 0.8 * 0.64, 0.925 * 0.64, 1.0};
 static GLfloat tigger2[4] =      {0.725 * 0.8 , 0.45 * 0.8,    0.2 * 0.8, 1.0};
 static GLfloat canary2[4] =      {  1.0 * 0.64, 1.0 * 0.64,   0.6 * 0.64, 1.0};
 static GLfloat pink2[4] =        {  0.7 * 0.8 ,  0.2 * 0.8,    0.3 * 0.8, 1.0};
+static GLfloat indigo2[4] =      {  0.3 * 0.8 ,        0.0,    0.5 * 0.8, 1.0};
 
 static float sunRadius = 2.0;
+static float spikeRadius = 0.75;
 static float sunRadius2 = 3.0;
 //static float sunThickness = 1.0;
 
@@ -479,77 +482,74 @@ static void draw(void) {
   glRotatef(rsgn * sunAngle2,asgn,bsgn,csgn);
   //glRotatef(pi * 15.0,0.0,0.0,1.0);
   //glRotatef(pi * 15.0,0.0,1.0,0.0);
-  for (k = 0; k < 5; k += 1) {
-      for (j = 0; j < 4; j += 1) {
+  for (k = 0; k < 6; k += 1) {
+      for (j = 0; j < 8; j += 1) {
           if (pi % 2 == 0) {
-              if (k % 5 == 0) {
+              if (k % 6 == 0) {
                   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, skyblue);
-              } else if (k % 5 == 1) {
+              } else if (k % 6 == 1) {
                   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, tigger);
-              } else if (k % 5 == 2) {
+              } else if (k % 6 == 2) {
                   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, canary);
-              } else if (k % 5 == 3) {
+              } else if (k % 6 == 3) {
                   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, pink);
-              } else if (k % 5 == 4) {
+              } else if (k % 6 == 4) {
                   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, forestgreen);
+              } else if (k % 6 == 5) {
+                  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, indigo);
               }
           } else {
-              if (k % 5 == 0) {
+              if (k % 6 == 0) {
                   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, skyblue2);
-              } else if (k % 5 == 1) {
+              } else if (k % 6 == 1) {
                   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, tigger2);
-              } else if (k % 5 == 2) {
+              } else if (k % 6 == 2) {
                   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, canary2);
-              } else if (k % 5 == 3) {
+              } else if (k % 6 == 3) {
                   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, pink2);
-              } else if (k % 5 == 4) {
+              } else if (k % 6 == 4) {
                   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, forestgreen2);
+              } else if (k % 6 == 5) {
+                  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, indigo2);
               }
           }
           for (i = 0; i < 2; i += 1) {
               if (i == 2 || 1) {
                   glTranslatef(0.0,sunRadius,0.0);
                   glBegin(GL_TRIANGLES);
-                  float xx1,yy1,xx2,yy2,xx3,yy3,xx4,yy4;
-                  xx1 =  1.0; yy1 =  0.0;
-                  xx2 = 0.87; yy2 =  0.5;
-                  xx3 =  0.5; yy3 = 0.87;
-                  xx4 =  0.0; yy4 =  1.0;
-                  triNorm(
-                      xx1,0.0,yy1,
-                      0.0,sunRadius2,0.0,
-                      xx2,0.0,yy2);
-                  triNorm(
-                      xx2,0.0,yy2,
-                      0.0,sunRadius2,0.0,
-                      xx3,0.0,yy3);
-                  triNorm(
-                      xx3,0.0,yy3,
-                      0.0,sunRadius2,0.0,
-                      xx4,0.0,yy4);
-                  // end cap A
-                  triNorm(
-                      0.0,0.0,0.0,
-                      1.0,0.0,0.0,
-                      0.0,0.0,1.0);
+                  float xx[4];
+                  float yy[4];
+                  // line segments define arc of cone base
+                  xx[0] =  1.0; yy[0] =  0.0;
+                  xx[1] = 0.87; yy[1] =  0.5;
+                  xx[2] =  0.5; yy[2] = 0.87;
+                  xx[3] =  0.0; yy[3] =  1.0;
+                  int ii;
+                  for (ii = 0; ii < 4; ii += 1) {
+                      xx[ii] *= spikeRadius;
+                      yy[ii] *= spikeRadius;
+                  }
+                  for (ii = 0; ii < 3; ii += 1) {
+                      triNorm(
+                          xx[ii + 0],0.0,yy[ii + 0],
+                          0.0,sunRadius2,0.0,
+                          xx[ii + 1],0.0,yy[ii + 1]);
+                      // end cap A
+                      triNorm(
+                          0.0,0.0,0.0,
+                          xx[ii + 0],0.0,yy[ii + 0],
+                          xx[ii + 1],0.0,yy[ii + 1]);
 
-                  triNorm(
-                      -xx1,0.0,yy1,
-                      -xx2,0.0,yy2,
-                       0.0,sunRadius2,0.0);
-                  triNorm(
-                      -xx2,0.0,yy2,
-                      -xx3,0.0,yy3,
-                       0.0,sunRadius2,0.0);
-                  triNorm(
-                      -xx3,0.0,yy3,
-                      -xx4,0.0,yy4,
-                       0.0,sunRadius2,0.0);
-                  // end cap B
-                  triNorm(
-                      -1.0,0.0,0.0,
-                      0.0,0.0,0.0,
-                      0.0,0.0,1.0);
+                      triNorm(
+                          -xx[ii + 0],0.0,yy[ii + 0],
+                          -xx[ii + 1],0.0,yy[ii + 1],
+                           0.0,sunRadius2,0.0);
+                      // end cap B
+                      triNorm(
+                          -xx[ii + 0],0.0,yy[ii + 0],
+                           0.0,0.0,0.0,
+                          -xx[ii + 1],0.0,yy[ii + 1]);
+                  }
                   glEnd();
                   glTranslatef(0.0,-sunRadius,0.0);
               }
@@ -557,9 +557,11 @@ static void draw(void) {
           }
           //glRotatef(180.0,0.0,0.0,1.0);
           //glRotatef(180.0,1.0,0.0,0.0);
-          glRotatef(108.0 + sunAngle3,0.0,0.0,1.0);
+          //glRotatef(120.0 + 0 * sunAngle3,0.0,0.0,1.0);
+          glRotatef(60.0 + sunAngle3 / 4.0,0.0,0.0,1.0);
       }
-      glRotatef(72.0 + sunAngle4,1.0,0.0,0.0);
+      //glRotatef(90.0 + 0 * sunAngle4,1.0,0.0,0.0);
+      glRotatef(45.0 + sunAngle4 / 3.0,1.0,0.0,0.0);
   }
   glPopMatrix(); /* end Sol */
   }
@@ -597,14 +599,14 @@ float pulseFunction2(float x) {
 /* update animation parameters */
 static void animate(void) {
   gearAngle = 60.f * (float) glfwGetTime(); /* gear angle */
-  camAngle = 15.0 * (float) glfwGetTime();
-  //camAngle = 0;
+  //camAngle = 15.0 * (float) glfwGetTime();
+  camAngle = 0;
   //sunAngle = 5.0 * (float) glfwGetTime();
   sunAngle = 0;
   sunAngle2 = 45.0 * (float) pulseFunction2(glfwGetTime());
-  sunAngle3 = 30.0 * (float) glfwGetTime();
-  sunAngle4 = 18.0 * (float) glfwGetTime();
   //sunAngle2 = 0.0;
+  sunAngle3 = 30.0 * (float) glfwGetTime();
+  sunAngle4 = 15.0 * (float) glfwGetTime();
   piston = fmodf(4.0 * (float) glfwGetTime(),4.f);
   piston = (piston > 2.0 ? 4.0 - piston : piston);
   animIndex += 1;
