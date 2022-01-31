@@ -311,28 +311,31 @@ static void drawboldline(float x1,float y1,float x2,float y2) {
 
 //static GLfloat copper[4] =    {0.725 * 0.8, 0.45 * 0.8, 0.2 * 0.8, 1.0};
 
-static GLfloat forestgreen[4] = {  0.1 / 0.8,  0.8 / 0.8, 0.4 / 0.8, 1.0};
-static GLfloat skyblue[4] =     {      0.525,        0.8,     0.925, 1.0};
-static GLfloat tigger[4] =      {0.725 / 0.8, 0.45 / 0.8, 0.2 / 0.8, 1.0};
-static GLfloat canary[4] =      {        1.0,        1.0,       0.6, 1.0};
-static GLfloat pink[4] =        {  0.7 / 0.8,  0.2 / 0.8, 0.3 / 0.8, 1.0};
-static GLfloat indigo[4] =      {  0.3 / 0.8,        0.0, 0.5 / 0.8, 1.0};
+static GLfloat forestgreen[4] =  {   0.1 / 0.8,  0.8 / 0.8,   0.4 / 0.8,1.0};
+static GLfloat skyblue[4] =      {       0.525,        0.8,       0.925,1.0};
+static GLfloat vermilion[4] =    {         0.9,       0.25,         0.2,1.0};
+static GLfloat canary[4] =       {         1.0,        1.0,         0.6,1.0};
+static GLfloat pink[4] =         {   0.7 / 0.8,  0.2 / 0.8,   0.3 / 0.8,1.0};
+static GLfloat indigo[4] =       {   0.3 / 0.8,        0.0,   0.5 / 0.8,1.0};
+static GLfloat white[4] =        {         1.0,        1.0,         1.0,1.0};
+static GLfloat black[4] =        {         0.0,        0.0,         0.0,1.0};
+static GLfloat forestgreen2[4] = {  0.1 * 0.8 ,  0.8 * 0.8,   0.4 * 0.8,1.0};
+static GLfloat skyblue2[4] =     {0.525 * 0.64, 0.8 * 0.64,0.925 * 0.64,1.0};
+static GLfloat vermilion2[4] =   {  0.9 * 0.64,0.25 * 0.64,  0.2 * 0.64,1.0};
+static GLfloat canary2[4] =      {  1.0 * 0.64, 1.0 * 0.64,  0.6 * 0.64,1.0};
+static GLfloat pink2[4] =        {  0.7 * 0.8 ,  0.2 * 0.8,   0.3 * 0.8,1.0};
+static GLfloat indigo2[4] =      {  0.3 * 0.8 ,        0.0,   0.5 * 0.8,1.0};
 
 //static GLfloat skyblue2[4] = {0.525 * 0.8, 0.8 * 0.8, 0.925 * 0.8, 1.0};
 //static GLfloat tigger2[4] =  {0.725      ,      0.45,         0.2, 1.0};
 //static GLfloat canary2[4] =  {  1.0 * 0.8, 1.0 * 0.8,   0.6 * 0.8, 1.0};
 //static GLfloat pink2[4] =    {        0.7,       0.2,         0.3, 1.0};
-
-static GLfloat forestgreen2[4] = {  0.1 * 0.8 ,  0.8 * 0.8,    0.4 * 0.8, 1.0};
-static GLfloat skyblue2[4] =     {0.525 * 0.64, 0.8 * 0.64, 0.925 * 0.64, 1.0};
-static GLfloat tigger2[4] =      {0.725 * 0.8 , 0.45 * 0.8,    0.2 * 0.8, 1.0};
-static GLfloat canary2[4] =      {  1.0 * 0.64, 1.0 * 0.64,   0.6 * 0.64, 1.0};
-static GLfloat pink2[4] =        {  0.7 * 0.8 ,  0.2 * 0.8,    0.3 * 0.8, 1.0};
-static GLfloat indigo2[4] =      {  0.3 * 0.8 ,        0.0,    0.5 * 0.8, 1.0};
+//static GLfloat tigger[4] =    {0.725 / 0.8, 0.45 / 0.8, 0.2 / 0.8, 1.0};
+//static GLfloat tigger2[4] =    {0.725 * 0.8 , 0.45 * 0.8,    0.2 * 0.8, 1.0};
 
 static float sunRadius = 2.0;
-static float spikeRadius = 0.75;
-static float sunRadius2 = 3.0;
+static float spikeRadius = 0.5;
+static float sunRadius2 = 1.0;
 //static float sunThickness = 1.0;
 
 /* OpenGL draw function & timing */
@@ -482,35 +485,45 @@ static void draw(void) {
   glRotatef(rsgn * sunAngle2,asgn,bsgn,csgn);
   //glRotatef(pi * 15.0,0.0,0.0,1.0);
   //glRotatef(pi * 15.0,0.0,1.0,0.0);
-  for (k = 0; k < 6; k += 1) {
+  int COLORS;
+  COLORS = 8;
+  for (k = 0; k < COLORS; k += 1) {
       for (j = 0; j < 8; j += 1) {
           if (pi % 2 == 0) {
-              if (k % 6 == 0) {
+              if (k % COLORS == 0) {
                   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, skyblue);
-              } else if (k % 6 == 1) {
-                  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, tigger);
-              } else if (k % 6 == 2) {
+              } else if (k % COLORS == 1) {
+                  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, vermilion);
+              } else if (k % COLORS == 2) {
                   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, canary);
-              } else if (k % 6 == 3) {
+              } else if (k % COLORS == 3) {
                   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, pink);
-              } else if (k % 6 == 4) {
+              } else if (k % COLORS == 4) {
                   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, forestgreen);
-              } else if (k % 6 == 5) {
+              } else if (k % COLORS == 5) {
                   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, indigo);
+              } else if (k % COLORS == 6) {
+                  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, white);
+              } else if (k % COLORS == 7) {
+                  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, black);
               }
           } else {
-              if (k % 6 == 0) {
+              if (k % COLORS == 0) {
                   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, skyblue2);
-              } else if (k % 6 == 1) {
-                  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, tigger2);
-              } else if (k % 6 == 2) {
+              } else if (k % COLORS == 1) {
+                  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, vermilion2);
+              } else if (k % COLORS == 2) {
                   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, canary2);
-              } else if (k % 6 == 3) {
+              } else if (k % COLORS == 3) {
                   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, pink2);
-              } else if (k % 6 == 4) {
+              } else if (k % COLORS == 4) {
                   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, forestgreen2);
-              } else if (k % 6 == 5) {
+              } else if (k % COLORS == 5) {
                   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, indigo2);
+              } else if (k % COLORS == 6) {
+                  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, black);
+              } else if (k % COLORS == 7) {
+                  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, white);
               }
           }
           for (i = 0; i < 2; i += 1) {
@@ -558,10 +571,10 @@ static void draw(void) {
           //glRotatef(180.0,0.0,0.0,1.0);
           //glRotatef(180.0,1.0,0.0,0.0);
           //glRotatef(120.0 + 0 * sunAngle3,0.0,0.0,1.0);
-          glRotatef(60.0 + sunAngle3 / 4.0,0.0,0.0,1.0);
+          glRotatef(45.0 + sunAngle4 / 9.0,0.0,0.0,1.0);
       }
       //glRotatef(90.0 + 0 * sunAngle4,1.0,0.0,0.0);
-      glRotatef(45.0 + sunAngle4 / 3.0,1.0,0.0,0.0);
+      glRotatef(60.0 + sunAngle3 / 16.0,1.0,0.0,0.0);
   }
   glPopMatrix(); /* end Sol */
   }
@@ -599,11 +612,11 @@ float pulseFunction2(float x) {
 /* update animation parameters */
 static void animate(void) {
   gearAngle = 60.f * (float) glfwGetTime(); /* gear angle */
-  //camAngle = 15.0 * (float) glfwGetTime();
-  camAngle = 0;
+  camAngle = 15.0 * (float) glfwGetTime();
+  //camAngle = 0;
   //sunAngle = 5.0 * (float) glfwGetTime();
   sunAngle = 0;
-  sunAngle2 = 45.0 * (float) pulseFunction2(glfwGetTime());
+  sunAngle2 = 15.0 * (float) pulseFunction2(glfwGetTime());
   //sunAngle2 = 0.0;
   sunAngle3 = 30.0 * (float) glfwGetTime();
   sunAngle4 = 15.0 * (float) glfwGetTime();
