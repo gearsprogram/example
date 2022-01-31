@@ -172,6 +172,8 @@ static GLfloat gearAngle = 0.0;
 static GLfloat camAngle = 0.0;
 static GLfloat sunAngle = 0.0;
 static GLfloat sunAngle2 = 0.0;
+static GLfloat sunAngle3 = 0.0;
+static GLfloat sunAngle4 = 0.0;
 static GLfloat piston = 0.0;
 static GLfloat range = 40.0;
 #define HUDWIDTH 36
@@ -202,16 +204,21 @@ static void normVec(float * a1, float * a2, float * a3) {
 
 /* Calculate the normal vector for a triangle with vertices
    at a,b,c and store the result in d */
-static void triNorm(float * d1, float * d2, float * d3,
+static void triNorm(
         float a1, float a2, float a3,
         float b1, float b2, float b3,
         float c1, float c2, float c3) {
+    float d1,d2,d3;
     float v1,v2,v3,w1,w2,w3;
     v1 = b1 - a1; v2 = b2 - a2; v3 = b3 - a3;
     w1 = c1 - a1; w2 = c2 - a2; w3 = c3 - a3;
-    calcCross(d1,d2,d3,v1,v2,v3,w1,w2,w3);
-    normVec(d1,d2,d3);
+    calcCross(&d1,&d2,&d3,v1,v2,v3,w1,w2,w3);
+    normVec(&d1,&d2,&d3);
     //* d1 *= -1; * d2 *= -1; * d3 *= -1;
+    glNormal3f(d1,d2,d3);
+    glVertex3f(a1,a2,a3);
+    glVertex3f(b1,b2,b3);
+    glVertex3f(c1,c2,c3);
 }
 
 #define BOLDCOUNT 5
@@ -302,26 +309,27 @@ static void drawboldline(float x1,float y1,float x2,float y2) {
   }
 }
 
-//static GLfloat forestgreen[4] = {  0.1 / 0.8, 0.8  / 0.8, 0.4 / 0.8, 1.0};
 //static GLfloat copper[4] =    {0.725 * 0.8, 0.45 * 0.8, 0.2 * 0.8, 1.0};
 
-static GLfloat skyblue[4] = {      0.525,        0.8,     0.925, 1.0};
-static GLfloat tigger[4] =  {0.725 / 0.8, 0.45 / 0.8, 0.2 / 0.8, 1.0};
-static GLfloat canary[4] =  {        1.0,        1.0,       0.6, 1.0};
-static GLfloat pink[4] =    {  0.7 / 0.8,  0.2 / 0.8, 0.3 / 0.8, 1.0};
+static GLfloat forestgreen[4] = {  0.1 / 0.8,  0.8 / 0.8, 0.4 / 0.8, 1.0};
+static GLfloat skyblue[4] =     {      0.525,        0.8,     0.925, 1.0};
+static GLfloat tigger[4] =      {0.725 / 0.8, 0.45 / 0.8, 0.2 / 0.8, 1.0};
+static GLfloat canary[4] =      {        1.0,        1.0,       0.6, 1.0};
+static GLfloat pink[4] =        {  0.7 / 0.8,  0.2 / 0.8, 0.3 / 0.8, 1.0};
 
 //static GLfloat skyblue2[4] = {0.525 * 0.8, 0.8 * 0.8, 0.925 * 0.8, 1.0};
 //static GLfloat tigger2[4] =  {0.725      ,      0.45,         0.2, 1.0};
 //static GLfloat canary2[4] =  {  1.0 * 0.8, 1.0 * 0.8,   0.6 * 0.8, 1.0};
 //static GLfloat pink2[4] =    {        0.7,       0.2,         0.3, 1.0};
 
-static GLfloat skyblue2[4] = {0.525 * 0.64,  0.8 * 0.64, 0.925 * 0.64, 1.0};
-static GLfloat tigger2[4] =  {0.725 * 0.8 , 0.45 * 0.8 ,    0.2 * 0.8, 1.0};
-static GLfloat canary2[4] =  {  1.0 * 0.64,  1.0 * 0.64,   0.6 * 0.64, 1.0};
-static GLfloat pink2[4] =    {  0.7 * 0.8 ,  0.2 * 0.8 ,    0.3 * 0.8, 1.0};
+static GLfloat forestgreen2[4] = {  0.1 * 0.8 ,  0.8 * 0.8,    0.4 * 0.8, 1.0};
+static GLfloat skyblue2[4] =     {0.525 * 0.64, 0.8 * 0.64, 0.925 * 0.64, 1.0};
+static GLfloat tigger2[4] =      {0.725 * 0.8 , 0.45 * 0.8,    0.2 * 0.8, 1.0};
+static GLfloat canary2[4] =      {  1.0 * 0.64, 1.0 * 0.64,   0.6 * 0.64, 1.0};
+static GLfloat pink2[4] =        {  0.7 * 0.8 ,  0.2 * 0.8,    0.3 * 0.8, 1.0};
 
-static float sunRadius = 1.0;
-static float sunRadius2 = 2.0;
+static float sunRadius = 2.0;
+static float sunRadius2 = 3.0;
 //static float sunThickness = 1.0;
 
 /* OpenGL draw function & timing */
@@ -435,7 +443,6 @@ static void draw(void) {
   //glRotatef(-90.0,1.0,0.0,0.0);
   //glRotatef(45.0,0.0,1.0,0.0);
   int j,k;
-  float c1,c2,c3;
   int p1,p2,p3;
   // draw Sol
   // CPU utilization notes:
@@ -472,100 +479,87 @@ static void draw(void) {
   glRotatef(rsgn * sunAngle2,asgn,bsgn,csgn);
   //glRotatef(pi * 15.0,0.0,0.0,1.0);
   //glRotatef(pi * 15.0,0.0,1.0,0.0);
-  for (k = 0; k < 4; k += 1) {
-      for (j = 0; j < 2; j += 1) {
+  for (k = 0; k < 5; k += 1) {
+      for (j = 0; j < 4; j += 1) {
           if (pi % 2 == 0) {
-              if (k % 4 == 0) {
+              if (k % 5 == 0) {
                   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, skyblue);
-              } else if (k % 4 == 1) {
+              } else if (k % 5 == 1) {
                   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, tigger);
-              } else if (k % 4 == 2) {
+              } else if (k % 5 == 2) {
                   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, canary);
-              } else if (k % 4 == 3) {
+              } else if (k % 5 == 3) {
                   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, pink);
+              } else if (k % 5 == 4) {
+                  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, forestgreen);
               }
           } else {
-              if (k % 4 == 0) {
+              if (k % 5 == 0) {
                   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, skyblue2);
-              } else if (k % 4 == 1) {
+              } else if (k % 5 == 1) {
                   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, tigger2);
-              } else if (k % 4 == 2) {
+              } else if (k % 5 == 2) {
                   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, canary2);
-              } else if (k % 4 == 3) {
+              } else if (k % 5 == 3) {
                   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, pink2);
+              } else if (k % 5 == 4) {
+                  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, forestgreen2);
               }
           }
-          for (i = 0; i < 3; i += 1) {
+          for (i = 0; i < 2; i += 1) {
               if (i == 2 || 1) {
                   glTranslatef(0.0,sunRadius,0.0);
                   glBegin(GL_TRIANGLES);
-                  //glNormal3f(1.0, 0.0, 0.0);
-                  triNorm(&c1,&c2,&c3,
-                      1.0,0.0,0.0,
+                  float xx1,yy1,xx2,yy2,xx3,yy3,xx4,yy4;
+                  xx1 =  1.0; yy1 =  0.0;
+                  xx2 = 0.87; yy2 =  0.5;
+                  xx3 =  0.5; yy3 = 0.87;
+                  xx4 =  0.0; yy4 =  1.0;
+                  triNorm(
+                      xx1,0.0,yy1,
                       0.0,sunRadius2,0.0,
-                      0.25,0.0,0.25);
-                  glNormal3f(c1,c2,c3);
-                  glVertex3f(1.0,0.0,0.0);
-                  glVertex3f(0.0,sunRadius2,0.0);
-                  glVertex3f(0.25,0.0,0.25);
-
-                  triNorm(&c1,&c2,&c3,
-                      0.25,0.0,0.25,
+                      xx2,0.0,yy2);
+                  triNorm(
+                      xx2,0.0,yy2,
                       0.0,sunRadius2,0.0,
-                      0.0,0.0,1.0);
-                  glNormal3f(c1,c2,c3);
-                  glVertex3f(0.25,0.0,0.25);
-                  glVertex3f(0.0,sunRadius2,0.0);
-                  glVertex3f(0.0,0.0,1.0);
-
+                      xx3,0.0,yy3);
+                  triNorm(
+                      xx3,0.0,yy3,
+                      0.0,sunRadius2,0.0,
+                      xx4,0.0,yy4);
                   // end cap A
-                  triNorm(&c1,&c2,&c3,
+                  triNorm(
                       0.0,0.0,0.0,
                       1.0,0.0,0.0,
                       0.0,0.0,1.0);
-                  glNormal3f(c1,c2,c3);
-                  glVertex3f(0.0,0.0,0.0);
-                  glVertex3f(1.0,0.0,0.0);
-                  glVertex3f(0.0,0.0,1.0);
 
-                  //glNormal3f(-1.0, 0.0, 0.0);
-                  triNorm(&c1,&c2,&c3,
-                      -1.0,0.0,0.0,
-                      -0.25,0.0,0.25,
-                      0.0,sunRadius2,0.0);
-                  glNormal3f(c1,c2,c3);
-                  glVertex3f(-1.0,0.0,0.0);
-                  glVertex3f(-0.25,0.0,0.25);
-                  glVertex3f(0.0,sunRadius2,0.0);
-
-                  triNorm(&c1,&c2,&c3,
-                      -0.25,0.0,0.25,
-                      0.0,0.0,1.0,
-                      0.0,sunRadius2,0.0);
-                  glNormal3f(c1,c2,c3);
-                  glVertex3f(-0.25,0.0,0.25);
-                  glVertex3f(0.0,0.0,1.0);
-                  glVertex3f(0.0,sunRadius2,0.0);
+                  triNorm(
+                      -xx1,0.0,yy1,
+                      -xx2,0.0,yy2,
+                       0.0,sunRadius2,0.0);
+                  triNorm(
+                      -xx2,0.0,yy2,
+                      -xx3,0.0,yy3,
+                       0.0,sunRadius2,0.0);
+                  triNorm(
+                      -xx3,0.0,yy3,
+                      -xx4,0.0,yy4,
+                       0.0,sunRadius2,0.0);
                   // end cap B
-                  triNorm(&c1,&c2,&c3,
+                  triNorm(
                       -1.0,0.0,0.0,
                       0.0,0.0,0.0,
                       0.0,0.0,1.0);
-                  glNormal3f(c1,c2,c3);
-                  glVertex3f(-1.0,0.0,0.0);
-                  glVertex3f(0.0,0.0,0.0);
-                  glVertex3f(0.0,0.0,1.0);
                   glEnd();
                   glTranslatef(0.0,-sunRadius,0.0);
               }
-              glRotatef(120.0,0.0,0.0,1.0);
+              glRotatef(180.0,0.0,1.0,0.0);
           }
-          glRotatef(180.0,0.0,0.0,1.0);
-          glRotatef(180.0,1.0,0.0,0.0);
-          glRotatef(240.0,0.0,0.0,1.0);
+          //glRotatef(180.0,0.0,0.0,1.0);
+          //glRotatef(180.0,1.0,0.0,0.0);
+          glRotatef(108.0 + sunAngle3,0.0,0.0,1.0);
       }
-      glRotatef(90.0 + 0.0,1.0,0.0,0.0);
-      //glTranslatef(0.0001,0.0,0.0);
+      glRotatef(72.0 + sunAngle4,1.0,0.0,0.0);
   }
   glPopMatrix(); /* end Sol */
   }
@@ -603,11 +597,13 @@ float pulseFunction2(float x) {
 /* update animation parameters */
 static void animate(void) {
   gearAngle = 60.f * (float) glfwGetTime(); /* gear angle */
-  //camAngle = 15.0 * (float) glfwGetTime();
-  camAngle = 0;
+  camAngle = 15.0 * (float) glfwGetTime();
+  //camAngle = 0;
   //sunAngle = 5.0 * (float) glfwGetTime();
   sunAngle = 0;
-  sunAngle2 = 45.0 * (float) pulseFunction2(glfwGetTime()/3.0);
+  sunAngle2 = 45.0 * (float) pulseFunction2(glfwGetTime());
+  sunAngle3 = 30.0 * (float) glfwGetTime();
+  sunAngle4 = 18.0 * (float) glfwGetTime();
   //sunAngle2 = 0.0;
   piston = fmodf(4.0 * (float) glfwGetTime(),4.f);
   piston = (piston > 2.0 ? 4.0 - piston : piston);
