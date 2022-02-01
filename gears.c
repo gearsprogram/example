@@ -170,6 +170,7 @@ static GLfloat view_rotx = 20.0, view_roty = 30.0, view_rotz = 0.0;
 static GLint gear1, gear2, gear3;
 static GLfloat gearAngle = 0.0;
 static GLfloat camAngle = 0.0;
+int camRotate = 1;
 static GLfloat sunAngle = 0.0;
 static GLfloat sunAngle2 = 0.0;
 static GLfloat sunAngle3 = 0.0;
@@ -244,27 +245,46 @@ static void boldline2(float x1,float y1,float x2,float y2,
     xout[3] = x2 - dx; yout[3] = y2 - dy;
 }
 
+float marqueeWidth = 0.1;
+
 static void drawboldline2(float x1,float y1,float x2,float y2) {
     float xout[4];
     float yout[4];
     boldline2(x1,y1,x2,y2,xout,yout);
-    glNormal3f(0.0,0.0,1.0);
-    glVertex3f(xout[0],yout[0],0.1);
-    glVertex3f(xout[1],yout[1],0.1);
-    glVertex3f(xout[2],yout[2],0.1);
+    triNorm(
+        xout[0],yout[0],marqueeWidth,
+        xout[1],yout[1],marqueeWidth,
+        xout[2],yout[2],marqueeWidth);
+    triNorm(
+        xout[2],yout[2],marqueeWidth,
+        xout[1],yout[1],marqueeWidth,
+        xout[3],yout[3],marqueeWidth);
+    triNorm(
+        xout[0],yout[0],-marqueeWidth,
+        xout[2],yout[2],-marqueeWidth,
+        xout[1],yout[1],-marqueeWidth);
+    triNorm(
+        xout[1],yout[1],-marqueeWidth,
+        xout[2],yout[2],-marqueeWidth,
+        xout[3],yout[3],-marqueeWidth);
 
-    glVertex3f(xout[2],yout[2],0.1);
-    glVertex3f(xout[1],yout[1],0.1);
-    glVertex3f(xout[3],yout[3],0.1);
+    triNorm(
+        xout[1],yout[1], marqueeWidth,
+        xout[1],yout[1],-marqueeWidth,
+        xout[3],yout[3], marqueeWidth);
+    triNorm(
+        xout[1],yout[1],-marqueeWidth,
+        xout[3],yout[3],-marqueeWidth,
+        xout[3],yout[3], marqueeWidth);
 
-    glNormal3f(0.0,0.0,-1.0);
-    glVertex3f(xout[0],yout[0],-0.1);
-    glVertex3f(xout[2],yout[2],-0.1);
-    glVertex3f(xout[1],yout[1],-0.1);
-
-    glVertex3f(xout[1],yout[1],-0.1);
-    glVertex3f(xout[2],yout[2],-0.1);
-    glVertex3f(xout[3],yout[3],-0.1);
+    triNorm(
+        xout[0],yout[0],-marqueeWidth,
+        xout[0],yout[0], marqueeWidth,
+        xout[2],yout[2], marqueeWidth);
+    triNorm(
+        xout[2],yout[2],-marqueeWidth,
+        xout[0],yout[0],-marqueeWidth,
+        xout[2],yout[2], marqueeWidth);
 }
 
 static void boldline(float x1,float y1,float x2,float y2,
@@ -304,8 +324,8 @@ static void drawboldline(float x1,float y1,float x2,float y2) {
   float y2r[BOLDCOUNT];
   boldline(x1,y1,x2,y2,x1r,y1r,x2r,y2r);
   for (i = 0; i < BOLDCOUNT; i += 1) {
-      glVertex3f(x1r[i],y1r[i],0.1);
-      glVertex3f(x2r[i],y2r[i],0.1);
+      glVertex3f(x1r[i],y1r[i],marqueeWidth);
+      glVertex3f(x2r[i],y2r[i],marqueeWidth);
   }
 }
 
@@ -314,6 +334,7 @@ static void drawboldline(float x1,float y1,float x2,float y2) {
 static GLfloat forestgreen[4] =  {   0.1 / 0.8,  0.8 / 0.8,   0.4 / 0.8,1.0};
 static GLfloat skyblue[4] =      {       0.525,        0.8,       0.925,1.0};
 static GLfloat vermilion[4] =    {         0.9,       0.25,         0.2,1.0};
+static GLfloat vermilionS[4] =   {        0.95,      0.625,         0.6,1.0};
 static GLfloat canary[4] =       {         1.0,        1.0,         0.6,1.0};
 static GLfloat pink[4] =         {   0.7 / 0.8,  0.2 / 0.8,   0.3 / 0.8,1.0};
 static GLfloat indigo[4] =       {   0.3 / 0.8,        0.0,   0.5 / 0.8,1.0};
@@ -322,6 +343,7 @@ static GLfloat black[4] =        {         0.0,        0.0,         0.0,1.0};
 static GLfloat forestgreen2[4] = {  0.1 * 0.8 ,  0.8 * 0.8,   0.4 * 0.8,1.0};
 static GLfloat skyblue2[4] =     {0.525 * 0.64, 0.8 * 0.64,0.925 * 0.64,1.0};
 static GLfloat vermilion2[4] =   {  0.9 * 0.64,0.25 * 0.64,  0.2 * 0.64,1.0};
+static GLfloat vermilionS2[4] =  { 0.95 * 0.64,0.625* 0.64,  0.6 * 0.64,1.0};
 static GLfloat canary2[4] =      {  1.0 * 0.64, 1.0 * 0.64,  0.6 * 0.64,1.0};
 static GLfloat pink2[4] =        {  0.7 * 0.8 ,  0.2 * 0.8,   0.3 * 0.8,1.0};
 static GLfloat indigo2[4] =      {  0.3 * 0.8 ,        0.0,   0.5 * 0.8,1.0};
@@ -334,12 +356,17 @@ static GLfloat indigo2[4] =      {  0.3 * 0.8 ,        0.0,   0.5 * 0.8,1.0};
 //static GLfloat tigger2[4] =    {0.725 * 0.8 , 0.45 * 0.8,    0.2 * 0.8, 1.0};
 
 static float sunRadius = 2.0;
-static float spikeRadius = 0.5;
-static float sunRadius2 = 1.0;
+static float spikeRadius = 0.25;
+static float sunRadius2 = 0.5;
 //static float sunThickness = 1.0;
 
+float cursor2x;
+float cursor2y;
+int dc = 0;
+int vermilionPeriod = 30;
 /* OpenGL draw function & timing */
 static void draw(void) {
+  dc += 1;
   glClearColor(0.0, 0.0, 0.0, 0.0);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, skyblue);
@@ -425,8 +452,16 @@ static void draw(void) {
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
   //glColor3f(0.8,0.8,0.8);
+  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, skyblue);
+  glPushMatrix(); /* (cursor, cursor 2, marquee) */
+
+  //glBegin(GL_TRIANGLES); /* cursor 2 */
+  //drawboldline2(cursor2x - 0.5, cursor2y - 0.5,cursor2x + 0.5, cursor2y + 0.5);
+  //drawboldline2(cursor2x - 0.5, cursor2y + 0.5,cursor2x + 0.5, cursor2y - 0.5);
+  //drawboldline2(0.0,0.0,cursor2x,cursor2y);
+  //glEnd(); /* cursor 2 */
+
   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, pink);
-  glPushMatrix(); /* (cursor, marquee) */
   int Rwidth = 1;
   for (i = 0; i < 1; i += 1) {
       glBegin(GL_TRIANGLES); /* cursor */
@@ -493,7 +528,13 @@ static void draw(void) {
               if (k % COLORS == 0) {
                   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, skyblue);
               } else if (k % COLORS == 1) {
-                  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, vermilion);
+                  if ((dc / vermilionPeriod) % 2 == 0) {
+                      glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE,
+                              vermilion);
+                  } else {
+                      glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE,
+                              vermilionS);
+                  }
               } else if (k % COLORS == 2) {
                   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, canary);
               } else if (k % COLORS == 3) {
@@ -511,7 +552,13 @@ static void draw(void) {
               if (k % COLORS == 0) {
                   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, skyblue2);
               } else if (k % COLORS == 1) {
-                  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, vermilion2);
+                  if ((dc / vermilionPeriod) % 2 == 0) {
+                      glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE,
+                              vermilion2);
+                  } else {
+                      glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE,
+                              vermilionS2);
+                  }
               } else if (k % COLORS == 2) {
                   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, canary2);
               } else if (k % COLORS == 3) {
@@ -612,8 +659,11 @@ float pulseFunction2(float x) {
 /* update animation parameters */
 static void animate(void) {
   gearAngle = 60.f * (float) glfwGetTime(); /* gear angle */
-  camAngle = 15.0 * (float) glfwGetTime();
-  //camAngle = 0;
+  if (camRotate) {
+      camAngle = 15.0 * (float) glfwGetTime();
+  } else {
+      camAngle = 0;
+  }
   //sunAngle = 5.0 * (float) glfwGetTime();
   sunAngle = 0;
   sunAngle2 = 15.0 * (float) pulseFunction2(glfwGetTime());
@@ -665,9 +715,27 @@ void key( GLFWwindow* window, int k, int s, int action, int mods ) {
   }
 }
 
+float windowWidth;
+float windowHeight;
+
+void cursor(GLFWwindow * window, double x, double y) {
+    x -= windowWidth / 2.0;
+    x /= windowWidth / 2.0;
+    x *= 20;
+    cursor2x = x;
+    y -= windowHeight / 2.0;
+    y /= windowHeight / 2.0;
+    y *= -1 * 20 * (windowHeight / windowWidth);
+    cursor2y = y;
+    //printf("window width: %f\n",windowWidth);
+    //printf("at %0.3f: Cursor position: %f %f\n",glfwGetTime(), x, y);
+}
 
 /* new window size */
-void reshape( GLFWwindow* window, int width, int height ) {
+void reshape( GLFWwindow * window, int width, int height ) {
+  //printf("reshape: %f %f\n",(float) width,(float) height);
+  windowWidth = width / 2;
+  windowHeight = height / 2;
   GLfloat h = (GLfloat) height / (GLfloat) width;
   GLfloat xmax, znear, zfar;
 
@@ -692,6 +760,8 @@ static void init(void)
   static GLfloat red[4] = {0.8f, 0.1f, 0.f, 1.f};
   static GLfloat green[4] = {0.f, 0.8f, 0.2f, 1.f};
   static GLfloat blue[4] = {0.2f, 0.2f, 1.f, 1.f};
+
+  cursor2x = cursor2y = 0;
 
   glLightfv(GL_LIGHT0, GL_POSITION, pos);
   glEnable(GL_CULL_FACE);
@@ -738,10 +808,13 @@ int main(int argc, char *argv[])
     glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, GLFW_TRUE);
 
     if (argc >= 2) {
-        window = glfwCreateWindow( 210, 120, "Gears", NULL, NULL );
+		windowWidth = 210;
+		windowHeight = 210;
     } else {
-        window = glfwCreateWindow( 840, 480, "Gears", NULL, NULL );
+		windowWidth = 840;
+		windowHeight = 480;
     }
+    window = glfwCreateWindow(windowWidth, windowHeight, "Gears", NULL, NULL );
     if (!window)
     {
         fprintf( stderr, "Failed to open GLFW window\n" );
@@ -752,6 +825,7 @@ int main(int argc, char *argv[])
     // Set callback functions
     glfwSetFramebufferSizeCallback(window, reshape);
     glfwSetKeyCallback(window, key);
+    glfwSetCursorPosCallback(window, cursor);
 
     glfwMakeContextCurrent(window);
     gladLoadGL(glfwGetProcAddress);
