@@ -169,8 +169,9 @@ gear(GLfloat inner_radius, GLfloat outer_radius, GLfloat width,
 static GLfloat view_rotx = 20.0, view_roty = 30.0, view_rotz = 0.0;
 static GLint gear1, gear2, gear3;
 static GLfloat gearAngle = 0.0;
-static GLfloat camAngle = 0.0;
-int camRotate = 1;
+static GLfloat sceneAngle = 0.0;
+static GLfloat camDip = 0.0;
+int camRotate = 0;
 static GLfloat sunAngle = 0.0;
 static GLfloat sunAngle2 = 0.0;
 static GLfloat sunAngle3 = 0.0;
@@ -337,7 +338,9 @@ static GLfloat vermilion[4] =    {        0.9,       0.25,        0.2,1.0};
 static GLfloat vermilionS[4] =   {       0.95,      0.625,        0.6,1.0};
 static GLfloat canary[4] =       {        1.0,        1.0,        0.6,1.0};
 static GLfloat pink[4] =         {  0.7 / 0.8,  0.2 / 0.8,  0.3 / 0.8,1.0};
+static GLfloat concrete[4] =     {        0.4,        0.4,        0.4,1.0};
 static GLfloat indigo[4] =       {  0.3 / 0.8,        0.0,  0.5 / 0.8,1.0};
+static GLfloat mahogany[4] =     { 0.75 / 0.8, 0.25 / 0.8,        0.0,1.0};
 static GLfloat white[4] =        {        1.0,        1.0,        1.0,1.0};
 static GLfloat black[4] =        {        0.0,        0.0,        0.0,1.0};
 static GLfloat forestgreen2[4] = {  0.1*0.512,  0.8*0.512,  0.4*0.512,1.0};
@@ -347,6 +350,7 @@ static GLfloat vermilionS2[4] =  { 0.95*0.409,0.625*0.409,  0.6*0.409,1.0};
 static GLfloat canary2[4] =      {  1.0*0.409,  1.0*0.409,  0.6*0.409,1.0};
 static GLfloat pink2[4] =        {  0.7*0.512,  0.2*0.512,  0.3*0.512,1.0};
 static GLfloat indigo2[4] =      {  0.3*0.512,        0.0,  0.5*0.512,1.0};
+static GLfloat mahogany2[4] =    { 0.75*0.512, 0.25*0.512,        0.0,1.0};
 
 //static GLfloat skyblue2[4] = {0.525 * 0.8, 0.8 * 0.8, 0.925 * 0.8, 1.0};
 //static GLfloat tigger2[4] =  {0.725      ,      0.45,         0.2, 1.0};
@@ -356,8 +360,8 @@ static GLfloat indigo2[4] =      {  0.3*0.512,        0.0,  0.5*0.512,1.0};
 //static GLfloat tigger2[4] =    {0.725 * 0.8 , 0.45 * 0.8,    0.2 * 0.8, 1.0};
 
 static float sunRadius = 2.0;
-static float spikeRadius = 0.25;
-static float sunRadius2 = 0.5;
+static float spikeRadius = 0.5;
+static float sunRadius2 = 2.0;
 //static float sunThickness = 1.0;
 
 float cursor2x;
@@ -411,7 +415,10 @@ static void draw(void) {
   glVertex3f(-xHUDscale,HUDscale, 0.0);
   glEnd(); /* end HUD */
   glPushMatrix(); /* scene */
-  glRotatef(camAngle, 0.0, 1.0, 0.0);
+  glRotatef(camDip, 1.0, 0.0, 0.0);
+  glTranslatef(0.0,0.0,-range);
+  //glTranslatef(0.0,0.0,range);
+  glRotatef(sceneAngle, 0.0, 1.0, 0.0);
   glTranslatef(0.0, -4.0, 0.0);
   glPushMatrix(); /* (green grid, cursor, marquee, Sol) */
   glBegin(GL_LINES); /* green grid */
@@ -426,6 +433,9 @@ static void draw(void) {
           glVertex3f((float) i, 0.0 , 0.0);
           glVertex3f((float) i, 10.0, 0.0);
       }
+      glEnd(); /* end green grid */
+      glColor3f(0.1,0.1,0.8);
+      glBegin(GL_LINES); /* blue grid */
       for (i = 0; i < 10; i += 1) {
           glVertex3f( 0.0 , 0.0, (float) i);
           glVertex3f( 10.0, 0.0, (float) i);
@@ -434,6 +444,7 @@ static void draw(void) {
           glVertex3f((float) i, 0.0 , 0.0);
           glVertex3f((float) i, 0.0, 10.0);
       }
+      glEnd(); /* end blue grid */
       for (i = 0; i < 10; i += 1) {
           ;
           //glVertex3f( 0.0, 0.0 , (float) i);
@@ -445,7 +456,6 @@ static void draw(void) {
           //glVertex3f( 0.0, (float) i, 10.0);
       }
   }
-  glEnd(); /* end green grid */
   glTranslatef(0.0, 4.0, 0.0);
   /* apply a general 2D linear transformation
      to an array of x-y coordinates */
@@ -460,6 +470,58 @@ static void draw(void) {
   //drawboldline2(cursor2x - 0.5, cursor2y + 0.5,cursor2x + 0.5, cursor2y - 0.5);
   //drawboldline2(0.0,0.0,cursor2x,cursor2y);
   //glEnd(); /* cursor 2 */
+
+  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, concrete);
+  glPushMatrix(); /* platform */
+  glTranslatef(0.0,-5.0,0.0);
+  glBegin(GL_TRIANGLES); /* platform */
+  triNorm(
+       0.0,0.0, 0.0,
+       0.0,0.0,10.0,
+      10.0,0.0,10.0);
+  triNorm(
+       0.0,0.0, 0.0,
+      10.0,0.0,10.0,
+      10.0,0.0, 0.0);
+
+  triNorm(
+       0.0,-2.0,0.0,
+       0.0, 0.0,0.0,
+      10.0, 0.0,0.0);
+  triNorm(
+       0.0,-2.0,0.0,
+      10.0, 0.0,0.0,
+      10.0,-2.0,0.0);
+
+  triNorm(
+       0.0, 0.0,10.0,
+       0.0,-2.0,10.0,
+      10.0, 0.0,10.0);
+  triNorm(
+      10.0, 0.0,10.0,
+       0.0,-2.0,10.0,
+      10.0,-2.0,10.0);
+
+  triNorm(
+       0.0, 0.0,0.0,
+       0.0,-2.0,0.0,
+       0.0, 0.0,10.0);
+  triNorm(
+       0.0, 0.0,10.0,
+       0.0,-2.0,0.0,
+       0.0,-2.0,10.0);
+
+  triNorm(
+       10.0,-2.0,0.0,
+       10.0, 0.0,0.0,
+       10.0, 0.0,10.0);
+  triNorm(
+       10.0,-2.0,0.0,
+       10.0, 0.0,10.0,
+       10.0,-2.0,10.0);
+
+  glEnd(); /* end platform */
+  glPopMatrix(); /* end platform */
 
   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, pink);
   int Rwidth = 1;
@@ -521,9 +583,9 @@ static void draw(void) {
   //glRotatef(pi * 15.0,0.0,0.0,1.0);
   //glRotatef(pi * 15.0,0.0,1.0,0.0);
   int COLORS;
-  COLORS = 8;
+  COLORS = 9;
   for (k = 0; k < COLORS; k += 1) {
-      for (j = 0; j < 8; j += 1) {
+      for (j = 0; j < 4; j += 1) {
           if (pi % 2 == 0) {
               if (k % COLORS == 0) {
                   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, skyblue);
@@ -533,7 +595,7 @@ static void draw(void) {
                               vermilion);
                   } else {
                       glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE,
-                              vermilionS);
+                              vermilion);
                   }
               } else if (k % COLORS == 2) {
                   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, canary);
@@ -544,8 +606,10 @@ static void draw(void) {
               } else if (k % COLORS == 5) {
                   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, indigo);
               } else if (k % COLORS == 6) {
-                  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, white);
+                  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, mahogany);
               } else if (k % COLORS == 7) {
+                  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, white);
+              } else if (k % COLORS == 8) {
                   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, black);
               }
           } else {
@@ -557,7 +621,7 @@ static void draw(void) {
                               vermilion2);
                   } else {
                       glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE,
-                              vermilionS2);
+                              vermilion2);
                   }
               } else if (k % COLORS == 2) {
                   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, canary2);
@@ -568,8 +632,10 @@ static void draw(void) {
               } else if (k % COLORS == 5) {
                   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, indigo2);
               } else if (k % COLORS == 6) {
-                  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, black);
+                  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, mahogany2);
               } else if (k % COLORS == 7) {
+                  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, black);
+              } else if (k % COLORS == 8) {
                   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, white);
               }
           }
@@ -618,10 +684,10 @@ static void draw(void) {
           //glRotatef(180.0,0.0,0.0,1.0);
           //glRotatef(180.0,1.0,0.0,0.0);
           //glRotatef(120.0 + 0 * sunAngle3,0.0,0.0,1.0);
-          glRotatef(45.0 + sunAngle4 / 27.0,0.0,0.0,1.0);
+          glRotatef(15.0 + sunAngle4 / 9.0,0.0,0.0,1.0);
       }
       //glRotatef(90.0 + 0 * sunAngle4,1.0,0.0,0.0);
-      glRotatef(60.0 + sunAngle3 / 64.0,1.0,0.0,0.0);
+      glRotatef(45.0 + sunAngle3 / 16.0,1.0,0.0,0.0);
   }
   glPopMatrix(); /* end Sol */
   }
@@ -660,10 +726,11 @@ float pulseFunction2(float x) {
 static void animate(void) {
   gearAngle = 60.f * (float) glfwGetTime(); /* gear angle */
   if (camRotate) {
-      camAngle = 5.0 * (float) glfwGetTime();
+      sceneAngle = 90 + 15.0 * (float) glfwGetTime();
   } else {
-      camAngle = 0;
+      sceneAngle = -45.0;
   }
+  camDip = 15.0 * sin(glfwGetTime());
   //sunAngle = 5.0 * (float) glfwGetTime();
   sunAngle = 0;
   sunAngle2 = 15.0 * (float) pulseFunction2(glfwGetTime());
@@ -672,6 +739,8 @@ static void animate(void) {
   sunAngle4 = 15.0 * (float) glfwGetTime();
   piston = fmodf(4.0 * (float) glfwGetTime(),4.f);
   piston = (piston > 2.0 ? 4.0 - piston : piston);
+  camDip = 10.0 * piston;
+  camDip = 0;
   animIndex += 1;
   if (0 == animIndex % animPeriod) {
       xCursor += 1;
@@ -749,21 +818,26 @@ void reshape( GLFWwindow * window, int width, int height ) {
   glFrustum( -xmax, xmax, -xmax*h, xmax*h, znear, zfar );
   glMatrixMode( GL_MODELVIEW );
   glLoadIdentity();
-  glTranslatef( 0.0, 0.0, -range );
+  //glTranslatef( 0.0, 0.0, -range );
 }
 
 
 /* program & OpenGL initialization */
 static void init(void)
 {
-  static GLfloat pos[4] = {5.f, 5.f, 10.f, 0.f};
-  static GLfloat red[4] = {0.8f, 0.1f, 0.f, 1.f};
-  static GLfloat green[4] = {0.f, 0.8f, 0.2f, 1.f};
-  static GLfloat blue[4] = {0.2f, 0.2f, 1.f, 1.f};
+  static GLfloat pos[4] = {5.0, 5.0, 10.0, 0.0};
+  static GLfloat red[4] = {0.8, 0.1, 0.0, 1.0};
+  static GLfloat green[4] = {0.0, 0.8, 0.2, 1.0};
+  static GLfloat blue[4] = {0.2, 0.2, 1.0, 1.0};
+  static GLfloat intensity[4] = {1.0, 1.0, 1.0, 1.0};
+  //static GLfloat intensity[4] = {1.0, 1.0, 1.0, 1.0};
 
   cursor2x = cursor2y = 0;
 
   glLightfv(GL_LIGHT0, GL_POSITION, pos);
+  glLightfv(GL_LIGHT0, GL_DIFFUSE, intensity);
+  //glLightfv(GL_LIGHT0, GL_AMBIENT, intensity);
+  //glLightfv(GL_LIGHT0, GL_SPECULAR, intensity);
   glEnable(GL_CULL_FACE);
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
