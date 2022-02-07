@@ -341,6 +341,7 @@ static GLfloat pink[4] =         {  0.7 / 0.8,  0.2 / 0.8,  0.3 / 0.8,1.0};
 static GLfloat concrete[4] =     {        0.4,        0.4,        0.4,1.0};
 static GLfloat indigo[4] =       {  0.3 / 0.8,        0.0,  0.5 / 0.8,1.0};
 static GLfloat mahogany[4] =     { 0.75 / 0.8, 0.25 / 0.8,        0.0,1.0};
+static GLfloat luislemon[4] =    {        0.9,        1.0,        0.2,1.0};
 static GLfloat white[4] =        {        1.0,        1.0,        1.0,1.0};
 static GLfloat black[4] =        {        0.0,        0.0,        0.0,1.0};
 static GLfloat forestgreen2[4] = {  0.1*0.512,  0.8*0.512,  0.4*0.512,1.0};
@@ -351,6 +352,21 @@ static GLfloat canary2[4] =      {  1.0*0.409,  1.0*0.409,  0.6*0.409,1.0};
 static GLfloat pink2[4] =        {  0.7*0.512,  0.2*0.512,  0.3*0.512,1.0};
 static GLfloat indigo2[4] =      {  0.3*0.512,        0.0,  0.5*0.512,1.0};
 static GLfloat mahogany2[4] =    { 0.75*0.512, 0.25*0.512,        0.0,1.0};
+static GLfloat luislemon2[4] =   {  0.9*0.409,      0.409,  0.2*0.409,1.0};
+
+/*8,6,5,4
+  8
+  64
+  512
+  4096
+  32768
+  262144
+  2097152
+  16777216
+  134217728
+  1073741824
+  8589934592
+  68719476736*/
 
 //static GLfloat skyblue2[4] = {0.525 * 0.8, 0.8 * 0.8, 0.925 * 0.8, 1.0};
 //static GLfloat tigger2[4] =  {0.725      ,      0.45,         0.2, 1.0};
@@ -583,7 +599,7 @@ static void draw(void) {
   //glRotatef(pi * 15.0,0.0,0.0,1.0);
   //glRotatef(pi * 15.0,0.0,1.0,0.0);
   int COLORS;
-  COLORS = 9;
+  COLORS = 10;
   for (k = 0; k < COLORS; k += 1) {
       for (j = 0; j < 4; j += 1) {
           if (pi % 2 == 0) {
@@ -608,8 +624,10 @@ static void draw(void) {
               } else if (k % COLORS == 6) {
                   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, mahogany);
               } else if (k % COLORS == 7) {
-                  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, white);
+                  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, luislemon);
               } else if (k % COLORS == 8) {
+                  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, white);
+              } else if (k % COLORS == 9) {
                   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, black);
               }
           } else {
@@ -634,8 +652,10 @@ static void draw(void) {
               } else if (k % COLORS == 6) {
                   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, mahogany2);
               } else if (k % COLORS == 7) {
-                  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, black);
+                  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, luislemon2);
               } else if (k % COLORS == 8) {
+                  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, black);
+              } else if (k % COLORS == 9) {
                   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, white);
               }
           }
