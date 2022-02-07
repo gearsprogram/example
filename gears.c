@@ -342,6 +342,7 @@ static GLfloat concrete[4] =     {        0.4,        0.4,        0.4,1.0};
 static GLfloat indigo[4] =       {  0.3 / 0.8,        0.0,  0.5 / 0.8,1.0};
 static GLfloat mahogany[4] =     { 0.75 / 0.8, 0.25 / 0.8,        0.0,1.0};
 static GLfloat luislemon[4] =    {        0.9,        1.0,        0.2,1.0};
+static GLfloat chestnut[4] =     {   0.6/0.64,   0.3/0.64,   0.2/0.64,1.0};
 static GLfloat white[4] =        {        1.0,        1.0,        1.0,1.0};
 static GLfloat black[4] =        {        0.0,        0.0,        0.0,1.0};
 static GLfloat forestgreen2[4] = {  0.1*0.512,  0.8*0.512,  0.4*0.512,1.0};
@@ -353,6 +354,31 @@ static GLfloat pink2[4] =        {  0.7*0.512,  0.2*0.512,  0.3*0.512,1.0};
 static GLfloat indigo2[4] =      {  0.3*0.512,        0.0,  0.5*0.512,1.0};
 static GLfloat mahogany2[4] =    { 0.75*0.512, 0.25*0.512,        0.0,1.0};
 static GLfloat luislemon2[4] =   {  0.9*0.409,      0.409,  0.2*0.409,1.0};
+static GLfloat chestnut2[4] =    {   0.6*0.64,   0.3*0.64,   0.2*0.64,1.0};
+
+typedef struct Palette {
+  GLfloat * colors;
+  int length;
+} Palette;
+
+Palette * pa1;
+Palette * pa2;
+
+Palette * mkPalette(int length) {
+  Palette * p = malloc(sizeof(Palette));
+  p->colors = malloc(sizeof(GLfloat) * 4 * length);
+  p->length = length;
+  return p;
+}
+
+void ldPalette(Palette * p, int i, GLfloat * c) {
+  if (i < p->length) {
+      p->colors[4 * i + 0] = c[0];
+      p->colors[4 * i + 1] = c[1];
+      p->colors[4 * i + 2] = c[2];
+      p->colors[4 * i + 3] = c[3];
+  }
+}
 
 /*8,6,5,4
   8
@@ -599,65 +625,17 @@ static void draw(void) {
   //glRotatef(pi * 15.0,0.0,0.0,1.0);
   //glRotatef(pi * 15.0,0.0,1.0,0.0);
   int COLORS;
-  COLORS = 10;
+  int kk;
+  COLORS = 11;
   for (k = 0; k < COLORS; k += 1) {
       for (j = 0; j < 4; j += 1) {
+          kk = (k % COLORS) % pa1->length;
           if (pi % 2 == 0) {
-              if (k % COLORS == 0) {
-                  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, skyblue);
-              } else if (k % COLORS == 1) {
-                  if ((dc / vermilionPeriod) % 2 == 0) {
-                      glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE,
-                              vermilion);
-                  } else {
-                      glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE,
-                              vermilion);
-                  }
-              } else if (k % COLORS == 2) {
-                  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, canary);
-              } else if (k % COLORS == 3) {
-                  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, pink);
-              } else if (k % COLORS == 4) {
-                  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, forestgreen);
-              } else if (k % COLORS == 5) {
-                  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, indigo);
-              } else if (k % COLORS == 6) {
-                  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, mahogany);
-              } else if (k % COLORS == 7) {
-                  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, luislemon);
-              } else if (k % COLORS == 8) {
-                  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, white);
-              } else if (k % COLORS == 9) {
-                  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, black);
-              }
+              glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE,
+                    pa1->colors + 4 * kk);
           } else {
-              if (k % COLORS == 0) {
-                  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, skyblue2);
-              } else if (k % COLORS == 1) {
-                  if ((dc / vermilionPeriod) % 2 == 0) {
-                      glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE,
-                              vermilion2);
-                  } else {
-                      glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE,
-                              vermilion2);
-                  }
-              } else if (k % COLORS == 2) {
-                  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, canary2);
-              } else if (k % COLORS == 3) {
-                  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, pink2);
-              } else if (k % COLORS == 4) {
-                  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, forestgreen2);
-              } else if (k % COLORS == 5) {
-                  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, indigo2);
-              } else if (k % COLORS == 6) {
-                  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, mahogany2);
-              } else if (k % COLORS == 7) {
-                  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, luislemon2);
-              } else if (k % COLORS == 8) {
-                  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, black);
-              } else if (k % COLORS == 9) {
-                  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, white);
-              }
+              glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE,
+                    pa2->colors + 4 * kk);
           }
           for (i = 0; i < 2; i += 1) {
               if (i == 2 || 1) {
@@ -851,6 +829,31 @@ static void init(void)
   static GLfloat blue[4] = {0.2, 0.2, 1.0, 1.0};
   static GLfloat intensity[4] = {1.0, 1.0, 1.0, 1.0};
   //static GLfloat intensity[4] = {1.0, 1.0, 1.0, 1.0};
+
+  pa1 = mkPalette(11);
+  ldPalette(pa1,0,skyblue);
+  ldPalette(pa1,1,vermilion);
+  ldPalette(pa1,2,canary);
+  ldPalette(pa1,3,pink);
+  ldPalette(pa1,4,forestgreen);
+  ldPalette(pa1,5,indigo);
+  ldPalette(pa1,6,mahogany);
+  ldPalette(pa1,7,luislemon);
+  ldPalette(pa1,8,chestnut);
+  ldPalette(pa1,9,white);
+  ldPalette(pa1,10,black);
+  pa2 = mkPalette(11);
+  ldPalette(pa2,0,skyblue2);
+  ldPalette(pa2,1,vermilion2);
+  ldPalette(pa2,2,canary2);
+  ldPalette(pa2,3,pink2);
+  ldPalette(pa2,4,forestgreen2);
+  ldPalette(pa2,5,indigo2);
+  ldPalette(pa2,6,mahogany2);
+  ldPalette(pa2,7,luislemon2);
+  ldPalette(pa2,8,chestnut2);
+  ldPalette(pa2,9,black);
+  ldPalette(pa2,10,white);
 
   cursor2x = cursor2y = 0;
 
