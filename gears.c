@@ -896,13 +896,19 @@ static void init(void)
   ldPalette(pa2,black);
   ldPalette(pa2,white);
   pa3 = mkPalette();
-  //ldPalette3i(pa3,0,173,111,105); /* copper penny */
-  //ldPalette3i(pa3,1,  0,168,107); /* jade */
-  //ldPalette3i(pa3,2, 11,218,81);  /* malachite */
-  //ldPalette3i(pa3,3,218,112,214); /* orchid */
-  //ldPalette3i(pa3,4,0,35,102);    /* royal blue */
-  ldPalette3i(pa3,255,215,0);   /* gold */
-  ldPalette3i(pa3,255,191,0);   /* amber */
+  //ldPalette3i(pa3,  0,168,107); /* jade */
+  //ldPalette3i(pa3, 11,218, 81); /* malachite */
+  //ldPalette3i(pa3, 80,200,120); /* emerald */
+  //ldPalette3i(pa3,218,112,214); /* orchid */
+  //ldPalette3i(pa3,  0, 35,102); /* royal blue */
+  //ldPalette3i(pa3,173,111,105); /* copper penny */
+  ldPalette3i(pa3,255,215,  0); /* gold */
+  ldPalette3i(pa3,255,191,  0); /* amber */
+  ldPalette3i(pa3,224, 17, 95); /* ruby */
+  ldPalette(pa3,vermilion);
+  ldPalette(pa3,mahogany);
+  ldPalette(pa3,chestnut);
+  ldPalette(pa3,pink);
 
   cursor2x = cursor2y = 0;
 
