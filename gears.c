@@ -171,7 +171,7 @@ static GLint gear1, gear2, gear3;
 static GLfloat gearAngle = 0.0;
 static GLfloat sceneAngle = 0.0;
 static GLfloat camDip = 0.0;
-int camRotate = 0;
+int camRotate = 1;
 static GLfloat sunAngle = 0.0;
 static GLfloat sunAngle2 = 0.0;
 static GLfloat sunAngle3 = 0.0;
@@ -363,6 +363,7 @@ typedef struct Palette {
 
 Palette * pa1;
 Palette * pa2;
+Palette * pa3;
 
 Palette * mkPalette(int length) {
   Palette * p = malloc(sizeof(Palette));
@@ -377,6 +378,15 @@ void ldPalette(Palette * p, int i, GLfloat * c) {
       p->colors[4 * i + 1] = c[1];
       p->colors[4 * i + 2] = c[2];
       p->colors[4 * i + 3] = c[3];
+  }
+}
+
+void ldPalette3i(Palette * p, int i, int R, int G, int B) {
+  if (i < p->length) {
+      p->colors[4 * i + 0] = (float) R / 255.0;
+      p->colors[4 * i + 1] = (float) G / 255.0;
+      p->colors[4 * i + 2] = (float) B / 255.0;
+      p->colors[4 * i + 3] = 1.0;
   }
 }
 
@@ -629,13 +639,14 @@ static void draw(void) {
   COLORS = 11;
   for (k = 0; k < COLORS; k += 1) {
       for (j = 0; j < 4; j += 1) {
-          kk = (k % COLORS) % pa1->length;
           if (pi % 2 == 0) {
+              kk = (k % COLORS) % pa1->length;
               glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE,
                     pa1->colors + 4 * kk);
           } else {
+              kk = (k % COLORS) % pa3->length;
               glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE,
-                    pa2->colors + 4 * kk);
+                    pa3->colors + 4 * kk);
           }
           for (i = 0; i < 2; i += 1) {
               if (i == 2 || 1) {
@@ -854,6 +865,13 @@ static void init(void)
   ldPalette(pa2,8,chestnut2);
   ldPalette(pa2,9,black);
   ldPalette(pa2,10,white);
+  pa3 = mkPalette(6);
+  ldPalette3i(pa3,0,173,111,105); /* copper penny */
+  ldPalette3i(pa3,1,  0,168,107); /* jade */
+  ldPalette3i(pa3,2, 11,218,81);  /* malachite */
+  ldPalette3i(pa3,3,218,112,214); /* orchid */
+  ldPalette3i(pa3,4,0,35,102);    /* royal blue */
+  ldPalette3i(pa3,5,255,215,0);   /* gold */
 
   cursor2x = cursor2y = 0;
 
