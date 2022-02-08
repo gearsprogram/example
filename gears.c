@@ -693,7 +693,7 @@ static void draw(void) {
           //glRotatef(180.0,0.0,0.0,1.0);
           //glRotatef(180.0,1.0,0.0,0.0);
           //glRotatef(120.0 + 0 * sunAngle3,0.0,0.0,1.0);
-          glRotatef(15.0 + sunAngle4 / 9.0,0.0,0.0,1.0);
+          glRotatef(15.0 + sunAngle4 / 27.0,0.0,0.0,1.0);
       }
       //glRotatef(90.0 + 0 * sunAngle4,1.0,0.0,0.0);
       glRotatef(45.0 + sunAngle3 / 16.0,1.0,0.0,0.0);
@@ -865,13 +865,14 @@ static void init(void)
   ldPalette(pa2,8,chestnut2);
   ldPalette(pa2,9,black);
   ldPalette(pa2,10,white);
-  pa3 = mkPalette(6);
-  ldPalette3i(pa3,0,173,111,105); /* copper penny */
-  ldPalette3i(pa3,1,  0,168,107); /* jade */
-  ldPalette3i(pa3,2, 11,218,81);  /* malachite */
-  ldPalette3i(pa3,3,218,112,214); /* orchid */
-  ldPalette3i(pa3,4,0,35,102);    /* royal blue */
-  ldPalette3i(pa3,5,255,215,0);   /* gold */
+  pa3 = mkPalette(2);
+  //ldPalette3i(pa3,0,173,111,105); /* copper penny */
+  //ldPalette3i(pa3,1,  0,168,107); /* jade */
+  //ldPalette3i(pa3,2, 11,218,81);  /* malachite */
+  //ldPalette3i(pa3,3,218,112,214); /* orchid */
+  //ldPalette3i(pa3,4,0,35,102);    /* royal blue */
+  ldPalette3i(pa3,0,255,215,0);   /* gold */
+  ldPalette3i(pa3,1,255,191,0);   /* amber */
 
   cursor2x = cursor2y = 0;
 
