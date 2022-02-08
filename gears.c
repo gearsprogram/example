@@ -358,6 +358,7 @@ static GLfloat chestnut2[4] =    {   0.6*0.64,   0.3*0.64,   0.2*0.64,1.0};
 
 typedef struct Palette {
   GLfloat * colors;
+  int alloc;
   int length;
 } Palette;
 
@@ -365,29 +366,60 @@ Palette * pa1;
 Palette * pa2;
 Palette * pa3;
 
-Palette * mkPalette(int length) {
+/* make object */
+Palette * mkPalette(void) {
+  int alloc = 4;
+  int length = 0;
   Palette * p = malloc(sizeof(Palette));
-  p->colors = malloc(sizeof(GLfloat) * 4 * length);
+  p->colors = malloc(sizeof(GLfloat) * 4 * alloc);
+  p->alloc = alloc;
   p->length = length;
   return p;
 }
 
-void ldPalette(Palette * p, int i, GLfloat * c) {
-  if (i < p->length) {
-      p->colors[4 * i + 0] = c[0];
-      p->colors[4 * i + 1] = c[1];
-      p->colors[4 * i + 2] = c[2];
-      p->colors[4 * i + 3] = c[3];
-  }
+/* grow alloc */
+void grPalette(Palette * p) {
+    int newalloc = 2 * p->alloc;
+    GLfloat * newcolors = malloc(sizeof(GLfloat) * 4 * newalloc);
+    int i;
+    for (i = 0; i < p->length; i += 1) {
+        newcolors[4 * i + 0] = p->colors[4 * i + 0];
+        newcolors[4 * i + 1] = p->colors[4 * i + 1];
+        newcolors[4 * i + 2] = p->colors[4 * i + 2];
+        newcolors[4 * i + 3] = p->colors[4 * i + 3];
+    }
+    free(p->colors);
+    p->colors = newcolors;
+    p->alloc = newalloc;
 }
 
-void ldPalette3i(Palette * p, int i, int R, int G, int B) {
-  if (i < p->length) {
-      p->colors[4 * i + 0] = (float) R / 255.0;
-      p->colors[4 * i + 1] = (float) G / 255.0;
-      p->colors[4 * i + 2] = (float) B / 255.0;
-      p->colors[4 * i + 3] = 1.0;
+/* load color */
+void ldPalette(Palette * p, GLfloat * c) {
+  int newlength = p->length + 1;
+  if (newlength == p->alloc) {
+      grPalette(p);
   }
+  /* assert p->length < p->alloc */
+  int i = p->length;
+  p->colors[4 * i + 0] = c[0];
+  p->colors[4 * i + 1] = c[1];
+  p->colors[4 * i + 2] = c[2];
+  p->colors[4 * i + 3] = c[3];
+  p->length = newlength;
+}
+
+void ldPalette3i(Palette * p, int R, int G, int B) {
+  GLfloat c[4];
+  c[0] = (float) R / 255.0;
+  c[1] = (float) G / 255.0;
+  c[2] = (float) B / 255.0;
+  c[3] = 1.0;
+  ldPalette(p,c);
+}
+
+/* subscript */
+GLfloat * sbPalette(Palette * p, int i) {
+  return p->colors + 4 * (i % p->length);
 }
 
 /*8,6,5,4
@@ -640,13 +672,11 @@ static void draw(void) {
   for (k = 0; k < COLORS; k += 1) {
       for (j = 0; j < 4; j += 1) {
           if (pi % 2 == 0) {
-              kk = (k % COLORS) % pa1->length;
               glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE,
-                    pa1->colors + 4 * kk);
+                    sbPalette(pa1,k % COLORS));
           } else {
-              kk = (k % COLORS) % pa3->length;
               glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE,
-                    pa3->colors + 4 * kk);
+                    sbPalette(pa3,k % COLORS));
           }
           for (i = 0; i < 2; i += 1) {
               if (i == 2 || 1) {
@@ -841,38 +871,38 @@ static void init(void)
   static GLfloat intensity[4] = {1.0, 1.0, 1.0, 1.0};
   //static GLfloat intensity[4] = {1.0, 1.0, 1.0, 1.0};
 
-  pa1 = mkPalette(11);
-  ldPalette(pa1,0,skyblue);
-  ldPalette(pa1,1,vermilion);
-  ldPalette(pa1,2,canary);
-  ldPalette(pa1,3,pink);
-  ldPalette(pa1,4,forestgreen);
-  ldPalette(pa1,5,indigo);
-  ldPalette(pa1,6,mahogany);
-  ldPalette(pa1,7,luislemon);
-  ldPalette(pa1,8,chestnut);
-  ldPalette(pa1,9,white);
-  ldPalette(pa1,10,black);
-  pa2 = mkPalette(11);
-  ldPalette(pa2,0,skyblue2);
-  ldPalette(pa2,1,vermilion2);
-  ldPalette(pa2,2,canary2);
-  ldPalette(pa2,3,pink2);
-  ldPalette(pa2,4,forestgreen2);
-  ldPalette(pa2,5,indigo2);
-  ldPalette(pa2,6,mahogany2);
-  ldPalette(pa2,7,luislemon2);
-  ldPalette(pa2,8,chestnut2);
-  ldPalette(pa2,9,black);
-  ldPalette(pa2,10,white);
-  pa3 = mkPalette(2);
+  pa1 = mkPalette();
+  ldPalette(pa1,skyblue);
+  ldPalette(pa1,vermilion);
+  ldPalette(pa1,canary);
+  ldPalette(pa1,pink);
+  ldPalette(pa1,forestgreen);
+  ldPalette(pa1,indigo);
+  ldPalette(pa1,mahogany);
+  ldPalette(pa1,luislemon);
+  ldPalette(pa1,chestnut);
+  ldPalette(pa1,white);
+  ldPalette(pa1,black);
+  pa2 = mkPalette();
+  ldPalette(pa2,skyblue2);
+  ldPalette(pa2,vermilion2);
+  ldPalette(pa2,canary2);
+  ldPalette(pa2,pink2);
+  ldPalette(pa2,forestgreen2);
+  ldPalette(pa2,indigo2);
+  ldPalette(pa2,mahogany2);
+  ldPalette(pa2,luislemon2);
+  ldPalette(pa2,chestnut2);
+  ldPalette(pa2,black);
+  ldPalette(pa2,white);
+  pa3 = mkPalette();
   //ldPalette3i(pa3,0,173,111,105); /* copper penny */
   //ldPalette3i(pa3,1,  0,168,107); /* jade */
   //ldPalette3i(pa3,2, 11,218,81);  /* malachite */
   //ldPalette3i(pa3,3,218,112,214); /* orchid */
   //ldPalette3i(pa3,4,0,35,102);    /* royal blue */
-  ldPalette3i(pa3,0,255,215,0);   /* gold */
-  ldPalette3i(pa3,1,255,191,0);   /* amber */
+  ldPalette3i(pa3,255,215,0);   /* gold */
+  ldPalette3i(pa3,255,191,0);   /* amber */
 
   cursor2x = cursor2y = 0;
 
