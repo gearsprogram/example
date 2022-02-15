@@ -339,6 +339,8 @@ static GLfloat vermilionS[4] =   {       0.95,      0.625,        0.6,1.0};
 static GLfloat canary[4] =       {        1.0,        1.0,        0.6,1.0};
 static GLfloat pink[4] =         {  0.7 / 0.8,  0.2 / 0.8,  0.3 / 0.8,1.0};
 static GLfloat concrete[4] =     {        0.4,        0.4,        0.4,1.0};
+static GLfloat ultramarine[4] =  {       0.25,        0.0,        1.0,1.0};
+static GLfloat cerulean[4] =     {        0.0,       0.25,        1.0,1.0};
 static GLfloat indigo[4] =       {  0.3 / 0.8,        0.0,  0.5 / 0.8,1.0};
 static GLfloat mahogany[4] =     { 0.75 / 0.8, 0.25 / 0.8,        0.0,1.0};
 static GLfloat luislemon[4] =    {        0.9,        1.0,        0.2,1.0};
@@ -555,7 +557,7 @@ static void draw(void) {
   //drawboldline2(0.0,0.0,cursor2x,cursor2y);
   //glEnd(); /* cursor 2 */
 
-  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, concrete);
+  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, cerulean);
   glPushMatrix(); /* platform */
   glTranslatef(0.0,-5.0,0.0);
   glBegin(GL_TRIANGLES); /* platform */
@@ -909,6 +911,8 @@ static void init(void)
   ldPalette(pa3,mahogany);
   ldPalette(pa3,chestnut);
   ldPalette(pa3,pink);
+  ldPalette(pa3,ultramarine);
+  ldPalette(pa3,cerulean);
 
   cursor2x = cursor2y = 0;
 
