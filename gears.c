@@ -913,6 +913,7 @@ static void init(void)
   ldPalette(pa3,pink);
   ldPalette(pa3,ultramarine);
   ldPalette(pa3,cerulean);
+  ldPalette3i(pa3,46,139,87); /* sea green */
 
   cursor2x = cursor2y = 0;
 
