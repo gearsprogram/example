@@ -668,17 +668,17 @@ static void draw(void) {
   glRotatef(rsgn * sunAngle2,asgn,bsgn,csgn);
   //glRotatef(pi * 15.0,0.0,0.0,1.0);
   //glRotatef(pi * 15.0,0.0,1.0,0.0);
-  int COLORS;
+  int CONES;
   int kk;
-  COLORS = 11;
-  for (k = 0; k < COLORS; k += 1) {
+  CONES = 35;
+  for (k = 0; k < CONES; k += 1) {
       for (j = 0; j < 4; j += 1) {
           if (pi % 2 == 0) {
               glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE,
-                    sbPalette(pa1,k % COLORS));
+                    sbPalette(pa1,k));
           } else {
               glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE,
-                    sbPalette(pa3,k % COLORS));
+                    sbPalette(pa3,k));
           }
           for (i = 0; i < 2; i += 1) {
               if (i == 2 || 1) {
@@ -725,10 +725,10 @@ static void draw(void) {
           //glRotatef(180.0,0.0,0.0,1.0);
           //glRotatef(180.0,1.0,0.0,0.0);
           //glRotatef(120.0 + 0 * sunAngle3,0.0,0.0,1.0);
-          glRotatef(15.0 + sunAngle4 / 27.0,0.0,0.0,1.0);
+          glRotatef(3.0 + sunAngle4 / 27.0,0.0,0.0,1.0);
       }
       //glRotatef(90.0 + 0 * sunAngle4,1.0,0.0,0.0);
-      glRotatef(45.0 + sunAngle3 / 16.0,1.0,0.0,0.0);
+      glRotatef(12.0 + sunAngle3 / 16.0,1.0,0.0,0.0);
   }
   glPopMatrix(); /* end Sol */
   }
@@ -885,6 +885,7 @@ static void init(void)
   ldPalette(pa1,chestnut);
   ldPalette(pa1,white);
   ldPalette(pa1,black);
+  ldPalette3i(pa1,127,255,212); /* aquamarine */
   pa2 = mkPalette();
   ldPalette(pa2,skyblue2);
   ldPalette(pa2,vermilion2);
