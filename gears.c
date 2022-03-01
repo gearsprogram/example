@@ -171,11 +171,10 @@ static GLint gear1, gear2, gear3;
 static GLfloat gearAngle = 0.0;
 static GLfloat sceneAngle = 0.0;
 static GLfloat camDip = 0.0;
-int camRotate = 1;
+int camRotate = 0;
 static GLfloat sunAngle = 0.0;
 static GLfloat sunAngle2 = 0.0;
 static GLfloat sunAngle3 = 0.0;
-static GLfloat sunAngle4 = 0.0;
 static GLfloat piston = 0.0;
 static GLfloat range = 40.0;
 #define HUDWIDTH 36
@@ -666,8 +665,6 @@ static void draw(void) {
       csgn = 1.0;
   }
   glRotatef(rsgn * sunAngle2,asgn,bsgn,csgn);
-  //glRotatef(pi * 15.0,0.0,0.0,1.0);
-  //glRotatef(pi * 15.0,0.0,1.0,0.0);
   int CONES;
   int kk;
   CONES = 35;
@@ -722,13 +719,9 @@ static void draw(void) {
               }
               glRotatef(180.0,0.0,1.0,0.0);
           }
-          //glRotatef(180.0,0.0,0.0,1.0);
-          //glRotatef(180.0,1.0,0.0,0.0);
-          //glRotatef(120.0 + 0 * sunAngle3,0.0,0.0,1.0);
-          glRotatef(3.0 + sunAngle4 / 27.0,0.0,0.0,1.0);
+          glRotatef(15.0 + sunAngle/3.0,0.0,1.0,0.0);
       }
-      //glRotatef(90.0 + 0 * sunAngle4,1.0,0.0,0.0);
-      glRotatef(12.0 + sunAngle3 / 16.0,1.0,0.0,0.0);
+      glRotatef(12.0 + sunAngle3/4.0,1.0,0.0,0.0);
   }
   glPopMatrix(); /* end Sol */
   }
@@ -774,10 +767,9 @@ static void animate(void) {
   camDip = 15.0 * sin(glfwGetTime());
   //sunAngle = 5.0 * (float) glfwGetTime();
   sunAngle = 0;
-  sunAngle2 = 15.0 * (float) pulseFunction2(glfwGetTime());
+  sunAngle2 = 5.0 * (float) pulseFunction2(glfwGetTime());
   //sunAngle2 = 0.0;
-  sunAngle3 = 30.0 * (float) glfwGetTime();
-  sunAngle4 = 15.0 * (float) glfwGetTime();
+  sunAngle3 = 30 * (float) glfwGetTime();
   piston = fmodf(4.0 * (float) glfwGetTime(),4.f);
   piston = (piston > 2.0 ? 4.0 - piston : piston);
   camDip = 10.0 * piston;
