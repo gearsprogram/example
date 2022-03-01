@@ -667,7 +667,7 @@ static void draw(void) {
   glRotatef(rsgn * sunAngle2,asgn,bsgn,csgn);
   int CONES;
   int kk;
-  CONES = 35;
+  CONES = 14;
   for (k = 0; k < CONES; k += 1) {
       for (j = 0; j < 4; j += 1) {
           if (pi % 2 == 0) {
@@ -719,9 +719,9 @@ static void draw(void) {
               }
               glRotatef(180.0,0.0,1.0,0.0);
           }
-          glRotatef(15.0 + sunAngle/3.0,0.0,1.0,0.0);
+          glRotatef(45.0 + sunAngle3/27.0,0.0,0.0,1.0);
       }
-      glRotatef(12.0 + sunAngle3/4.0,1.0,0.0,0.0);
+      glRotatef(60.0 + sunAngle3/64.0,1.0,0.0,0.0);
   }
   glPopMatrix(); /* end Sol */
   }
@@ -767,7 +767,7 @@ static void animate(void) {
   camDip = 15.0 * sin(glfwGetTime());
   //sunAngle = 5.0 * (float) glfwGetTime();
   sunAngle = 0;
-  sunAngle2 = 5.0 * (float) pulseFunction2(glfwGetTime());
+  sunAngle2 = 45.0 * (float) pulseFunction2(glfwGetTime());
   //sunAngle2 = 0.0;
   sunAngle3 = 30 * (float) glfwGetTime();
   piston = fmodf(4.0 * (float) glfwGetTime(),4.f);
