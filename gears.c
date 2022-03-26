@@ -961,8 +961,8 @@ int main(int argc, char *argv[])
 		windowWidth = 210;
 		windowHeight = 210;
     } else {
-		windowWidth = 840;
-		windowHeight = 480;
+		windowWidth = 1400;
+		windowHeight = 800;
     }
     window = glfwCreateWindow(windowWidth, windowHeight, "Gears", NULL, NULL );
     if (!window)
