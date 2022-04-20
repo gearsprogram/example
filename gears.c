@@ -364,7 +364,7 @@ typedef struct Palette {
 } Palette;
 
 Palette * pa1;
-Palette * pa2;
+// Palette * pa2;
 Palette * pa3;
 
 /* make object */
@@ -865,7 +865,7 @@ static void init(void)
   static GLfloat intensity[4] = {1.0, 1.0, 1.0, 1.0};
   //static GLfloat intensity[4] = {1.0, 1.0, 1.0, 1.0};
 
-  pa1 = mkPalette();
+  pa1 = mkPalette(); /* Psychedelic Crayola */
   ldPalette(pa1,skyblue);
   ldPalette(pa1,vermilion);
   ldPalette(pa1,canary);
@@ -875,9 +875,14 @@ static void init(void)
   ldPalette(pa1,mahogany);
   ldPalette(pa1,luislemon);
   ldPalette(pa1,chestnut);
-  ldPalette(pa1,white);
-  ldPalette(pa1,black);
+  // ldPalette(pa1,white);
+  // ldPalette(pa1,black);
   ldPalette3i(pa1,127,255,212); /* aquamarine */
+  ldPalette3i(pa1,42,52,57); /* gunmetal */
+  ldPalette3i(pa1,230,230,250); /* lavender (web) */
+  ldPalette3i(pa1,223,115,255); /* heliotrope */
+  ldPalette3i(pa1,181,126,220); /* lavender (floral) */
+  /*
   pa2 = mkPalette();
   ldPalette(pa2,skyblue2);
   ldPalette(pa2,vermilion2);
@@ -890,7 +895,8 @@ static void init(void)
   ldPalette(pa2,chestnut2);
   ldPalette(pa2,black);
   ldPalette(pa2,white);
-  pa3 = mkPalette();
+  */
+  pa3 = mkPalette(); /* Mexican Fiesta */
   //ldPalette3i(pa3,  0,168,107); /* jade */
   //ldPalette3i(pa3, 11,218, 81); /* malachite */
   //ldPalette3i(pa3, 80,200,120); /* emerald */
