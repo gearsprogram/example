@@ -667,7 +667,7 @@ static void draw(void) {
   glRotatef(rsgn * sunAngle2,asgn,bsgn,csgn);
   int CONES;
   int kk;
-  CONES = 14;
+  CONES = 8;
   for (k = 0; k < CONES; k += 1) {
       for (j = 0; j < 4; j += 1) {
           if (pi % 2 == 0) {
@@ -769,7 +769,7 @@ static void animate(void) {
   sunAngle = 0;
   sunAngle2 = 45.0 * (float) pulseFunction2(glfwGetTime());
   //sunAngle2 = 0.0;
-  sunAngle3 = 30 * (float) glfwGetTime();
+  sunAngle3 = 300 * (float) glfwGetTime();
   piston = fmodf(4.0 * (float) glfwGetTime(),4.f);
   piston = (piston > 2.0 ? 4.0 - piston : piston);
   camDip = 10.0 * piston;
@@ -865,7 +865,11 @@ static void init(void)
   static GLfloat intensity[4] = {1.0, 1.0, 1.0, 1.0};
   //static GLfloat intensity[4] = {1.0, 1.0, 1.0, 1.0};
 
-  pa1 = mkPalette(); /* Psychedelic Crayola */
+  /* add a routine for duplicating a palette */
+  /* construct the Psychedelic Crayola palette by
+     duplicating Jovian and adding skyblue through chestnut below */
+  pa1 = mkPalette(); /* Psychedelic Crayola  | Jovian */
+  /*
   ldPalette(pa1,skyblue);
   ldPalette(pa1,vermilion);
   ldPalette(pa1,canary);
@@ -875,13 +879,15 @@ static void init(void)
   ldPalette(pa1,mahogany);
   ldPalette(pa1,luislemon);
   ldPalette(pa1,chestnut);
+  */
   // ldPalette(pa1,white);
   // ldPalette(pa1,black);
-  ldPalette3i(pa1,127,255,212); /* aquamarine */
+  // ldPalette3i(pa1,127,255,212); /* aquamarine */
   ldPalette3i(pa1,42,52,57); /* gunmetal */
   ldPalette3i(pa1,230,230,250); /* lavender (web) */
   ldPalette3i(pa1,223,115,255); /* heliotrope */
   ldPalette3i(pa1,181,126,220); /* lavender (floral) */
+  ldPalette3i(pa1,153,102,204); /* amethyst */
   /*
   pa2 = mkPalette();
   ldPalette(pa2,skyblue2);
