@@ -47,6 +47,27 @@
 
  **/
 
+void gearMaterial(GLenum f,const GLfloat * ps) {
+    GLfloat qqs[4];
+    qqs[0] = ps[0] / 2;
+    qqs[1] = ps[1] / 2;
+    qqs[2] = ps[2] / 2;
+    qqs[3] = ps[3];
+    GLfloat qs[4];
+    qs[0] = ps[0] / 4;
+    qs[1] = ps[1] / 4;
+    qs[2] = ps[2] / 4;
+    qs[3] = ps[3];
+    GLfloat rs[4];
+    rs[0] = ps[0] / 10;
+    rs[1] = ps[1] / 10;
+    rs[2] = ps[2] / 10;
+    rs[3] = ps[3];
+    glMaterialfv(f,GL_SPECULAR,qs);
+    glMaterialfv(f,GL_AMBIENT,ps);
+    glMaterialfv(f,GL_DIFFUSE,ps);
+}
+
 static void
 gear(GLfloat inner_radius, GLfloat outer_radius, GLfloat width,
   GLint teeth, GLfloat tooth_depth)
@@ -458,7 +479,7 @@ static void draw(void) {
   dc += 1;
   glClearColor(0.0, 0.0, 0.0, 0.0);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, skyblue);
+  gearMaterial(GL_FRONT, skyblue);
   glDisable(GL_LIGHTING);
   glDisable(GL_LIGHT0);
   glColor3f(0.1,0.4,0.8); /* set HUD color 1 */
@@ -547,7 +568,7 @@ static void draw(void) {
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
   //glColor3f(0.8,0.8,0.8);
-  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, skyblue);
+  gearMaterial(GL_FRONT, skyblue);
   glPushMatrix(); /* (cursor, cursor 2, marquee) */
 
   //glBegin(GL_TRIANGLES); /* cursor 2 */
@@ -556,7 +577,7 @@ static void draw(void) {
   //drawboldline2(0.0,0.0,cursor2x,cursor2y);
   //glEnd(); /* cursor 2 */
 
-  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, cerulean);
+  gearMaterial(GL_FRONT, cerulean);
   glPushMatrix(); /* platform */
   glTranslatef(0.0,-5.0,0.0);
   glBegin(GL_TRIANGLES); /* platform */
@@ -608,7 +629,7 @@ static void draw(void) {
   glEnd(); /* end platform */
   glPopMatrix(); /* end platform */
 
-  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, pink);
+  gearMaterial(GL_FRONT, pink);
   int Rwidth = 1;
   for (i = 0; i < 1; i += 1) {
       glBegin(GL_TRIANGLES); /* cursor */
@@ -671,11 +692,9 @@ static void draw(void) {
   for (k = 0; k < CONES; k += 1) {
       for (j = 0; j < 4; j += 1) {
           if (pi % 2 == 0) {
-              glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE,
-                    sbPalette(pa1,k));
+              gearMaterial(GL_FRONT, sbPalette(pa1,k));
           } else {
-              glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE,
-                    sbPalette(pa3,k));
+              gearMaterial(GL_FRONT, sbPalette(pa3,k));
           }
           for (i = 0; i < 2; i += 1) {
               if (i == 2 || 1) {
@@ -769,7 +788,7 @@ static void animate(void) {
   sunAngle = 0;
   sunAngle2 = 45.0 * (float) pulseFunction2(glfwGetTime());
   //sunAngle2 = 0.0;
-  sunAngle3 = 300 * (float) glfwGetTime();
+  sunAngle3 = 30 * (float) glfwGetTime();
   piston = fmodf(4.0 * (float) glfwGetTime(),4.f);
   piston = (piston > 2.0 ? 4.0 - piston : piston);
   camDip = 10.0 * piston;
@@ -882,12 +901,15 @@ static void init(void)
   */
   // ldPalette(pa1,white);
   // ldPalette(pa1,black);
-  // ldPalette3i(pa1,127,255,212); /* aquamarine */
-  ldPalette3i(pa1,42,52,57); /* gunmetal */
-  ldPalette3i(pa1,230,230,250); /* lavender (web) */
-  ldPalette3i(pa1,223,115,255); /* heliotrope */
+  //ldPalette3i(pa1,42,52,57); /* gunmetal */
+  //ldPalette3i(pa1,230,230,250); /* lavender (web) */
+  // ldPalette3i(pa1,223,115,255); /* heliotrope */
   ldPalette3i(pa1,181,126,220); /* lavender (floral) */
+  ldPalette3i(pa1, 80,200,120); /* emerald */
+  ldPalette3i(pa1,127,255,212); /* aquamarine */
   ldPalette3i(pa1,153,102,204); /* amethyst */
+  ldPalette(pa1,luislemon);
+  ldPalette(pa1,canary);
   /*
   pa2 = mkPalette();
   ldPalette(pa2,skyblue2);
@@ -923,7 +945,8 @@ static void init(void)
   cursor2x = cursor2y = 0;
 
   glLightfv(GL_LIGHT0, GL_POSITION, pos);
-  glLightfv(GL_LIGHT0, GL_DIFFUSE, intensity);
+  //glLightfv(GL_LIGHT0, GL_DIFFUSE, intensity);
+  glLightfv(GL_LIGHT0, GL_SPECULAR, intensity);
   //glLightfv(GL_LIGHT0, GL_AMBIENT, intensity);
   //glLightfv(GL_LIGHT0, GL_SPECULAR, intensity);
   glEnable(GL_CULL_FACE);
@@ -934,19 +957,19 @@ static void init(void)
   /* make the gears */
   gear1 = glGenLists(1);
   glNewList(gear1, GL_COMPILE);
-  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, red);
+  gearMaterial(GL_FRONT, red);
   gear(1.f, 4.f, 1.f, 20, 0.7f);
   glEndList();
 
   gear2 = glGenLists(1);
   glNewList(gear2, GL_COMPILE);
-  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, green);
+  gearMaterial(GL_FRONT, green);
   gear(0.5f, 2.f, 2.f, 10, 0.7f);
   glEndList();
 
   gear3 = glGenLists(1);
   glNewList(gear3, GL_COMPILE);
-  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, blue);
+  gearMaterial(GL_FRONT, blue);
   gear(1.3f, 2.f, 0.5f, 10, 0.7f);
   glEndList();
 
