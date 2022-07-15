@@ -59,13 +59,20 @@ void gearMaterial(GLenum f,const GLfloat * ps) {
     qs[2] = ps[2] / 4;
     qs[3] = ps[3];
     GLfloat rs[4];
-    rs[0] = ps[0] / 10;
-    rs[1] = ps[1] / 10;
-    rs[2] = ps[2] / 10;
+    rs[0] = ps[0] / 5;
+    rs[1] = ps[1] / 5;
+    rs[2] = ps[2] / 5;
     rs[3] = ps[3];
-    glMaterialfv(f,GL_SPECULAR,qs);
-    glMaterialfv(f,GL_AMBIENT,ps);
-    glMaterialfv(f,GL_DIFFUSE,ps);
+    GLfloat rrs[4];
+    rrs[0] = 2 * ps[0] / 5;
+    rrs[1] = 2 * ps[1] / 5;
+    rrs[2] = 2 * ps[2] / 5;
+    rrs[3] = ps[3];
+    glMaterialfv(f,GL_SPECULAR,ps);
+    glMaterialfv(f,GL_AMBIENT,rrs);
+    glMaterialfv(f,GL_DIFFUSE,rrs);
+    GLfloat s[] = {50.0};
+    glMaterialfv(f,GL_SHININESS,s);
 }
 
 static void
@@ -467,7 +474,7 @@ GLfloat * sbPalette(Palette * p, int i) {
 
 static float sunRadius = 2.0;
 static float spikeRadius = 0.5;
-static float sunRadius2 = 2.0;
+static float sunRadius2[2] = {2.0,0.5};
 //static float sunThickness = 1.0;
 
 float cursor2x;
@@ -688,7 +695,7 @@ static void draw(void) {
   glRotatef(rsgn * sunAngle2,asgn,bsgn,csgn);
   int CONES;
   int kk;
-  CONES = 8;
+  CONES = 16;
   for (k = 0; k < CONES; k += 1) {
       for (j = 0; j < 4; j += 1) {
           if (pi % 2 == 0) {
@@ -697,46 +704,55 @@ static void draw(void) {
               gearMaterial(GL_FRONT, sbPalette(pa3,k));
           }
           for (i = 0; i < 2; i += 1) {
-              if (i == 2 || 1) {
-                  glTranslatef(0.0,sunRadius,0.0);
-                  glBegin(GL_TRIANGLES);
-                  float xx[4];
-                  float yy[4];
-                  // line segments define arc of cone base
-                  xx[0] =  1.0; yy[0] =  0.0;
-                  xx[1] = 0.87; yy[1] =  0.5;
-                  xx[2] =  0.5; yy[2] = 0.87;
-                  xx[3] =  0.0; yy[3] =  1.0;
-                  int ii;
-                  for (ii = 0; ii < 4; ii += 1) {
-                      xx[ii] *= spikeRadius;
-                      yy[ii] *= spikeRadius;
-                  }
-                  for (ii = 0; ii < 3; ii += 1) {
-                      triNorm(
-                          xx[ii + 0],0.0,yy[ii + 0],
-                          0.0,sunRadius2,0.0,
-                          xx[ii + 1],0.0,yy[ii + 1]);
-                      // end cap A
-                      triNorm(
-                          0.0,0.0,0.0,
-                          xx[ii + 0],0.0,yy[ii + 0],
-                          xx[ii + 1],0.0,yy[ii + 1]);
-
-                      triNorm(
-                          -xx[ii + 0],0.0,yy[ii + 0],
-                          -xx[ii + 1],0.0,yy[ii + 1],
-                           0.0,sunRadius2,0.0);
-                      // end cap B
-                      triNorm(
-                          -xx[ii + 0],0.0,yy[ii + 0],
-                           0.0,0.0,0.0,
-                          -xx[ii + 1],0.0,yy[ii + 1]);
-                  }
-                  glEnd();
-                  glTranslatef(0.0,-sunRadius,0.0);
+              glTranslatef(0.0,sunRadius,0.0);
+              glBegin(GL_TRIANGLES);
+              int FACES = 9;
+              float xx[FACES];
+              float yy[FACES];
+              // line segments define arc of cone base
+              //xx[0] =  1.0; yy[0] =  0.0;
+              //xx[1] = 0.87; yy[1] =  0.5;
+              //xx[2] =  0.5; yy[2] = 0.87;
+              //xx[3] =  0.0; yy[3] =  1.0;
+              yy[0] = xx[8] = 0.0;
+              yy[1] = xx[7] = 0.19509032201612825;
+              yy[2] = xx[6] = 0.3826834323650898;
+              yy[3] = xx[5] = 0.5555702330196022;
+              yy[4] = xx[4] = 0.7071067811865475;
+              yy[5] = xx[3] = 0.8314696123025451;
+              yy[6] = xx[2] = 0.9238795325112867;
+              yy[7] = xx[1] = 0.9807852804032304;
+              yy[8] = xx[0] = 1.0;
+              int ii;
+              for (ii = 0; ii < FACES; ii += 1) {
+                  xx[ii] *= spikeRadius;
+                  yy[ii] *= spikeRadius;
               }
+              for (ii = 0; ii < FACES - 1; ii += 1) {
+                  triNorm(
+                      xx[ii + 0],0.0,yy[ii + 0],
+                      0.0,sunRadius2[0],0.0,
+                      xx[ii + 1],0.0,yy[ii + 1]);
+                  // end cap A
+                  triNorm(
+                      0.0,-sunRadius2[1],0.0,
+                      xx[ii + 0],0.0,yy[ii + 0],
+                      xx[ii + 1],0.0,yy[ii + 1]);
+
+                  triNorm(
+                      -xx[ii + 0],0.0,yy[ii + 0],
+                      -xx[ii + 1],0.0,yy[ii + 1],
+                       0.0,sunRadius2[0],0.0);
+                  // end cap B
+                  triNorm(
+                      -xx[ii + 0],0.0,yy[ii + 0],
+                       0.0,-sunRadius2[1],0.0,
+                      -xx[ii + 1],0.0,yy[ii + 1]);
+              }
+              glEnd();
+              glTranslatef(0.0,-sunRadius,0.0);
               glRotatef(180.0,0.0,1.0,0.0);
+              //
           }
           glRotatef(45.0 + sunAngle3/27.0,0.0,0.0,1.0);
       }
@@ -944,17 +960,18 @@ static void init(void)
 
   cursor2x = cursor2y = 0;
 
+  glShadeModel(GL_SMOOTH);
   glLightfv(GL_LIGHT0, GL_POSITION, pos);
-  //glLightfv(GL_LIGHT0, GL_DIFFUSE, intensity);
+  glLightfv(GL_LIGHT0, GL_DIFFUSE, intensity);
   glLightfv(GL_LIGHT0, GL_SPECULAR, intensity);
-  //glLightfv(GL_LIGHT0, GL_AMBIENT, intensity);
-  //glLightfv(GL_LIGHT0, GL_SPECULAR, intensity);
+  glLightfv(GL_LIGHT0, GL_AMBIENT, intensity);
   glEnable(GL_CULL_FACE);
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
   glEnable(GL_DEPTH_TEST);
 
   /* make the gears */
+  /*
   gear1 = glGenLists(1);
   glNewList(gear1, GL_COMPILE);
   gearMaterial(GL_FRONT, red);
@@ -972,6 +989,7 @@ static void init(void)
   gearMaterial(GL_FRONT, blue);
   gear(1.3f, 2.f, 0.5f, 10, 0.7f);
   glEndList();
+  */
 
   glEnable(GL_NORMALIZE);
 }
