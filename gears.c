@@ -199,7 +199,7 @@ static GLint gear1, gear2, gear3;
 static GLfloat gearAngle = 0.0;
 static GLfloat sceneAngle = 0.0;
 static GLfloat camDip = 0.0;
-int camRotate = 0;
+int camRotate = 1;
 static GLfloat sunAngle = 0.0;
 static GLfloat sunAngle2 = 0.0;
 static GLfloat sunAngle3 = 0.0;
@@ -804,7 +804,7 @@ static void animate(void) {
   sunAngle = 0;
   sunAngle2 = 45.0 * (float) pulseFunction2(glfwGetTime());
   //sunAngle2 = 0.0;
-  sunAngle3 = 30 * (float) glfwGetTime();
+  sunAngle3 = 3 * (float) glfwGetTime();
   piston = fmodf(4.0 * (float) glfwGetTime(),4.f);
   piston = (piston > 2.0 ? 4.0 - piston : piston);
   camDip = 10.0 * piston;
