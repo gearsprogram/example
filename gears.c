@@ -489,6 +489,9 @@ static void draw(void) {
   gearMaterial(GL_FRONT, skyblue);
   glDisable(GL_LIGHTING);
   glDisable(GL_LIGHT0);
+  glDisable(GL_LIGHT1);
+  glDisable(GL_LIGHT2);
+  glDisable(GL_LIGHT3);
   glColor3f(0.1,0.4,0.8); /* set HUD color 1 */
   glBegin(GL_LINES); /* HUD outlines */
   glVertex3f(0.0      ,0.0     , 0.0);
@@ -574,6 +577,13 @@ static void draw(void) {
      to an array of x-y coordinates */
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
+
+  /*
+  glEnable(GL_LIGHT1);
+  glEnable(GL_LIGHT2);
+  glEnable(GL_LIGHT3);
+  */
+  
   //glColor3f(0.8,0.8,0.8);
   gearMaterial(GL_FRONT, skyblue);
   glPushMatrix(); /* (cursor, cursor 2, marquee) */
@@ -755,6 +765,7 @@ static void draw(void) {
               //
           }
           glRotatef(45.0 + sunAngle3/27.0,0.0,0.0,1.0);
+          glTranslatef(0.1,0.0,0.0);
       }
       glRotatef(60.0 + sunAngle3/64.0,1.0,0.0,0.0);
   }
@@ -804,7 +815,7 @@ static void animate(void) {
   sunAngle = 0;
   sunAngle2 = 45.0 * (float) pulseFunction2(glfwGetTime());
   //sunAngle2 = 0.0;
-  sunAngle3 = 3 * (float) glfwGetTime();
+  sunAngle3 = 30 * (float) glfwGetTime();
   piston = fmodf(4.0 * (float) glfwGetTime(),4.f);
   piston = (piston > 2.0 ? 4.0 - piston : piston);
   camDip = 10.0 * piston;
@@ -891,14 +902,23 @@ void reshape( GLFWwindow * window, int width, int height ) {
 
 
 /* program & OpenGL initialization */
-static void init(void)
-{
-  static GLfloat pos[4] = {5.0, 5.0, 10.0, 0.0};
+static void init(void) {
+  /*
+  static GLfloat pos[4]  = { 5.0,  5.0, 10.0, 0.0};
+  static GLfloat pos2[4] = { 5.0, -5.0, 10.0, 0.0};
+  static GLfloat pos3[4] = {-5.0,  5.0, 10.0, 0.0};
+  static GLfloat pos4[4] = {-5.0, -5.0, 10.0, 0.0};
+  */
+  static GLfloat pos[4]  = {100.0, 0.0, 0.0, 0.0};
+  static GLfloat pos2[4] = {  0.0,-0.1, 0.1, 0.0};
+  static GLfloat pos3[4] = { 0.1,  0.0, 0.1, 0.0};
+  static GLfloat pos4[4] = {-0.1,  0.0, 0.1, 0.0};
   static GLfloat red[4] = {0.8, 0.1, 0.0, 1.0};
   static GLfloat green[4] = {0.0, 0.8, 0.2, 1.0};
   static GLfloat blue[4] = {0.2, 0.2, 1.0, 1.0};
+  //static GLfloat intensity[4] = {0.5, 0.5, 0.5, 1.0};
+  //static GLfloat intensity[4] = {0.25, 0.25, 0.25, 1.0};
   static GLfloat intensity[4] = {1.0, 1.0, 1.0, 1.0};
-  //static GLfloat intensity[4] = {1.0, 1.0, 1.0, 1.0};
 
   /* add a routine for duplicating a palette */
   /* construct the Psychedelic Crayola palette by
@@ -964,10 +984,22 @@ static void init(void)
   glLightfv(GL_LIGHT0, GL_POSITION, pos);
   glLightfv(GL_LIGHT0, GL_DIFFUSE, intensity);
   glLightfv(GL_LIGHT0, GL_SPECULAR, intensity);
-  glLightfv(GL_LIGHT0, GL_AMBIENT, intensity);
+  //glLightfv(GL_LIGHT0, GL_AMBIENT, intensity);
+  
+  glLightfv(GL_LIGHT1, GL_POSITION, pos2);
+  //glLightfv(GL_LIGHT1, GL_DIFFUSE, intensity);
+  glLightfv(GL_LIGHT1, GL_SPECULAR, intensity);
+  //glLightfv(GL_LIGHT1, GL_AMBIENT, intensity);
+  glLightfv(GL_LIGHT2, GL_POSITION, pos3);
+  //glLightfv(GL_LIGHT2, GL_DIFFUSE, intensity);
+  glLightfv(GL_LIGHT2, GL_SPECULAR, intensity);
+  //glLightfv(GL_LIGHT2, GL_AMBIENT, intensity);
+  glLightfv(GL_LIGHT3, GL_POSITION, pos4);
+  //glLightfv(GL_LIGHT3, GL_DIFFUSE, intensity);
+  glLightfv(GL_LIGHT3, GL_SPECULAR, intensity);
+  //glLightfv(GL_LIGHT3, GL_AMBIENT, intensity);
+  
   glEnable(GL_CULL_FACE);
-  glEnable(GL_LIGHTING);
-  glEnable(GL_LIGHT0);
   glEnable(GL_DEPTH_TEST);
 
   /* make the gears */
