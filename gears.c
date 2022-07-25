@@ -578,11 +578,9 @@ static void draw(void) {
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
 
-  /*
   glEnable(GL_LIGHT1);
   glEnable(GL_LIGHT2);
   glEnable(GL_LIGHT3);
-  */
   
   //glColor3f(0.8,0.8,0.8);
   gearMaterial(GL_FRONT, skyblue);
@@ -815,7 +813,7 @@ static void animate(void) {
   sunAngle = 0;
   sunAngle2 = 45.0 * (float) pulseFunction2(glfwGetTime());
   //sunAngle2 = 0.0;
-  sunAngle3 = 30 * (float) glfwGetTime();
+  sunAngle3 = 3 * (float) glfwGetTime();
   piston = fmodf(4.0 * (float) glfwGetTime(),4.f);
   piston = (piston > 2.0 ? 4.0 - piston : piston);
   camDip = 10.0 * piston;
@@ -909,10 +907,10 @@ static void init(void) {
   static GLfloat pos3[4] = {-5.0,  5.0, 10.0, 0.0};
   static GLfloat pos4[4] = {-5.0, -5.0, 10.0, 0.0};
   */
-  static GLfloat pos[4]  = {100.0, 0.0, 0.0, 0.0};
-  static GLfloat pos2[4] = {  0.0,-0.1, 0.1, 0.0};
-  static GLfloat pos3[4] = { 0.1,  0.0, 0.1, 0.0};
-  static GLfloat pos4[4] = {-0.1,  0.0, 0.1, 0.0};
+  static GLfloat pos[4]  = { 100.0, 0.0,-10.0, 0.0};
+  static GLfloat pos2[4] = {-100.0,00.0,-10.0, 0.0};
+  static GLfloat pos3[4] = { 0.0, 100.0,-10.0, 0.0};
+  static GLfloat pos4[4] = { 0.0,-100.0,-10.0, 0.0};
   static GLfloat red[4] = {0.8, 0.1, 0.0, 1.0};
   static GLfloat green[4] = {0.0, 0.8, 0.2, 1.0};
   static GLfloat blue[4] = {0.2, 0.2, 1.0, 1.0};
@@ -987,15 +985,15 @@ static void init(void) {
   //glLightfv(GL_LIGHT0, GL_AMBIENT, intensity);
   
   glLightfv(GL_LIGHT1, GL_POSITION, pos2);
-  //glLightfv(GL_LIGHT1, GL_DIFFUSE, intensity);
+  glLightfv(GL_LIGHT1, GL_DIFFUSE, intensity);
   glLightfv(GL_LIGHT1, GL_SPECULAR, intensity);
   //glLightfv(GL_LIGHT1, GL_AMBIENT, intensity);
   glLightfv(GL_LIGHT2, GL_POSITION, pos3);
-  //glLightfv(GL_LIGHT2, GL_DIFFUSE, intensity);
+  glLightfv(GL_LIGHT2, GL_DIFFUSE, intensity);
   glLightfv(GL_LIGHT2, GL_SPECULAR, intensity);
   //glLightfv(GL_LIGHT2, GL_AMBIENT, intensity);
   glLightfv(GL_LIGHT3, GL_POSITION, pos4);
-  //glLightfv(GL_LIGHT3, GL_DIFFUSE, intensity);
+  glLightfv(GL_LIGHT3, GL_DIFFUSE, intensity);
   glLightfv(GL_LIGHT3, GL_SPECULAR, intensity);
   //glLightfv(GL_LIGHT3, GL_AMBIENT, intensity);
   
