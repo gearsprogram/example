@@ -199,7 +199,7 @@ static GLint gear1, gear2, gear3;
 static GLfloat gearAngle = 0.0;
 static GLfloat sceneAngle = 0.0;
 static GLfloat camDip = 0.0;
-int camRotate = 1;
+int sceneRotate = 0;
 static GLfloat sunAngle = 0.0;
 static GLfloat sunAngle2 = 0.0;
 static GLfloat sunAngle3 = 0.0;
@@ -803,17 +803,30 @@ float pulseFunction2(float x) {
 /* update animation parameters */
 static void animate(void) {
   gearAngle = 60.f * (float) glfwGetTime(); /* gear angle */
-  if (camRotate) {
+  if (sceneRotate) {
       sceneAngle = 90 + 15.0 * (float) glfwGetTime();
   } else {
       sceneAngle = -45.0;
   }
+  static GLfloat lightAngle;
+  lightAngle = 90 + 45.0 * (float) glfwGetTime();
+  static GLfloat pos[4]  = { 0.0, 0.0,100.0, 0.0};
+  pos[0] = 200.0 * cos(lightAngle * M_PI / 180.0);
+  pos[1] = 200.0 * sin(lightAngle * M_PI / 180.0);
+  glLightfv(GL_LIGHT0, GL_POSITION, pos);
+  pos[0] *= -1.0;
+  glLightfv(GL_LIGHT1, GL_POSITION, pos);
+  pos[1] *= -1.0;
+  glLightfv(GL_LIGHT2, GL_POSITION, pos);
+  pos[0] *= -1.0;
+  glLightfv(GL_LIGHT3, GL_POSITION, pos);
+  
   camDip = 15.0 * sin(glfwGetTime());
   //sunAngle = 5.0 * (float) glfwGetTime();
   sunAngle = 0;
-  sunAngle2 = 45.0 * (float) pulseFunction2(glfwGetTime());
+  sunAngle2 = 5.0 * (float) pulseFunction2(glfwGetTime());
   //sunAngle2 = 0.0;
-  sunAngle3 = 3 * (float) glfwGetTime();
+  sunAngle3 = 3.0 * (float) glfwGetTime();
   piston = fmodf(4.0 * (float) glfwGetTime(),4.f);
   piston = (piston > 2.0 ? 4.0 - piston : piston);
   camDip = 10.0 * piston;
@@ -908,15 +921,15 @@ static void init(void) {
   static GLfloat pos4[4] = {-5.0, -5.0, 10.0, 0.0};
   */
   static GLfloat pos[4]  = { 100.0, 0.0,-10.0, 0.0};
-  static GLfloat pos2[4] = {-100.0,00.0,-10.0, 0.0};
+  static GLfloat pos2[4] = {-100.0, 0.0,-10.0, 0.0};
   static GLfloat pos3[4] = { 0.0, 100.0,-10.0, 0.0};
   static GLfloat pos4[4] = { 0.0,-100.0,-10.0, 0.0};
   static GLfloat red[4] = {0.8, 0.1, 0.0, 1.0};
   static GLfloat green[4] = {0.0, 0.8, 0.2, 1.0};
   static GLfloat blue[4] = {0.2, 0.2, 1.0, 1.0};
-  //static GLfloat intensity[4] = {0.5, 0.5, 0.5, 1.0};
+  static GLfloat intensity[4] = {0.5, 0.5, 0.5, 1.0};
   //static GLfloat intensity[4] = {0.25, 0.25, 0.25, 1.0};
-  static GLfloat intensity[4] = {1.0, 1.0, 1.0, 1.0};
+  //static GLfloat intensity[4] = {1.0, 1.0, 1.0, 1.0};
 
   /* add a routine for duplicating a palette */
   /* construct the Psychedelic Crayola palette by
