@@ -199,7 +199,7 @@ static GLint gear1, gear2, gear3;
 static GLfloat gearAngle = 0.0;
 static GLfloat sceneAngle = 0.0;
 static GLfloat camDip = 0.0;
-int sceneRotate = 0;
+int sceneRotate = 1;
 static GLfloat sunAngle = 0.0;
 static GLfloat sunAngle2 = 0.0;
 static GLfloat sunAngle3 = 0.0;
@@ -804,21 +804,26 @@ float pulseFunction2(float x) {
 static void animate(void) {
   gearAngle = 60.f * (float) glfwGetTime(); /* gear angle */
   if (sceneRotate) {
-      sceneAngle = 90 + 15.0 * (float) glfwGetTime();
+      sceneAngle = 90 + 3.5 * (float) glfwGetTime();
   } else {
       sceneAngle = -45.0;
   }
   static GLfloat lightAngle;
-  lightAngle = 90 + 45.0 * (float) glfwGetTime();
+  lightAngle = 90 + 72.0 * (float) glfwGetTime();
   static GLfloat pos[4]  = { 0.0, 0.0,100.0, 0.0};
   pos[0] = 200.0 * cos(lightAngle * M_PI / 180.0);
   pos[1] = 200.0 * sin(lightAngle * M_PI / 180.0);
   glLightfv(GL_LIGHT0, GL_POSITION, pos);
   pos[0] *= -1.0;
-  glLightfv(GL_LIGHT1, GL_POSITION, pos);
   pos[1] *= -1.0;
+  glLightfv(GL_LIGHT1, GL_POSITION, pos);
+  static GLfloat temp;
+  temp = pos[0];
+  pos[0] = -pos[1];
+  pos[1] = temp;
   glLightfv(GL_LIGHT2, GL_POSITION, pos);
   pos[0] *= -1.0;
+  pos[1] *= -1.0;
   glLightfv(GL_LIGHT3, GL_POSITION, pos);
   
   camDip = 15.0 * sin(glfwGetTime());
@@ -993,20 +998,20 @@ static void init(void) {
 
   glShadeModel(GL_SMOOTH);
   glLightfv(GL_LIGHT0, GL_POSITION, pos);
-  glLightfv(GL_LIGHT0, GL_DIFFUSE, intensity);
+  //glLightfv(GL_LIGHT0, GL_DIFFUSE, intensity);
   glLightfv(GL_LIGHT0, GL_SPECULAR, intensity);
   //glLightfv(GL_LIGHT0, GL_AMBIENT, intensity);
   
   glLightfv(GL_LIGHT1, GL_POSITION, pos2);
-  glLightfv(GL_LIGHT1, GL_DIFFUSE, intensity);
+  //glLightfv(GL_LIGHT1, GL_DIFFUSE, intensity);
   glLightfv(GL_LIGHT1, GL_SPECULAR, intensity);
   //glLightfv(GL_LIGHT1, GL_AMBIENT, intensity);
   glLightfv(GL_LIGHT2, GL_POSITION, pos3);
-  glLightfv(GL_LIGHT2, GL_DIFFUSE, intensity);
+  //glLightfv(GL_LIGHT2, GL_DIFFUSE, intensity);
   glLightfv(GL_LIGHT2, GL_SPECULAR, intensity);
   //glLightfv(GL_LIGHT2, GL_AMBIENT, intensity);
   glLightfv(GL_LIGHT3, GL_POSITION, pos4);
-  glLightfv(GL_LIGHT3, GL_DIFFUSE, intensity);
+  //glLightfv(GL_LIGHT3, GL_DIFFUSE, intensity);
   glLightfv(GL_LIGHT3, GL_SPECULAR, intensity);
   //glLightfv(GL_LIGHT3, GL_AMBIENT, intensity);
   
