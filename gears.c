@@ -68,11 +68,11 @@ void gearMaterial(GLenum f,const GLfloat * ps) {
     rrs[1] = 2 * ps[1] / 5;
     rrs[2] = 2 * ps[2] / 5;
     rrs[3] = ps[3];
-    glMaterialfv(f,GL_SPECULAR,ps);
+    //glMaterialfv(f,GL_SPECULAR,ps);
     glMaterialfv(f,GL_AMBIENT,rrs);
-    glMaterialfv(f,GL_DIFFUSE,rrs);
+    //glMaterialfv(f,GL_DIFFUSE,rrs);
     GLfloat s[] = {50.0};
-    glMaterialfv(f,GL_SHININESS,s);
+    //glMaterialfv(f,GL_SHININESS,s);
 }
 
 static void
@@ -577,10 +577,12 @@ static void draw(void) {
      to an array of x-y coordinates */
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
+  /*
 
   glEnable(GL_LIGHT1);
   glEnable(GL_LIGHT2);
   glEnable(GL_LIGHT3);
+  */
   
   //glColor3f(0.8,0.8,0.8);
   gearMaterial(GL_FRONT, skyblue);
@@ -932,9 +934,10 @@ static void init(void) {
   static GLfloat red[4] = {0.8, 0.1, 0.0, 1.0};
   static GLfloat green[4] = {0.0, 0.8, 0.2, 1.0};
   static GLfloat blue[4] = {0.2, 0.2, 1.0, 1.0};
-  static GLfloat intensity[4] = {0.5, 0.5, 0.5, 1.0};
-  //static GLfloat intensity[4] = {0.25, 0.25, 0.25, 1.0};
-  //static GLfloat intensity[4] = {1.0, 1.0, 1.0, 1.0};
+  //static GLfloat intensity[4] = {0.5, 0.5, 0.5, 1.0};
+  static GLfloat intensity0[4] = {0.0, 0.0, 0.0, 1.0};
+  static GLfloat intensityq[4] = {0.25, 0.25, 0.25, 1.0};
+  static GLfloat intensity[4] = {1.0, 1.0, 1.0, 1.0};
 
   /* add a routine for duplicating a palette */
   /* construct the Psychedelic Crayola palette by
@@ -998,22 +1001,22 @@ static void init(void) {
 
   glShadeModel(GL_SMOOTH);
   glLightfv(GL_LIGHT0, GL_POSITION, pos);
-  //glLightfv(GL_LIGHT0, GL_DIFFUSE, intensity);
-  glLightfv(GL_LIGHT0, GL_SPECULAR, intensity);
-  //glLightfv(GL_LIGHT0, GL_AMBIENT, intensity);
+  glLightfv(GL_LIGHT0, GL_DIFFUSE, intensity0);
+  glLightfv(GL_LIGHT0, GL_SPECULAR, intensity0);
+  glLightfv(GL_LIGHT0, GL_AMBIENT, intensity);
   
   glLightfv(GL_LIGHT1, GL_POSITION, pos2);
-  //glLightfv(GL_LIGHT1, GL_DIFFUSE, intensity);
+  glLightfv(GL_LIGHT1, GL_DIFFUSE, intensity0);
   glLightfv(GL_LIGHT1, GL_SPECULAR, intensity);
-  //glLightfv(GL_LIGHT1, GL_AMBIENT, intensity);
+  glLightfv(GL_LIGHT1, GL_AMBIENT, intensity0);
   glLightfv(GL_LIGHT2, GL_POSITION, pos3);
-  //glLightfv(GL_LIGHT2, GL_DIFFUSE, intensity);
+  glLightfv(GL_LIGHT2, GL_DIFFUSE, intensity0);
   glLightfv(GL_LIGHT2, GL_SPECULAR, intensity);
-  //glLightfv(GL_LIGHT2, GL_AMBIENT, intensity);
+  glLightfv(GL_LIGHT2, GL_AMBIENT, intensity0);
   glLightfv(GL_LIGHT3, GL_POSITION, pos4);
-  //glLightfv(GL_LIGHT3, GL_DIFFUSE, intensity);
+  glLightfv(GL_LIGHT3, GL_DIFFUSE, intensity0);
   glLightfv(GL_LIGHT3, GL_SPECULAR, intensity);
-  //glLightfv(GL_LIGHT3, GL_AMBIENT, intensity);
+  glLightfv(GL_LIGHT3, GL_AMBIENT, intensity0);
   
   glEnable(GL_CULL_FACE);
   glEnable(GL_DEPTH_TEST);
