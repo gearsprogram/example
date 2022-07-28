@@ -68,11 +68,11 @@ void gearMaterial(GLenum f,const GLfloat * ps) {
     rrs[1] = 2 * ps[1] / 5;
     rrs[2] = 2 * ps[2] / 5;
     rrs[3] = ps[3];
-    //glMaterialfv(f,GL_SPECULAR,ps);
-    glMaterialfv(f,GL_AMBIENT,rrs);
-    //glMaterialfv(f,GL_DIFFUSE,rrs);
+    glMaterialfv(f,GL_SPECULAR,ps);
+    //glMaterialfv(f,GL_AMBIENT,rrs);
+    glMaterialfv(f,GL_DIFFUSE,rrs);
     GLfloat s[] = {50.0};
-    //glMaterialfv(f,GL_SHININESS,s);
+    glMaterialfv(f,GL_SHININESS,s);
 }
 
 static void
@@ -199,7 +199,7 @@ static GLint gear1, gear2, gear3;
 static GLfloat gearAngle = 0.0;
 static GLfloat sceneAngle = 0.0;
 static GLfloat camDip = 0.0;
-int sceneRotate = 1;
+int sceneRotate = 0;
 static GLfloat sunAngle = 0.0;
 static GLfloat sunAngle2 = 0.0;
 static GLfloat sunAngle3 = 0.0;
@@ -713,8 +713,10 @@ static void draw(void) {
           } else {
               gearMaterial(GL_FRONT, sbPalette(pa3,k));
           }
+          glPushMatrix(); // fold
+          glTranslatef(0.0,sunRadius,0.0);
+          glRotatef(60.0 + sunAngle3/64.0,1.0,0.0,0.0);
           for (i = 0; i < 2; i += 1) {
-              glTranslatef(0.0,sunRadius,0.0);
               glBegin(GL_TRIANGLES);
               int FACES = 9;
               float xx[FACES];
@@ -760,10 +762,10 @@ static void draw(void) {
                       -xx[ii + 1],0.0,yy[ii + 1]);
               }
               glEnd();
-              glTranslatef(0.0,-sunRadius,0.0);
+              //glTranslatef(0.0,-sunRadius,0.0);
               glRotatef(180.0,0.0,1.0,0.0);
-              //
           }
+          glPopMatrix(); // end fold
           glRotatef(45.0 + sunAngle3/27.0,0.0,0.0,1.0);
           glTranslatef(0.1,0.0,0.0);
       }
@@ -831,9 +833,9 @@ static void animate(void) {
   camDip = 15.0 * sin(glfwGetTime());
   //sunAngle = 5.0 * (float) glfwGetTime();
   sunAngle = 0;
-  sunAngle2 = 5.0 * (float) pulseFunction2(glfwGetTime());
+  sunAngle2 = 45.0 * (float) pulseFunction2(glfwGetTime());
   //sunAngle2 = 0.0;
-  sunAngle3 = 3.0 * (float) glfwGetTime();
+  sunAngle3 = 30.0 * (float) glfwGetTime();
   piston = fmodf(4.0 * (float) glfwGetTime(),4.f);
   piston = (piston > 2.0 ? 4.0 - piston : piston);
   camDip = 10.0 * piston;
@@ -1001,22 +1003,22 @@ static void init(void) {
 
   glShadeModel(GL_SMOOTH);
   glLightfv(GL_LIGHT0, GL_POSITION, pos);
-  glLightfv(GL_LIGHT0, GL_DIFFUSE, intensity0);
-  glLightfv(GL_LIGHT0, GL_SPECULAR, intensity0);
-  glLightfv(GL_LIGHT0, GL_AMBIENT, intensity);
+  glLightfv(GL_LIGHT0, GL_DIFFUSE, intensity);
+  glLightfv(GL_LIGHT0, GL_SPECULAR, intensity);
+  //glLightfv(GL_LIGHT0, GL_AMBIENT, intensity);
   
   glLightfv(GL_LIGHT1, GL_POSITION, pos2);
-  glLightfv(GL_LIGHT1, GL_DIFFUSE, intensity0);
+  glLightfv(GL_LIGHT1, GL_DIFFUSE, intensity);
   glLightfv(GL_LIGHT1, GL_SPECULAR, intensity);
-  glLightfv(GL_LIGHT1, GL_AMBIENT, intensity0);
+  //glLightfv(GL_LIGHT1, GL_AMBIENT, intensity0);
   glLightfv(GL_LIGHT2, GL_POSITION, pos3);
-  glLightfv(GL_LIGHT2, GL_DIFFUSE, intensity0);
+  glLightfv(GL_LIGHT2, GL_DIFFUSE, intensity);
   glLightfv(GL_LIGHT2, GL_SPECULAR, intensity);
-  glLightfv(GL_LIGHT2, GL_AMBIENT, intensity0);
+  //glLightfv(GL_LIGHT2, GL_AMBIENT, intensity0);
   glLightfv(GL_LIGHT3, GL_POSITION, pos4);
-  glLightfv(GL_LIGHT3, GL_DIFFUSE, intensity0);
+  glLightfv(GL_LIGHT3, GL_DIFFUSE, intensity);
   glLightfv(GL_LIGHT3, GL_SPECULAR, intensity);
-  glLightfv(GL_LIGHT3, GL_AMBIENT, intensity0);
+  //glLightfv(GL_LIGHT3, GL_AMBIENT, intensity0);
   
   glEnable(GL_CULL_FACE);
   glEnable(GL_DEPTH_TEST);
