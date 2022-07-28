@@ -705,7 +705,7 @@ static void draw(void) {
   glRotatef(rsgn * sunAngle2,asgn,bsgn,csgn);
   int CONES;
   int kk;
-  CONES = 16;
+  CONES = 160;
   for (k = 0; k < CONES; k += 1) {
       for (j = 0; j < 4; j += 1) {
           if (pi % 2 == 0) {
@@ -813,7 +813,7 @@ static void animate(void) {
       sceneAngle = 0; //-45.0;
   }
   static GLfloat lightAngle;
-  lightAngle = 90 + 72.0 * (float) glfwGetTime();
+  lightAngle = 90 + 720.0 * (float) glfwGetTime();
   static GLfloat pos[4]  = { 0.0, 0.0,100.0, 0.0};
   pos[0] = 200.0 * cos(lightAngle * M_PI / 180.0);
   pos[1] = 200.0 * sin(lightAngle * M_PI / 180.0);
