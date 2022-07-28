@@ -588,11 +588,11 @@ static void draw(void) {
   gearMaterial(GL_FRONT, skyblue);
   glPushMatrix(); /* (cursor, cursor 2, marquee) */
 
-  //glBegin(GL_TRIANGLES); /* cursor 2 */
-  //drawboldline2(cursor2x - 0.5, cursor2y - 0.5,cursor2x + 0.5, cursor2y + 0.5);
-  //drawboldline2(cursor2x - 0.5, cursor2y + 0.5,cursor2x + 0.5, cursor2y - 0.5);
-  //drawboldline2(0.0,0.0,cursor2x,cursor2y);
-  //glEnd(); /* cursor 2 */
+  glBegin(GL_TRIANGLES); /* cursor 2 */
+  drawboldline2(cursor2x - 0.5, cursor2y - 0.5,cursor2x + 0.5, cursor2y + 0.5);
+  drawboldline2(cursor2x - 0.5, cursor2y + 0.5,cursor2x + 0.5, cursor2y - 0.5);
+  drawboldline2(0.0,0.0,cursor2x,cursor2y);
+  glEnd(); /* cursor 2 */
 
   gearMaterial(GL_FRONT, cerulean);
   glPushMatrix(); /* platform */
@@ -810,7 +810,7 @@ static void animate(void) {
   if (sceneRotate) {
       sceneAngle = 90 + 3.5 * (float) glfwGetTime();
   } else {
-      sceneAngle = -45.0;
+      sceneAngle = 0; //-45.0;
   }
   static GLfloat lightAngle;
   lightAngle = 90 + 72.0 * (float) glfwGetTime();
