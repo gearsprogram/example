@@ -814,7 +814,7 @@ static void animate(void) {
   }
   static GLfloat lightAngle;
   lightAngle = (float) glfwGetTime();
-  lightAngle = 90 + 345.0 * lightAngle;
+  lightAngle = 90 + 3450.0 * lightAngle;
   static GLfloat lightHeight;
   lightHeight = 600.0 + 400.0 * sin(lightAngle * M_PI / 1800.0);
   static GLfloat pos[4] = {0.0,0.0,0.0,0.0};
