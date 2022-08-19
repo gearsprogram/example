@@ -588,11 +588,14 @@ static void draw(void) {
   gearMaterial(GL_FRONT, skyblue);
   glPushMatrix(); /* (cursor, cursor 2, marquee) */
 
+  glPushMatrix();
+  glRotatef(sunAngle3,cursor2x,cursor2y,0.0);
   glBegin(GL_TRIANGLES); /* cursor 2 */
   drawboldline2(cursor2x - 0.5, cursor2y - 0.5,cursor2x + 0.5, cursor2y + 0.5);
   drawboldline2(cursor2x - 0.5, cursor2y + 0.5,cursor2x + 0.5, cursor2y - 0.5);
   drawboldline2(0.0,0.0,cursor2x,cursor2y);
   glEnd(); /* cursor 2 */
+  glPopMatrix();
 
   gearMaterial(GL_FRONT, cerulean);
   glPushMatrix(); /* platform */
