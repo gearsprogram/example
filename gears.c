@@ -807,16 +807,20 @@ float pulseFunction2(float x) {
     }
 }
 
+double gearsGetTime(void) {
+    return (double) 3.0 * glfwGetTime();
+}
+
 /* update animation parameters */
 static void animate(void) {
-  gearAngle = 60.f * (float) glfwGetTime(); /* gear angle */
+  gearAngle = 60.f * (float) gearsGetTime(); /* gear angle */
   if (sceneRotate) {
-      sceneAngle = 90 + 3.5 * (float) glfwGetTime();
+      sceneAngle = 90 + 3.5 * (float) gearsGetTime();
   } else {
       sceneAngle = 0; //-45.0;
   }
   static GLfloat lightAngle;
-  lightAngle = (float) glfwGetTime();
+  lightAngle = (float) gearsGetTime();
   lightAngle = 90 + 3450.0 * lightAngle;
   static GLfloat lightHeight;
   lightHeight = 600.0 + 400.0 * sin(lightAngle * M_PI / 1800.0);
@@ -837,13 +841,13 @@ static void animate(void) {
   pos[1] *= -1.0;
   glLightfv(GL_LIGHT3, GL_POSITION, pos);
   
-  camDip = 15.0 * sin(glfwGetTime());
-  //sunAngle = 5.0 * (float) glfwGetTime();
+  camDip = 15.0 * sin(gearsGetTime());
+  //sunAngle = 5.0 * (float) gearsGetTime();
   sunAngle = 0;
-  sunAngle2 = 15.0 * (float) pulseFunction2(glfwGetTime());
+  sunAngle2 = 15.0 * (float) pulseFunction2(gearsGetTime());
   //sunAngle2 = 0.0;
-  sunAngle3 = 30.0 * (float) glfwGetTime();
-  piston = fmodf(4.0 * (float) glfwGetTime(),4.f);
+  sunAngle3 = 30.0 * (float) gearsGetTime();
+  piston = fmodf(4.0 * (float) gearsGetTime(),4.f);
   piston = (piston > 2.0 ? 4.0 - piston : piston);
   camDip = 10.0 * piston;
   camDip = 0;
@@ -903,7 +907,7 @@ void cursor(GLFWwindow * window, double x, double y) {
     y *= -1 * 20 * (windowHeight / windowWidth);
     cursor2y = y;
     //printf("window width: %f\n",windowWidth);
-    //printf("at %0.3f: Cursor position: %f %f\n",glfwGetTime(), x, y);
+    //printf("at %0.3f: Cursor position: %f %f\n",gearsGetTime(), x, y);
 }
 
 /* new window size */
