@@ -808,7 +808,7 @@ float pulseFunction2(float x) {
 }
 
 double gearsGetTime(void) {
-    return (double) 3.0 * glfwGetTime();
+    return (double) 0.25 * glfwGetTime();
 }
 
 /* update animation parameters */
