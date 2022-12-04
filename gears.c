@@ -774,10 +774,8 @@ void key( GLFWwindow* window, int k, int s, int action, int mods ) {
     return;
   }
 }
-
 float windowWidth;
 float windowHeight;
-
 void cursor(GLFWwindow * window, double x, double y) {
     x -= windowWidth / 2.0;
     x /= windowWidth / 2.0;
@@ -790,7 +788,6 @@ void cursor(GLFWwindow * window, double x, double y) {
     //printf("window width: %f\n",windowWidth);
     //printf("at %0.3f: Cursor position: %f %f\n",gearsGetTime(), x, y);
 }
-
 /* new window size */
 void reshape( GLFWwindow * window, int width, int height ) {
   //printf("reshape: %f %f\n",(float) width,(float) height);
@@ -798,11 +795,9 @@ void reshape( GLFWwindow * window, int width, int height ) {
   windowHeight = height / 2;
   GLfloat h = (GLfloat) height / (GLfloat) width;
   GLfloat xmax, znear, zfar;
-
   znear = 5.0f;
   zfar  = 60.0f;
   xmax  = znear * 0.5f;
-
   glViewport( 0, 0, (GLint) width, (GLint) height );
   glMatrixMode( GL_PROJECTION );
   glLoadIdentity();
@@ -811,8 +806,6 @@ void reshape( GLFWwindow * window, int width, int height ) {
   glLoadIdentity();
   //glTranslatef( 0.0, 0.0, -range );
 }
-
-
 /* program & OpenGL initialization */
 static void init(void) {
   /*
@@ -832,7 +825,6 @@ static void init(void) {
   static GLfloat intensity0[4] = {0.0, 0.0, 0.0, 1.0};
   static GLfloat intensityq[4] = {0.25, 0.25, 0.25, 1.0};
   static GLfloat intensity[4] = {1.0, 1.0, 1.0, 1.0};
-
   /* add a routine for duplicating a palette */
   /* construct the Psychedelic Crayola palette by
      duplicating Jovian and adding skyblue through chestnut below */
@@ -890,15 +882,12 @@ static void init(void) {
   ldPalette(pa3,ultramarine);
   ldPalette(pa3,cerulean);
   ldPalette3i(pa3,46,139,87); /* sea green */
-
   cursor2x = cursor2y = 0;
-
   glShadeModel(GL_SMOOTH);
   glLightfv(GL_LIGHT0, GL_POSITION, pos);
   glLightfv(GL_LIGHT0, GL_DIFFUSE, intensity);
   glLightfv(GL_LIGHT0, GL_SPECULAR, intensity);
   //glLightfv(GL_LIGHT0, GL_AMBIENT, intensity);
-  
   glLightfv(GL_LIGHT1, GL_POSITION, pos2);
   glLightfv(GL_LIGHT1, GL_DIFFUSE, intensity);
   glLightfv(GL_LIGHT1, GL_SPECULAR, intensity);
@@ -911,50 +900,20 @@ static void init(void) {
   glLightfv(GL_LIGHT3, GL_DIFFUSE, intensity);
   glLightfv(GL_LIGHT3, GL_SPECULAR, intensity);
   //glLightfv(GL_LIGHT3, GL_AMBIENT, intensity0);
-  
   glEnable(GL_CULL_FACE);
   glEnable(GL_DEPTH_TEST);
-
-  /* make the gears */
-  /*
-  gear1 = glGenLists(1);
-  glNewList(gear1, GL_COMPILE);
-  gearMaterial(GL_FRONT, red);
-  gear(1.f, 4.f, 1.f, 20, 0.7f);
-  glEndList();
-
-  gear2 = glGenLists(1);
-  glNewList(gear2, GL_COMPILE);
-  gearMaterial(GL_FRONT, green);
-  gear(0.5f, 2.f, 2.f, 10, 0.7f);
-  glEndList();
-
-  gear3 = glGenLists(1);
-  glNewList(gear3, GL_COMPILE);
-  gearMaterial(GL_FRONT, blue);
-  gear(1.3f, 2.f, 0.5f, 10, 0.7f);
-  glEndList();
-  */
-
   glEnable(GL_NORMALIZE);
 }
 
-
-/* program entry */
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
     GLFWwindow* window;
     int width, height;
-
-    if( !glfwInit() )
-    {
+    if( !glfwInit() ) {
         fprintf( stderr, "Failed to initialize GLFW\n" );
         exit( EXIT_FAILURE );
     }
-
     glfwWindowHint(GLFW_DEPTH_BITS, 16);
     glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, GLFW_TRUE);
-
     if (argc >= 2) {
 		windowWidth = 210;
 		windowHeight = 210;
@@ -963,46 +922,34 @@ int main(int argc, char *argv[])
 		windowHeight = 800;
     }
     window = glfwCreateWindow(windowWidth, windowHeight, "Gears", NULL, NULL );
-    if (!window)
-    {
+    if (!window) {
         fprintf( stderr, "Failed to open GLFW window\n" );
         glfwTerminate();
         exit( EXIT_FAILURE );
     }
-
     // Set callback functions
     glfwSetFramebufferSizeCallback(window, reshape);
     glfwSetKeyCallback(window, key);
     glfwSetCursorPosCallback(window, cursor);
-
     glfwMakeContextCurrent(window);
     gladLoadGL(glfwGetProcAddress);
     glfwSwapInterval( 1 );
-
     glfwGetFramebufferSize(window, &width, &height);
     reshape(window, width, height);
-
     // Parse command-line options
     init();
-
     // Main loop
-    while( !glfwWindowShouldClose(window) )
-    {
+    while( !glfwWindowShouldClose(window) ) {
         // Update animation
         animate();
-
         // Draw gears
         draw();
-
         // Swap buffers
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
-
     // Terminate GLFW
     glfwTerminate();
-
     // Exit program
     exit( EXIT_SUCCESS );
 }
-
