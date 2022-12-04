@@ -85,7 +85,7 @@ static GLfloat sunAngle = 0.0;
 static GLfloat sunAngle2 = 0.0;
 static GLfloat sunAngle3 = 0.0;
 static GLfloat piston = 0.0;
-static GLfloat range = 40.0;
+static GLfloat range = 25.0;
 #define HUDWIDTH 36
 #define HUDHEIGHT 20
 static GLfloat xHUDscale = HUDWIDTH / 2;
@@ -569,7 +569,9 @@ static void draw(void) {
   for (p3 = 0; p3 < 2; p3 += 1) {
   pi += 1;
   glPushMatrix(); /* Sol */
-  glTranslatef(-5.0 + 10.0 * p1,-5.0 + 10.0 * p2,-5.0 + 10.0 * p3);
+  float disp = 7.5;
+  float disp2 = disp/2.0;
+  glTranslatef(-disp2 + disp * p1,-disp2 + disp * p2,-disp2 + disp * p3);
   //glRotatef(pi * 15.0,0.0,1.0,0.0);
   //glRotatef(pi * 15.0,0.0,0.0,1.0);
   int rsgn = 1;
