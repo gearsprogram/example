@@ -85,7 +85,7 @@ static GLfloat sunAngle2 = 0.0;
 static GLfloat sunAngle3 = 0.0;
 static GLfloat piston = 0.0;
 static GLfloat range = 30.0;
-static GLfloat camHeight = -5.0;
+static GLfloat camHeight = -2.0;
 #define HUDWIDTH 36
 #define HUDHEIGHT 20
 static GLfloat xHUDscale = HUDWIDTH / 2;
@@ -481,12 +481,19 @@ static void draw(void) {
   gearMaterial(GL_FRONT, cerulean);
   float sideWidth = 10.0;
   float platHeight = 2.0;
-  for (i = 0;i < 2;i += 1) {
+  for (i = 0;i < 4;i += 1) {
       glPushMatrix(); /* platform */
       if (i == 1) {
+          glRotatef(90.0,0.0,0.0,1.0);
+          glRotatef(180.0,1.0,0.0,0.0);
+          sideWidth = 5.0;
+          platHeight = 0.25;
+      } else if (i == 2) {
+          glRotatef(90.0,0.0,1.0,0.0);
+          glRotatef(180.0,1.0,0.0,0.0);
+      } else if (i == 3) {
           glRotatef(90.0,1.0,0.0,0.0);
           glRotatef(180.0,0.0,1.0,0.0);
-          sideWidth = 5.0;
       }
       glTranslatef(0.0,-5.0,0.0);
       glBegin(GL_TRIANGLES); /* platform */
@@ -500,13 +507,13 @@ static void draw(void) {
           sideWidth,0.0, 0.0);
 
       triNorm(
-           0.0,-2.0, 0.0,
-           sideWidth,-2.0,sideWidth,
-           0.0,-2.0,sideWidth);
+           0.0,-platHeight, 0.0,
+           sideWidth,-platHeight,sideWidth,
+           0.0,-platHeight,sideWidth);
       triNorm(
-           0.0,-2.0, 0.0,
-          sideWidth,-2.0, 0.0,
-          sideWidth,-2.0,sideWidth);
+           0.0,-platHeight, 0.0,
+          sideWidth,-platHeight, 0.0,
+          sideWidth,-platHeight,sideWidth);
 
       triNorm(
            0.0,-platHeight,0.0,
@@ -717,15 +724,15 @@ static void animate(void) {
   gearAngle = 60.f * (float) gearsGetTime(); /* gear angle */
   int sceneRotate = 0;
   if (sceneRotate) {
-      sceneAngle = 90 + 10.0 * (float) gearsGetTime();
+      sceneAngle = 90 + 60.0 * (float) gearsGetTime();
   } else {
-      sceneAngle = 0; //-45.0;
+      sceneAngle = 180; //-45.0;
   }
   static GLfloat lightAngle;
-  lightAngle = (float) gearsGetTime();
-  lightAngle = 90 + 3450.0 * lightAngle;
   static GLfloat lightHeight;
-  lightHeight = 600.0 + 400.0 * sin(lightAngle * M_PI / 1800.0);
+  lightAngle = (float) gearsGetTime();
+  lightHeight = 600.0 + 400.0 * sin(lightAngle * M_PI);
+  lightAngle = 90 + 3450.0 * lightAngle;
   static GLfloat pos[4] = {0.0,0.0,0.0,0.0};
   pos[0] = 200.0 * cos(lightAngle * M_PI / 180.0);
   pos[1] = 200.0 * sin(lightAngle * M_PI / 180.0);
@@ -752,7 +759,7 @@ static void animate(void) {
   piston = fmodf(4.0 * (float) gearsGetTime(),4.f);
   piston = (piston > 2.0 ? 4.0 - piston : piston);
   camDip = 10.0 * piston;
-  camDip = 10.0;
+  camDip = 5.0;
   animIndex += 1;
   if (0 == animIndex % animPeriod) {
       xCursor += 1;
