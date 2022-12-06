@@ -80,13 +80,12 @@ static GLint gear1, gear2, gear3;
 static GLfloat gearAngle = 0.0;
 static GLfloat sceneAngle = 0.0;
 static GLfloat camDip = 0.0;
-int sceneRotate = 1;
 static GLfloat sunAngle = 0.0;
 static GLfloat sunAngle2 = 0.0;
 static GLfloat sunAngle3 = 0.0;
 static GLfloat piston = 0.0;
-static GLfloat range = 45.0;
-static GLfloat camHeight = -10.0;
+static GLfloat range = 30.0;
+static GLfloat camHeight = -5.0;
 #define HUDWIDTH 36
 #define HUDHEIGHT 20
 static GLfloat xHUDscale = HUDWIDTH / 2;
@@ -487,6 +486,7 @@ static void draw(void) {
       if (i == 1) {
           glRotatef(90.0,1.0,0.0,0.0);
           glRotatef(180.0,0.0,1.0,0.0);
+          sideWidth = 5.0;
       }
       glTranslatef(0.0,-5.0,0.0);
       glBegin(GL_TRIANGLES); /* platform */
@@ -715,8 +715,9 @@ double gearsGetTime(void) {
 /* update animation parameters */
 static void animate(void) {
   gearAngle = 60.f * (float) gearsGetTime(); /* gear angle */
+  int sceneRotate = 0;
   if (sceneRotate) {
-      sceneAngle = 90 + 35.0 * (float) gearsGetTime();
+      sceneAngle = 90 + 10.0 * (float) gearsGetTime();
   } else {
       sceneAngle = 0; //-45.0;
   }
