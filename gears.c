@@ -80,12 +80,13 @@ static GLint gear1, gear2, gear3;
 static GLfloat gearAngle = 0.0;
 static GLfloat sceneAngle = 0.0;
 static GLfloat camDip = 0.0;
-int sceneRotate = 0;
+int sceneRotate = 1;
 static GLfloat sunAngle = 0.0;
 static GLfloat sunAngle2 = 0.0;
 static GLfloat sunAngle3 = 0.0;
 static GLfloat piston = 0.0;
-static GLfloat range = 25.0;
+static GLfloat range = 45.0;
+static GLfloat camHeight = -10.0;
 #define HUDWIDTH 36
 #define HUDHEIGHT 20
 static GLfloat xHUDscale = HUDWIDTH / 2;
@@ -414,7 +415,7 @@ static void draw(void) {
   glPushMatrix(); /* scene */
   glRotatef(camDip, 1.0, 0.0, 0.0);
   glTranslatef(0.0,0.0,-range);
-  //glTranslatef(0.0,0.0,range);
+  glTranslatef(0.0,camHeight,0.0);
   glRotatef(sceneAngle, 0.0, 1.0, 0.0);
   glTranslatef(0.0, -4.0, 0.0);
   glPushMatrix(); /* (green grid, cursor, marquee, Sol) */
@@ -479,56 +480,73 @@ static void draw(void) {
   glPopMatrix();
 
   gearMaterial(GL_FRONT, cerulean);
-  glPushMatrix(); /* platform */
-  glTranslatef(0.0,-5.0,0.0);
-  glBegin(GL_TRIANGLES); /* platform */
-  triNorm(
-       0.0,0.0, 0.0,
-       0.0,0.0,10.0,
-      10.0,0.0,10.0);
-  triNorm(
-       0.0,0.0, 0.0,
-      10.0,0.0,10.0,
-      10.0,0.0, 0.0);
+  float sideWidth = 10.0;
+  float platHeight = 2.0;
+  for (i = 0;i < 2;i += 1) {
+      glPushMatrix(); /* platform */
+      if (i == 1) {
+          glRotatef(90.0,1.0,0.0,0.0);
+          glRotatef(180.0,0.0,1.0,0.0);
+      }
+      glTranslatef(0.0,-5.0,0.0);
+      glBegin(GL_TRIANGLES); /* platform */
+      triNorm(
+           0.0,0.0, 0.0,
+           0.0,0.0,sideWidth,
+          sideWidth,0.0,sideWidth);
+      triNorm(
+           0.0,0.0, 0.0,
+          sideWidth,0.0,sideWidth,
+          sideWidth,0.0, 0.0);
 
-  triNorm(
-       0.0,-2.0,0.0,
-       0.0, 0.0,0.0,
-      10.0, 0.0,0.0);
-  triNorm(
-       0.0,-2.0,0.0,
-      10.0, 0.0,0.0,
-      10.0,-2.0,0.0);
+      triNorm(
+           0.0,-2.0, 0.0,
+           sideWidth,-2.0,sideWidth,
+           0.0,-2.0,sideWidth);
+      triNorm(
+           0.0,-2.0, 0.0,
+          sideWidth,-2.0, 0.0,
+          sideWidth,-2.0,sideWidth);
 
-  triNorm(
-       0.0, 0.0,10.0,
-       0.0,-2.0,10.0,
-      10.0, 0.0,10.0);
-  triNorm(
-      10.0, 0.0,10.0,
-       0.0,-2.0,10.0,
-      10.0,-2.0,10.0);
+      triNorm(
+           0.0,-platHeight,0.0,
+           0.0, 0.0,0.0,
+          sideWidth, 0.0,0.0);
+      triNorm(
+           0.0,-platHeight,0.0,
+          sideWidth, 0.0,0.0,
+          sideWidth,-platHeight,0.0);
 
-  triNorm(
-       0.0, 0.0,0.0,
-       0.0,-2.0,0.0,
-       0.0, 0.0,10.0);
-  triNorm(
-       0.0, 0.0,10.0,
-       0.0,-2.0,0.0,
-       0.0,-2.0,10.0);
+      triNorm(
+           0.0, 0.0,sideWidth,
+           0.0,-platHeight,sideWidth,
+          sideWidth, 0.0,sideWidth);
+      triNorm(
+          sideWidth, 0.0,sideWidth,
+           0.0,-platHeight,sideWidth,
+          sideWidth,-platHeight,sideWidth);
 
-  triNorm(
-       10.0,-2.0,0.0,
-       10.0, 0.0,0.0,
-       10.0, 0.0,10.0);
-  triNorm(
-       10.0,-2.0,0.0,
-       10.0, 0.0,10.0,
-       10.0,-2.0,10.0);
+      triNorm(
+           0.0, 0.0,0.0,
+           0.0,-platHeight,0.0,
+           0.0, 0.0,sideWidth);
+      triNorm(
+           0.0, 0.0,sideWidth,
+           0.0,-platHeight,0.0,
+           0.0,-platHeight,sideWidth);
 
-  glEnd(); /* end platform */
-  glPopMatrix(); /* end platform */
+      triNorm(
+           sideWidth,-platHeight,0.0,
+           sideWidth, 0.0,0.0,
+           sideWidth, 0.0,sideWidth);
+      triNorm(
+           sideWidth,-platHeight,0.0,
+           sideWidth, 0.0,sideWidth,
+           sideWidth,-platHeight,sideWidth);
+
+      glEnd(); /* end platform */
+      glPopMatrix(); /* end platform */
+  }
 
   gearMaterial(GL_FRONT, pink);
   int Rwidth = 1;
@@ -698,7 +716,7 @@ double gearsGetTime(void) {
 static void animate(void) {
   gearAngle = 60.f * (float) gearsGetTime(); /* gear angle */
   if (sceneRotate) {
-      sceneAngle = 90 + 3.5 * (float) gearsGetTime();
+      sceneAngle = 90 + 35.0 * (float) gearsGetTime();
   } else {
       sceneAngle = 0; //-45.0;
   }
@@ -733,7 +751,7 @@ static void animate(void) {
   piston = fmodf(4.0 * (float) gearsGetTime(),4.f);
   piston = (piston > 2.0 ? 4.0 - piston : piston);
   camDip = 10.0 * piston;
-  camDip = 0;
+  camDip = 10.0;
   animIndex += 1;
   if (0 == animIndex % animPeriod) {
       xCursor += 1;
@@ -806,7 +824,6 @@ void reshape( GLFWwindow * window, int width, int height ) {
   glFrustum( -xmax, xmax, -xmax*h, xmax*h, znear, zfar );
   glMatrixMode( GL_MODELVIEW );
   glLoadIdentity();
-  //glTranslatef( 0.0, 0.0, -range );
 }
 /* program & OpenGL initialization */
 static void init(void) {
