@@ -472,11 +472,13 @@ static void draw(void) {
 
   glPushMatrix();
   glRotatef(sunAngle3,cursor2x,cursor2y,0.0);
-  glBegin(GL_TRIANGLES); /* cursor 2 */
-  drawboldline2(cursor2x - 0.5, cursor2y - 0.5,cursor2x + 0.5, cursor2y + 0.5);
-  drawboldline2(cursor2x - 0.5, cursor2y + 0.5,cursor2x + 0.5, cursor2y - 0.5);
-  drawboldline2(0.0,0.0,cursor2x,cursor2y);
-  glEnd(); /* cursor 2 */
+
+  //glBegin(GL_TRIANGLES); /* cursor 2 */
+  //drawboldline2(cursor2x - 0.5, cursor2y - 0.5,cursor2x + 0.5, cursor2y + 0.5);
+  //drawboldline2(cursor2x - 0.5, cursor2y + 0.5,cursor2x + 0.5, cursor2y - 0.5);
+  //drawboldline2(0.0,0.0,cursor2x,cursor2y);
+  //glEnd(); /* cursor 2 */
+
   glPopMatrix();
 
   gearMaterial(GL_FRONT, cerulean);
@@ -727,7 +729,7 @@ static void animate(void) {
   if (sceneRotate) {
       sceneAngle = 90 + 60.0 * (float) gearsGetTime();
   } else {
-      sceneAngle = 180; //-45.0;
+      sceneAngle = -45;
   }
   static GLfloat lightAngle;
   static GLfloat lightHeight;
