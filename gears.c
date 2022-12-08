@@ -75,6 +75,7 @@ void gearMaterial(GLenum f,const GLfloat * ps) {
     glMaterialfv(f,GL_SHININESS,s);
 }
 
+static float timeOffset;
 static GLfloat view_rotx = 20.0, view_roty = 30.0, view_rotz = 0.0;
 static GLint gear1, gear2, gear3;
 static GLfloat gearAngle = 0.0;
@@ -719,7 +720,8 @@ float pulseFunction2(float x) {
 }
 
 double gearsGetTime(void) {
-    return (double) 0.25 * glfwGetTime();
+    float f = (double) 0.25 * (timeOffset + glfwGetTime());
+    return f;
 }
 
 /* update animation parameters */
@@ -935,9 +937,20 @@ static void init(void) {
   glEnable(GL_NORMALIZE);
 }
 
+void readTimeOffset(void) {
+    FILE * f = fopen("offset","r");
+    float g;
+    fscanf(f,"%f",& g);
+    //printf("%f\n",g);
+    fflush(stdout);
+    timeOffset = g;
+    fclose(f);
+}
+
 int main(int argc, char *argv[]) {
     GLFWwindow* window;
     int width, height;
+    readTimeOffset();
     if( !glfwInit() ) {
         fprintf( stderr, "Failed to initialize GLFW\n" );
         exit( EXIT_FAILURE );
