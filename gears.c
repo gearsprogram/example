@@ -938,7 +938,7 @@ static void init(void) {
 }
 
 void readTimeOffset(void) {
-    FILE * f = fopen("offset","r");
+    FILE * f = fopen("/Users/dbp/offset","r");
     float g;
     fscanf(f,"%f",& g);
     //printf("%f\n",g);
@@ -961,8 +961,8 @@ int main(int argc, char *argv[]) {
 		windowWidth = 210;
 		windowHeight = 210;
     } else {
-		windowWidth = 1400;
-		windowHeight = 800;
+		windowWidth = 900;
+		windowHeight = 400;
     }
     window = glfwCreateWindow(windowWidth, windowHeight, "Gears", NULL, NULL );
     if (!window) {
