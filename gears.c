@@ -85,7 +85,7 @@ static GLfloat sunAngle = 0.0;
 static GLfloat sunAngle2 = 0.0;
 static GLfloat sunAngle3 = 0.0;
 static GLfloat piston = 0.0;
-static GLfloat range = 30.0;
+static GLfloat range = 33.0;
 static GLfloat camHeight = -2.0;
 #define HUDWIDTH 36
 #define HUDHEIGHT 20
@@ -937,13 +937,25 @@ static void init(void) {
   glEnable(GL_NORMALIZE);
 }
 
+#define OFFSET_FILENAME "/Users/dbp/offset"
+
 void readTimeOffset(void) {
-    FILE * f = fopen("/Users/dbp/offset","r");
+    FILE * f = fopen(OFFSET_FILENAME,"r");
     float g;
     fscanf(f,"%f",& g);
     //printf("%f\n",g);
-    fflush(stdout);
+    //fflush(stdout);
     timeOffset = g;
+    fclose(f);
+}
+
+void writeTimeOffset(void) {
+    FILE * f = fopen(OFFSET_FILENAME,"w");
+    float haltTime = timeOffset + glfwGetTime();
+    fprintf(f,"%f\n",haltTime);
+    printf("%f\n",haltTime);
+    fflush(stdout);
+    fflush(f);
     fclose(f);
 }
 
@@ -991,6 +1003,7 @@ int main(int argc, char *argv[]) {
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
+    writeTimeOffset();
     // Terminate GLFW
     glfwTerminate();
     // Exit program
