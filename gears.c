@@ -85,8 +85,8 @@ static GLfloat sunAngle = 0.0;
 static GLfloat sunAngle2 = 0.0;
 static GLfloat sunAngle3 = 0.0;
 static GLfloat piston = 0.0;
-static GLfloat range = 33.0;
-static GLfloat camHeight = -2.0;
+static GLfloat range = 45.0;
+static GLfloat camHeight = -4.0;
 #define HUDWIDTH 36
 #define HUDHEIGHT 20
 static GLfloat xHUDscale = HUDWIDTH / 2;
@@ -483,15 +483,17 @@ static void draw(void) {
   glPopMatrix();
 
   gearMaterial(GL_FRONT, cerulean);
-  float sideWidth = 10.0;
-  float platHeight = 2.0;
+  float sideWidth = 6.0;
+  float platHeight = 1.0;
   for (i = 0;i < 4;i += 1) {
+      float sideWidth2 = 3.0;
+      float platHeight2 = 0.125;
       glPushMatrix(); /* platform */
       if (i == 1) {
           glRotatef(90.0,0.0,0.0,1.0);
           glRotatef(180.0,1.0,0.0,0.0);
-          sideWidth = 5.0;
-          platHeight = 0.25;
+          sideWidth = sideWidth2;
+          platHeight = platHeight2;
       } else if (i == 2) {
           glRotatef(90.0,0.0,1.0,0.0);
           glRotatef(180.0,1.0,0.0,0.0);
