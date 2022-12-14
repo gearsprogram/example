@@ -85,8 +85,8 @@ static GLfloat sunAngle = 0.0;
 static GLfloat sunAngle2 = 0.0;
 static GLfloat sunAngle3 = 0.0;
 static GLfloat piston = 0.0;
-static GLfloat range = 45.0;
-static GLfloat camHeight = -4.0;
+static GLfloat range = 30.0;
+static GLfloat camHeight = -3.0;
 #define HUDWIDTH 36
 #define HUDHEIGHT 20
 static GLfloat xHUDscale = HUDWIDTH / 2;
@@ -738,6 +738,7 @@ static void animate(void) {
   static GLfloat lightAngle;
   static GLfloat lightHeight;
   lightAngle = (float) gearsGetTime();
+  lightAngle *= 0.16;
   lightHeight = 600.0 + 400.0 * sin(lightAngle * M_PI);
   lightAngle = 90 + 3450.0 * lightAngle;
   static GLfloat pos[4] = {0.0,0.0,0.0,0.0};
