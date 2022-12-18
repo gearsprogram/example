@@ -730,8 +730,8 @@ double gearsGetTime(int lighting) {
     } else if (lighting == 1) {
         return f;
     } else {
-        float timeShim = 1.0 - cos(f);
-        return 3.5 * (f + timeShim);
+        //float timeShim = 1.0 - cos(f);
+        return 0.05 * f;
     }
 }
 
