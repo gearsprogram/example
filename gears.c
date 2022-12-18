@@ -723,7 +723,8 @@ float pulseFunction2(float x) {
 
 double gearsGetTime(void) {
     float f = (double) 0.25 * (timeOffset + glfwGetTime());
-    return f;
+    float timeShim = 1 - cos(f);
+    return f + timeShim;
 }
 
 /* update animation parameters */
