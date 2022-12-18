@@ -721,24 +721,28 @@ float pulseFunction2(float x) {
     }
 }
 
-double gearsGetTime(void) {
+double gearsGetTime(int lighting) {
     float f = (double) 2.5 * (timeOffset + glfwGetTime());
-    float timeShim = 1.0 - cos(f);
-    return f + timeShim;
+    if (lighting) {
+        return f;
+    } else {
+        float timeShim = 1.0 - cos(f);
+        return f + timeShim;
+    }
 }
 
 /* update animation parameters */
 static void animate(void) {
-  gearAngle = 60.f * (float) gearsGetTime(); /* gear angle */
+  gearAngle = 60.f * (float) gearsGetTime(0); /* gear angle */
   int sceneRotate = 0;
   if (sceneRotate) {
-      sceneAngle = 90 + 60.0 * (float) gearsGetTime();
+      sceneAngle = 90 + 60.0 * (float) gearsGetTime(0);
   } else {
       sceneAngle = -45;
   }
   static GLfloat lightAngle;
   static GLfloat lightHeight;
-  lightAngle = (float) gearsGetTime();
+  lightAngle = (float) gearsGetTime(1);
   lightAngle *= 0.16;
   lightHeight = 600.0 + 400.0 * sin(lightAngle * M_PI);
   lightAngle = 90 + 3450.0 * lightAngle;
@@ -759,13 +763,13 @@ static void animate(void) {
   pos[1] *= -1.0;
   glLightfv(GL_LIGHT3, GL_POSITION, pos);
   
-  camDip = 15.0 * sin(gearsGetTime());
-  //sunAngle = 5.0 * (float) gearsGetTime();
+  camDip = 15.0 * sin(gearsGetTime(0));
+  //sunAngle = 5.0 * (float) gearsGetTime(0);
   sunAngle = 0;
-  sunAngle2 = 15.0 * (float) pulseFunction2(gearsGetTime());
+  sunAngle2 = 15.0 * (float) pulseFunction2(gearsGetTime(0));
   //sunAngle2 = 0.0;
-  sunAngle3 = 30.0 * (float) gearsGetTime();
-  piston = fmodf(4.0 * (float) gearsGetTime(),4.f);
+  sunAngle3 = 30.0 * (float) gearsGetTime(0);
+  piston = fmodf(4.0 * (float) gearsGetTime(0),4.f);
   piston = (piston > 2.0 ? 4.0 - piston : piston);
   camDip = 10.0 * piston;
   camDip = 5.0;
@@ -823,7 +827,7 @@ void cursor(GLFWwindow * window, double x, double y) {
     y *= -1 * 20 * (windowHeight / windowWidth);
     cursor2y = y;
     //printf("window width: %f\n",windowWidth);
-    //printf("at %0.3f: Cursor position: %f %f\n",gearsGetTime(), x, y);
+    //printf("at %0.3f: Cursor position: %f %f\n",gearsGetTime(0), x, y);
 }
 /* new window size */
 void reshape( GLFWwindow * window, int width, int height ) {
