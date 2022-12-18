@@ -722,8 +722,8 @@ float pulseFunction2(float x) {
 }
 
 double gearsGetTime(void) {
-    float f = (double) 0.25 * (timeOffset + glfwGetTime());
-    float timeShim = 10 * (1 - cos(f));
+    float f = (double) 2.5 * (timeOffset + glfwGetTime());
+    float timeShim = 1.0 - cos(f);
     return f + timeShim;
 }
 
