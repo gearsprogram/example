@@ -83,8 +83,8 @@ static GLfloat camDip = 0.0;
 static GLfloat sunAngle = 0.0;
 static GLfloat sunAngle2 = 0.0;
 static GLfloat sunAngle3 = 0.0;
-static GLfloat range = 20.0;
-static GLfloat camHeight = -2.0;
+static GLfloat range = 10.0;
+static GLfloat camHeight = -1.0;
 #define HUDWIDTH 36
 #define HUDHEIGHT 20
 static GLfloat xHUDscale = HUDWIDTH / 2;
