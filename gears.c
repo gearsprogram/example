@@ -83,8 +83,8 @@ static GLfloat camDip = 0.0;
 static GLfloat sunAngle = 0.0;
 static GLfloat sunAngle2 = 0.0;
 static GLfloat sunAngle3 = 0.0;
-static GLfloat range = 30.0;
-static GLfloat camHeight = -3.0;
+static GLfloat range = 20.0;
+static GLfloat camHeight = -2.0;
 #define HUDWIDTH 36
 #define HUDHEIGHT 20
 static GLfloat xHUDscale = HUDWIDTH / 2;
@@ -239,33 +239,35 @@ static void drawboldline(float x1,float y1,float x2,float y2) {
 
 //static GLfloat copper[4] =    {0.725 * 0.8, 0.45 * 0.8, 0.2 * 0.8, 1.0};
 
-static GLfloat forestgreen[4] =  {  0.1 / 0.8,  0.8 / 0.8,  0.4 / 0.8,1.0};
-static GLfloat skyblue[4] =      {      0.525,        0.8,      0.925,1.0};
-static GLfloat vermilion[4] =    {        0.9,       0.25,        0.2,1.0};
-static GLfloat vermilionS[4] =   {       0.95,      0.625,        0.6,1.0};
-static GLfloat canary[4] =       {        1.0,        1.0,        0.6,1.0};
-static GLfloat pink[4] =         {  0.7 / 0.8,  0.2 / 0.8,  0.3 / 0.8,1.0};
-static GLfloat concrete[4] =     {        0.4,        0.4,        0.4,1.0};
-static GLfloat ultramarine[4] =  {       0.25,        0.0,        1.0,1.0};
-//static GLfloat cerulean[4] =     {        0.0,       0.25,        1.0,1.0};
-static GLfloat cerulean[4] =     {        0.0,       0.0625,        0.25,1.0};
-static GLfloat indigo[4] =       {  0.3 / 0.8,        0.0,  0.5 / 0.8,1.0};
-static GLfloat mahogany[4] =     { 0.75 / 0.8, 0.25 / 0.8,        0.0,1.0};
-static GLfloat luislemon[4] =    {        0.9,        1.0,        0.2,1.0};
-static GLfloat chestnut[4] =     {   0.6/0.64,   0.3/0.64,   0.2/0.64,1.0};
-static GLfloat white[4] =        {        1.0,        1.0,        1.0,1.0};
-static GLfloat black[4] =        {        0.0,        0.0,        0.0,1.0};
-static GLfloat forestgreen2[4] = {  0.1*0.512,  0.8*0.512,  0.4*0.512,1.0};
-static GLfloat skyblue2[4] =     {0.525*0.409,  0.8*0.409,0.925*0.409,1.0};
-static GLfloat vermilion2[4] =   {  0.9*0.409, 0.25*0.409,  0.2*0.409,1.0};
-static GLfloat vermilionS2[4] =  { 0.95*0.409,0.625*0.409,  0.6*0.409,1.0};
-static GLfloat canary2[4] =      {  1.0*0.409,  1.0*0.409,  0.6*0.409,1.0};
-static GLfloat pink2[4] =        {  0.7*0.512,  0.2*0.512,  0.3*0.512,1.0};
-static GLfloat indigo2[4] =      {  0.3*0.512,        0.0,  0.5*0.512,1.0};
-static GLfloat mahogany2[4] =    { 0.75*0.512, 0.25*0.512,        0.0,1.0};
-static GLfloat luislemon2[4] =   {  0.9*0.409,      0.409,  0.2*0.409,1.0};
-static GLfloat chestnut2[4] =    {   0.6*0.64,   0.3*0.64,   0.2*0.64,1.0};
+#define CONEALPHA 0.2
 
+static GLfloat forestgreen[4] =  {  0.1 / 0.8,  0.8 / 0.8,  0.4 / 0.8,CONEALPHA};
+static GLfloat skyblue[4] =      {      0.525,        0.8,      0.925,CONEALPHA};
+static GLfloat vermilion[4] =    {        0.9,       0.25,        0.2,CONEALPHA};
+static GLfloat vermilionS[4] =   {       0.95,      0.625,        0.6,CONEALPHA};
+static GLfloat canary[4] =       {        1.0,        1.0,        0.6,CONEALPHA};
+static GLfloat pink[4] =         {  0.7 / 0.8,  0.2 / 0.8,  0.3 / 0.8,CONEALPHA};
+static GLfloat concrete[4] =     {        0.4,        0.4,        0.4,CONEALPHA};
+static GLfloat ultramarine[4] =  {       0.25,        0.0,        1.0,CONEALPHA};
+static GLfloat cerulean[4] =     {        0.0,     0.0625,       0.25,CONEALPHA};
+static GLfloat indigo[4] =       {  0.3 / 0.8,        0.0,  0.5 / 0.8,CONEALPHA};
+static GLfloat mahogany[4] =     { 0.75 / 0.8, 0.25 / 0.8,        0.0,CONEALPHA};
+static GLfloat luislemon[4] =    {        0.9,        1.0,        0.2,CONEALPHA};
+static GLfloat chestnut[4] =     {   0.6/0.64,   0.3/0.64,   0.2/0.64,CONEALPHA};
+static GLfloat white[4] =        {        1.0,        1.0,        1.0,CONEALPHA};
+static GLfloat black[4] =        {        0.0,        0.0,        0.0,CONEALPHA};
+static GLfloat forestgreen2[4] = {  0.1*0.512,  0.8*0.512,  0.4*0.512,CONEALPHA};
+static GLfloat skyblue2[4] =     {0.525*0.409,  0.8*0.409,0.925*0.409,CONEALPHA};
+static GLfloat vermilion2[4] =   {  0.9*0.409, 0.25*0.409,  0.2*0.409,CONEALPHA};
+static GLfloat vermilionS2[4] =  { 0.95*0.409,0.625*0.409,  0.6*0.409,CONEALPHA};
+static GLfloat canary2[4] =      {  1.0*0.409,  1.0*0.409,  0.6*0.409,CONEALPHA};
+static GLfloat pink2[4] =        {  0.7*0.512,  0.2*0.512,  0.3*0.512,CONEALPHA};
+static GLfloat indigo2[4] =      {  0.3*0.512,        0.0,  0.5*0.512,CONEALPHA};
+static GLfloat mahogany2[4] =    { 0.75*0.512, 0.25*0.512,        0.0,CONEALPHA};
+static GLfloat luislemon2[4] =   {  0.9*0.409,      0.409,  0.2*0.409,CONEALPHA};
+static GLfloat chestnut2[4] =    {   0.6*0.64,   0.3*0.64,   0.2*0.64,CONEALPHA};
+//
+//static GLfloat cerulean[4] =     {        0.0,       0.25,        1.0,1.0};
 typedef struct Palette {
   GLfloat * colors;
   int alloc;
@@ -323,7 +325,7 @@ void ldPalette3i(Palette * p, int R, int G, int B) {
   c[0] = (float) R / 255.0;
   c[1] = (float) G / 255.0;
   c[2] = (float) B / 255.0;
-  c[3] = 1.0;
+  c[3] = CONEALPHA;
   ldPalette(p,c);
 }
 
@@ -738,7 +740,7 @@ double gearsGetTime(int lighting) {
 
 /* update animation parameters */
 static void animate(void) {
-  int sceneRotate = 1;
+  int sceneRotate = 0;
   if (sceneRotate) {
       sceneAngle = 90 + 60.0 * (float) gearsGetTime(0);
   } else {
@@ -853,9 +855,9 @@ static void init(void) {
   static GLfloat pos2[4] = {-100.0, 0.0,-10.0, 0.0};
   static GLfloat pos3[4] = { 0.0, 100.0,-10.0, 0.0};
   static GLfloat pos4[4] = { 0.0,-100.0,-10.0, 0.0};
-  static GLfloat red[4] = {0.8, 0.1, 0.0, 1.0};
-  static GLfloat green[4] = {0.0, 0.8, 0.2, 1.0};
-  static GLfloat blue[4] = {0.2, 0.2, 1.0, 1.0};
+  //static GLfloat red[4] = {0.8, 0.1, 0.0, 1.0};
+  //static GLfloat green[4] = {0.0, 0.8, 0.2, 1.0};
+  //static GLfloat blue[4] = {0.2, 0.2, 1.0, 1.0};
   //static GLfloat intensity[4] = {0.5, 0.5, 0.5, 1.0};
   static GLfloat intensity0[4] = {0.0, 0.0, 0.0, 1.0};
   static GLfloat intensityq[4] = {0.25, 0.25, 0.25, 1.0};
