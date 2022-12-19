@@ -598,7 +598,7 @@ static void draw(void) {
   for (p3 = 0; p3 < 2; p3 += 1) {
   pi += 1;
   glPushMatrix(); /* Sol */
-  float disp = 7.5;
+  float disp = 2.5;
   float disp2 = disp/2.0;
   glTranslatef(-disp2 + disp * p1,-disp2 + disp * p2,-disp2 + disp * p3);
   //glRotatef(pi * 15.0,0.0,1.0,0.0);
@@ -725,8 +725,9 @@ float pulseFunction2(float x) {
 double gearsGetTime(int lighting) {
     float f = (double) 2.5 * (timeOffset + glfwGetTime());
     if (lighting == 0) {
+        f *= 0.2;
         float timeShim = 1.0 - cos(f);
-        return f + timeShim;
+        return 5.0 * (f + timeShim);
     } else if (lighting == 1) {
         return f;
     } else {
