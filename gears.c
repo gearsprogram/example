@@ -47,28 +47,36 @@
 
  **/
 
+double gearsGetTime(int lighting);
+
 void gearMaterial(GLenum f,const GLfloat * ps) {
     GLfloat qqs[4];
+    float matAlpha = (1.0+sin(gearsGetTime(2)))/2.0;
     qqs[0] = ps[0] / 2;
     qqs[1] = ps[1] / 2;
     qqs[2] = ps[2] / 2;
-    qqs[3] = ps[3];
+    qqs[3] = matAlpha;
     GLfloat qs[4];
     qs[0] = ps[0] / 4;
     qs[1] = ps[1] / 4;
     qs[2] = ps[2] / 4;
-    qs[3] = ps[3];
+    qs[3] = matAlpha;
     GLfloat rs[4];
     rs[0] = ps[0] / 5;
     rs[1] = ps[1] / 5;
     rs[2] = ps[2] / 5;
-    rs[3] = ps[3];
+    rs[3] = matAlpha;
     GLfloat rrs[4];
     rrs[0] = 2 * ps[0] / 5;
     rrs[1] = 2 * ps[1] / 5;
     rrs[2] = 2 * ps[2] / 5;
-    rrs[3] = ps[3];
-    glMaterialfv(f,GL_SPECULAR,ps);
+    rrs[3] = matAlpha;
+    GLfloat hatps[4];
+    hatps[0] = ps[0];
+    hatps[1] = ps[1];
+    hatps[2] = ps[2];
+    hatps[3] = matAlpha;
+    glMaterialfv(f,GL_SPECULAR,hatps);
     //glMaterialfv(f,GL_AMBIENT,rrs);
     glMaterialfv(f,GL_DIFFUSE,rrs);
     GLfloat s[] = {50.0};
@@ -239,7 +247,7 @@ static void drawboldline(float x1,float y1,float x2,float y2) {
 
 //static GLfloat copper[4] =    {0.725 * 0.8, 0.45 * 0.8, 0.2 * 0.8, 1.0};
 
-#define CONEALPHA 0.2
+#define CONEALPHA 1.0
 
 static GLfloat forestgreen[4] =  {  0.1 / 0.8,  0.8 / 0.8,  0.4 / 0.8,CONEALPHA};
 static GLfloat skyblue[4] =      {      0.525,        0.8,      0.925,CONEALPHA};
