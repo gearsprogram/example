@@ -91,8 +91,8 @@ static GLfloat camDip = 0.0;
 static GLfloat sunAngle = 0.0;
 static GLfloat sunAngle2 = 0.0;
 static GLfloat sunAngle3 = 0.0;
-static GLfloat range = 10.0;
-static GLfloat camHeight = -1.0;
+static GLfloat range = 30.0;
+static GLfloat camHeight = -2.0;
 #define HUDWIDTH 36
 #define HUDHEIGHT 20
 static GLfloat xHUDscale = HUDWIDTH / 2;
@@ -601,28 +601,34 @@ static void draw(void) {
   // 85-86% idle @ k = 0..3000
   // 84-85% idle @ k = 0..10000
 
-  int pi = 0;
+  int ci = 0;
   glRotatef(sunAngle,0.0,1.0,0.0);
-  for (p1 = 0; p1 < 2; p1 += 1) {
-  for (p2 = 0; p2 < 2; p2 += 1) {
-  for (p3 = 0; p3 < 2; p3 += 1) {
-  pi += 1;
+  for (p1 = 0; p1 < 4; p1 += 1) {
+  for (p2 = 0; p2 < 4; p2 += 1) {
+  for (p3 = 0; p3 < 4; p3 += 1) {
+  ci += 1;
+  if (p3 == 0) {
+      ci += 1;
+      if (p2 == 0) {
+          ci += 1;
+      }
+  }
   glPushMatrix(); /* Sol */
   float disp = 2.5;
-  float disp2 = disp/2.0;
+  float disp2 = 1.5 * disp;
   glTranslatef(-disp2 + disp * p1,-disp2 + disp * p2,-disp2 + disp * p3);
-  //glRotatef(pi * 15.0,0.0,1.0,0.0);
-  //glRotatef(pi * 15.0,0.0,0.0,1.0);
+  //glRotatef(ci * 15.0,0.0,1.0,0.0);
+  //glRotatef(ci * 15.0,0.0,0.0,1.0);
   int rsgn = 1;
-  if (pi % 2 == 0) {
+  if (ci % 2 == 0) {
       rsgn = -1;
   }
   float asgn = 0.0;
   float bsgn = 0.0;
   float csgn = 0.0;
-  if (pi % 6 < 2) {
+  if (ci % 6 < 2) {
       asgn = 1.0;
-  } else if (pi % 6 < 4) {
+  } else if (ci % 6 < 4) {
       bsgn = 1.0;
   } else {
       csgn = 1.0;
@@ -633,7 +639,7 @@ static void draw(void) {
   CONES = 16;
   for (k = 0; k < CONES; k += 1) {
       for (j = 0; j < 4; j += 1) {
-          if (pi % 2 == 0) {
+          if (ci % 2 == 0) {
               gearMaterial(GL_FRONT, sbPalette(pa1,k));
           } else {
               gearMaterial(GL_FRONT, sbPalette(pa3,k));
@@ -748,9 +754,9 @@ double gearsGetTime(int lighting) {
 
 /* update animation parameters */
 static void animate(void) {
-  int sceneRotate = 0;
+  int sceneRotate = 1;
   if (sceneRotate) {
-      sceneAngle = 90 + 60.0 * (float) gearsGetTime(0);
+      sceneAngle = 90 + 60.0 * (float) gearsGetTime(2);
   } else {
       sceneAngle = -45;
   }
