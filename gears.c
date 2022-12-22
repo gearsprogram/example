@@ -626,10 +626,6 @@ static void draw(void) {
   float asgn = 0.0;
   float bsgn = 0.0;
   float csgn = 0.0;
-  int kepler = 0;
-  if (ci % 12 < 6) {
-      kepler = 1;
-  }
   if (ci % 6 < 2) {
       asgn = 1.0;
   } else if (ci % 6 < 4) {
@@ -637,18 +633,15 @@ static void draw(void) {
   } else {
       csgn = 1.0;
   }
-  if (kepler) {
-      glRotatef(60.0,1.0,1.0,1.0);
-  }
+  int kepler = ci / 6;
+  glRotatef(kepler * 15.0,1.0,1.0,1.0);
   glRotatef(rsgn * sunAngle2,asgn,bsgn,csgn);
-  if (kepler) {
-      glRotatef(-60.0,1.0,1.0,1.0);
-  }
+  glRotatef(-kepler * 15.0,1.0,1.0,1.0);
+  glRotatef(-rsgn * sunAngle2,asgn,bsgn,csgn);
   int CONES;
-  int kk;
-  CONES = 16;
-  for (k = 0; k < CONES; k += 1) {
-      for (j = 0; j < 4; j += 1) {
+  CONES = 6;
+  for (k = 0;k < CONES;k += 1) {
+      for (j = 0;j < 2;j += 1) {
           if (ci % 2 == 0) {
               gearMaterial(GL_FRONT, sbPalette(pa1,k));
           } else {
@@ -753,7 +746,7 @@ double gearsGetTime(int lighting) {
     if (lighting == 0) {
         f *= 0.2;
         float timeShim = 1.0 - cos(f);
-        return 5.0 * (f + timeShim);
+        return 15.0 * (f + timeShim);
     } else if (lighting == 1) {
         return f;
     } else {
