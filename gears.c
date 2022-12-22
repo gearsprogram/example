@@ -375,7 +375,7 @@ int vermilionPeriod = 30;
 /* OpenGL draw function & timing */
 static void draw(void) {
   dc += 1;
-  glClearColor(0.0, 0.0, 0.0, 0.0);
+  glClearColor(0.0625, 0.0625, 0.0625, 0.0);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   gearMaterial(GL_FRONT, skyblue);
   glDisable(GL_LIGHTING);
@@ -626,6 +626,10 @@ static void draw(void) {
   float asgn = 0.0;
   float bsgn = 0.0;
   float csgn = 0.0;
+  int kepler = 0;
+  if (ci % 12 < 6) {
+      kepler = 1;
+  }
   if (ci % 6 < 2) {
       asgn = 1.0;
   } else if (ci % 6 < 4) {
@@ -633,7 +637,13 @@ static void draw(void) {
   } else {
       csgn = 1.0;
   }
+  if (kepler) {
+      glRotatef(60.0,1.0,1.0,1.0);
+  }
   glRotatef(rsgn * sunAngle2,asgn,bsgn,csgn);
+  if (kepler) {
+      glRotatef(-60.0,1.0,1.0,1.0);
+  }
   int CONES;
   int kk;
   CONES = 16;
