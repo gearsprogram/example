@@ -999,12 +999,16 @@ int main(int argc, char *argv[]) {
     }
     glfwWindowHint(GLFW_DEPTH_BITS, 16);
     glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, GLFW_TRUE);
+	windowWidth = 900;
+	windowHeight = 400;
     if (argc >= 2) {
-		windowWidth = 210;
-		windowHeight = 210;
-    } else {
-		windowWidth = 1296;
-		windowHeight = 576;
+        if (0 == strcmp("-1",argv[1])) {
+            windowWidth = 1080;
+            windowHeight = 480;
+        } else if (0 == strcmp("-2",argv[1])) {
+            windowWidth = 1296;
+            windowHeight = 576;
+        }
     }
     window = glfwCreateWindow(windowWidth, windowHeight, "Gears", NULL, NULL );
     if (!window) {
