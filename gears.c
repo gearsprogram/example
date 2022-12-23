@@ -956,6 +956,7 @@ static void init(void) {
   glEnable(GL_CULL_FACE);
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_NORMALIZE);
+  glEnable(GL_LINE_SMOOTH);
 }
 
 #define OFFSET_FILENAME "/Users/dbp/offset"
