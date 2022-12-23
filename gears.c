@@ -954,7 +954,7 @@ static void init(void) {
   glLightfv(GL_LIGHT3, GL_SPECULAR, intensity);
   //glLightfv(GL_LIGHT3, GL_AMBIENT, intensity0);
   glEnable(GL_CULL_FACE);
-  glEnable(GL_DEPTH_TEST);
+  //glEnable(GL_DEPTH_TEST);
   glEnable(GL_NORMALIZE);
   glEnable(GL_LINE_SMOOTH);
   glEnable(GL_BLEND);
