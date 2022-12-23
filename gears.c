@@ -714,9 +714,10 @@ static void draw(void) {
 
 static int animPeriod = 45;
 static int animIndex = 0;
-
+//
 // pulse function 3a and 3b
-
+//
+/*
 float pulseFunction(float x) {
     int i = (int) x;
     if (i % 2 == 0) {
@@ -726,7 +727,6 @@ float pulseFunction(float x) {
         return (float) i + 1.0;
     }
 }
-
 float pulseFunction2(float x) {
     int i = (int) x;
     if (i % 2 == 0) {
@@ -736,10 +736,12 @@ float pulseFunction2(float x) {
         return (float) i - 1.0 + f + f;
     }
 }
-
+*/
+//
 // 0 : mobile param 1
 // 1 : lights
 // 2 : mobile param 2
+//
 double gearsGetTime(int lighting) {
     float f = (double) 2.5 * (timeOffset + glfwGetTime());
     if (lighting == 0) {
@@ -747,7 +749,7 @@ double gearsGetTime(int lighting) {
         float timeShim = 1.0 - cos(f);
         return 15.0 * (f + timeShim);
     } else if (lighting == 1) {
-        return f;
+        return 0.25 * f;
     } else {
         //float timeShim = 1.0 - cos(f);
         return 0.05 * f;
@@ -785,7 +787,8 @@ static void animate(void) {
   pos[1] *= -1.0;
   glLightfv(GL_LIGHT3, GL_POSITION, pos);
   sunAngle = 0;
-  sunAngle2 = 15.0 * (float) pulseFunction2(gearsGetTime(0));
+  //sunAngle2 = 15.0 * (float) pulseFunction2(gearsGetTime(0));
+  sunAngle2 = 15.0 * (float) gearsGetTime(0);
   sunAngle3 = 30.0 * (float) gearsGetTime(2);
   camDip = 5.0;
   animIndex += 1;
