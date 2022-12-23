@@ -91,7 +91,7 @@ static GLfloat camDip = 0.0;
 static GLfloat sunAngle = 0.0;
 static GLfloat sunAngle2 = 0.0;
 static GLfloat sunAngle3 = 0.0;
-static GLfloat range = 30.0;
+static GLfloat range = 20.0;
 static GLfloat camHeight = -2.0;
 #define HUDWIDTH 36
 #define HUDHEIGHT 20
@@ -493,9 +493,10 @@ static void draw(void) {
   gearMaterial(GL_FRONT, cerulean);
   float sideWidth = 6.0;
   float platHeight = 1.0;
+  float sideWidth2 = 3.0;
+  float platHeight2 = 0.125;
+  float platRange = 4.0;
   for (i = 0;i < 4;i += 1) {
-      float sideWidth2 = 3.0;
-      float platHeight2 = 0.125;
       glPushMatrix(); /* platform */
       if (i == 1) {
           glRotatef(90.0,0.0,0.0,1.0);
@@ -509,7 +510,7 @@ static void draw(void) {
           glRotatef(90.0,1.0,0.0,0.0);
           glRotatef(180.0,0.0,1.0,0.0);
       }
-      glTranslatef(0.0,-5.0,0.0);
+      glTranslatef(0.0,-platRange,0.0);
       glBegin(GL_TRIANGLES); /* platform */
       triNorm(
            0.0,0.0, 0.0,
@@ -616,7 +617,7 @@ static void draw(void) {
   }
   */
   glPushMatrix(); /* Sol */
-  float disp = 3.0;
+  float disp = 2.75;
   float disp2 = disp;
   glTranslatef(-disp2 + disp * p1,-disp2 + disp * p2,-disp2 + disp * p3);
   //glRotatef(ci * 15.0,0.0,1.0,0.0);
@@ -635,10 +636,10 @@ static void draw(void) {
   } else {
       csgn = 1.0;
   }
-  int kepler = ci / 6;
-  glRotatef(kepler * 15.0,1.0,1.0,1.0);
+  int kepler = ci;
+  glRotatef(kepler * 2.5,1.0,1.0,1.0);
   glRotatef(rsgn * sunAngle2,asgn,bsgn,csgn);
-  glRotatef(-kepler * 15.0,1.0,1.0,1.0);
+  glRotatef(-kepler * 2.5,1.0,1.0,1.0);
   glRotatef(-rsgn * sunAngle2,asgn,bsgn,csgn);
   int CONES;
   CONES = 10;
