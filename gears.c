@@ -636,10 +636,12 @@ static void draw(void) {
   } else {
       csgn = 1.0;
   }
-  int kepler = ci;
-  glRotatef(kepler * 2.5,1.0,1.0,1.0);
+  int keplerMod = 144;
+  float kepler = fmodf(ci + gearsGetTime(0),(float) keplerMod);
+  float keplerDelta = 360.0 / ((float) keplerMod);
+  glRotatef(kepler * keplerDelta,1.0,1.0,1.0);
   glRotatef(rsgn * sunAngle2,asgn,bsgn,csgn);
-  glRotatef(-kepler * 2.5,1.0,1.0,1.0);
+  glRotatef(-kepler * keplerDelta,1.0,1.0,1.0);
   glRotatef(-rsgn * sunAngle2,asgn,bsgn,csgn);
   int CONES;
   CONES = 10;
