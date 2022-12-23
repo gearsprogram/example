@@ -257,7 +257,7 @@ static GLfloat canary[4] =       {        1.0,        1.0,        0.6,CONEALPHA}
 static GLfloat pink[4] =         {  0.7 / 0.8,  0.2 / 0.8,  0.3 / 0.8,CONEALPHA};
 static GLfloat concrete[4] =     {        0.4,        0.4,        0.4,CONEALPHA};
 static GLfloat ultramarine[4] =  {       0.25,        0.0,        1.0,CONEALPHA};
-static GLfloat cerulean[4] =     {        0.0,     0.0625,       0.25,CONEALPHA};
+static GLfloat cerulean[4] =     {        0.0,      0.125,        0.5,CONEALPHA};
 static GLfloat indigo[4] =       {  0.3 / 0.8,        0.0,  0.5 / 0.8,CONEALPHA};
 static GLfloat mahogany[4] =     { 0.75 / 0.8, 0.25 / 0.8,        0.0,CONEALPHA};
 static GLfloat luislemon[4] =    {        0.9,        1.0,        0.2,CONEALPHA};
@@ -641,7 +641,7 @@ static void draw(void) {
   glRotatef(-kepler * 15.0,1.0,1.0,1.0);
   glRotatef(-rsgn * sunAngle2,asgn,bsgn,csgn);
   int CONES;
-  CONES = 16;
+  CONES = 10;
   for (k = 0;k < CONES;k += 1) {
       for (j = 0;j < 4;j += 1) {
           if (ci % 2 == 0) {
