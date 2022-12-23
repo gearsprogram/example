@@ -607,14 +607,16 @@ static void draw(void) {
   for (p2 = 0; p2 < 3; p2 += 1) {
   for (p3 = 0; p3 < 3; p3 += 1) {
   ci += 1;
+  /*
   if (p3 == 0) {
       ci += 1;
       if (p2 == 0) {
           ci += 1;
       }
   }
+  */
   glPushMatrix(); /* Sol */
-  float disp = 2.5;
+  float disp = 3.0;
   float disp2 = disp;
   glTranslatef(-disp2 + disp * p1,-disp2 + disp * p2,-disp2 + disp * p3);
   //glRotatef(ci * 15.0,0.0,1.0,0.0);
