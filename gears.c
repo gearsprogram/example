@@ -636,13 +636,14 @@ static void draw(void) {
   } else {
       csgn = 1.0;
   }
-  int keplerMod = 144;
-  float kepler = fmodf(ci + gearsGetTime(0),(float) keplerMod);
-  float keplerDelta = 360.0 / ((float) keplerMod);
-  glRotatef(kepler * keplerDelta,1.0,1.0,1.0);
+  //int keplerMod = 144;
+  //float kepler = fmodf(ci + gearsGetTime(0),(float) keplerMod);
+  //float kepler = fmodf(9 * ci,(float) keplerMod);
+  //float keplerDelta = 360.0 / ((float) keplerMod);
+  //glRotatef(kepler * keplerDelta,1.0,1.0,1.0);
   glRotatef(rsgn * sunAngle2,asgn,bsgn,csgn);
-  glRotatef(-kepler * keplerDelta,1.0,1.0,1.0);
-  glRotatef(-rsgn * sunAngle2,asgn,bsgn,csgn);
+  //glRotatef(-kepler * keplerDelta,1.0,1.0,1.0);
+  //glRotatef(-rsgn * sunAngle2,asgn,bsgn,csgn);
   int CONES;
   CONES = 10;
   for (k = 0;k < CONES;k += 1) {
@@ -749,7 +750,7 @@ double gearsGetTime(int lighting) {
     if (lighting == 0) {
         f *= 0.2;
         float timeShim = 1.0 - cos(f);
-        return 15.0 * (f + timeShim);
+        return 5.0 * f + 4.0 * timeShim;
     } else if (lighting == 1) {
         return 0.25 * f;
     } else {
