@@ -603,9 +603,9 @@ static void draw(void) {
 
   int ci = 0;
   glRotatef(sunAngle,0.0,1.0,0.0);
-  for (p1 = 0; p1 < 4; p1 += 1) {
-  for (p2 = 0; p2 < 4; p2 += 1) {
-  for (p3 = 0; p3 < 4; p3 += 1) {
+  for (p1 = 0; p1 < 3; p1 += 1) {
+  for (p2 = 0; p2 < 3; p2 += 1) {
+  for (p3 = 0; p3 < 3; p3 += 1) {
   ci += 1;
   if (p3 == 0) {
       ci += 1;
@@ -615,7 +615,7 @@ static void draw(void) {
   }
   glPushMatrix(); /* Sol */
   float disp = 2.5;
-  float disp2 = 1.5 * disp;
+  float disp2 = disp;
   glTranslatef(-disp2 + disp * p1,-disp2 + disp * p2,-disp2 + disp * p3);
   //glRotatef(ci * 15.0,0.0,1.0,0.0);
   //glRotatef(ci * 15.0,0.0,0.0,1.0);
@@ -639,9 +639,9 @@ static void draw(void) {
   glRotatef(-kepler * 15.0,1.0,1.0,1.0);
   glRotatef(-rsgn * sunAngle2,asgn,bsgn,csgn);
   int CONES;
-  CONES = 6;
+  CONES = 16;
   for (k = 0;k < CONES;k += 1) {
-      for (j = 0;j < 2;j += 1) {
+      for (j = 0;j < 4;j += 1) {
           if (ci % 2 == 0) {
               gearMaterial(GL_FRONT, sbPalette(pa1,k));
           } else {
@@ -656,10 +656,6 @@ static void draw(void) {
               float xx[FACES];
               float yy[FACES];
               // line segments define arc of cone base
-              //xx[0] =  1.0; yy[0] =  0.0;
-              //xx[1] = 0.87; yy[1] =  0.5;
-              //xx[2] =  0.5; yy[2] = 0.87;
-              //xx[3] =  0.0; yy[3] =  1.0;
               yy[0] = xx[8] = 0.0;
               yy[1] = xx[7] = 0.19509032201612825;
               yy[2] = xx[6] = 0.3826834323650898;
@@ -697,7 +693,7 @@ static void draw(void) {
               }
               glEnd();
               //glTranslatef(0.0,-sunRadius,0.0);
-              glRotatef(180.0,0.0,1.0,0.0);
+              glScalef(-1.0,1.0,-1.0);
           }
           glPopMatrix(); // end fold
           glRotatef(45.0 + sunAngle3/27.0,0.0,0.0,1.0);
