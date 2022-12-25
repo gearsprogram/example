@@ -1001,13 +1001,19 @@ int main(int argc, char *argv[]) {
     }
     glfwWindowHint(GLFW_DEPTH_BITS, 16);
     glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, GLFW_TRUE);
-	windowWidth = 900;
-	windowHeight = 400;
+	windowWidth = 576;
+	windowHeight = 256;
     if (argc >= 2) {
         if (0 == strcmp("-1",argv[1])) {
+            windowWidth = 720;
+            windowHeight = 320;
+        } else if (0 == strcmp("-2",argv[1])) {
+            windowWidth = 900;
+            windowHeight = 400;
+        } else if (0 == strcmp("-3",argv[1])) {
             windowWidth = 1080;
             windowHeight = 480;
-        } else if (0 == strcmp("-2",argv[1])) {
+        } else if (0 == strcmp("-4",argv[1])) {
             windowWidth = 1296;
             windowHeight = 576;
         }
