@@ -84,7 +84,7 @@ void gearMaterial(GLenum f,const GLfloat * ps) {
 }
 
 static float timeOffset;
-static GLfloat view_rotx = 20.0, view_roty = 30.0, view_rotz = 0.0;
+static GLfloat view_rotx = 0.0, view_roty = 30.0, view_rotz = 0.0;
 static GLint gear1, gear2, gear3;
 static GLfloat sceneAngle = 0.0;
 static GLfloat camDip = 0.0;
@@ -424,6 +424,8 @@ static void draw(void) {
   glPushMatrix(); /* scene */
   glRotatef(camDip, 1.0, 0.0, 0.0);
   glTranslatef(0.0,0.0,-range);
+  glRotatef(view_rotx, 1.0, 0.0, 0.0);
+  glRotatef(view_roty, 0.0, 1.0, 0.0);
   glTranslatef(0.0,camHeight,0.0);
   glRotatef(sceneAngle, 0.0, 1.0, 0.0);
   glTranslatef(0.0, -4.0, 0.0);
@@ -808,7 +810,7 @@ static void animate(void) {
 
 /* change view angle, exit upon ESC */
 void key( GLFWwindow* window, int k, int s, int action, int mods ) {
-  if( action != GLFW_PRESS ) return;
+  if (!(action == GLFW_PRESS || action == GLFW_REPEAT)) return;
 
   switch (k) {
   case GLFW_KEY_Z:
