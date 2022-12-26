@@ -51,7 +51,7 @@ double gearsGetTime(int lighting);
 
 void gearMaterial(GLenum f,const GLfloat * ps) {
     GLfloat qqs[4];
-    float matAlpha = (1.0+sin(gearsGetTime(2)))/2.0;
+    double matAlpha = (1.0+sin(gearsGetTime(2)))/2.0;
     qqs[0] = ps[0] / 2;
     qqs[1] = ps[1] / 2;
     qqs[2] = ps[2] / 2;
@@ -83,37 +83,36 @@ void gearMaterial(GLenum f,const GLfloat * ps) {
     glMaterialfv(f,GL_SHININESS,s);
 }
 
-static float timeOffset;
-static GLfloat view_rotx = 0.0, view_roty = 30.0, view_rotz = 0.0;
-static GLint gear1, gear2, gear3;
-static GLfloat sceneAngle = 0.0;
-static GLfloat camDip = 0.0;
-static GLfloat sunAngle = 0.0;
-static GLfloat sunAngle2 = 0.0;
-static GLfloat sunAngle3 = 0.0;
-static GLfloat range = 20.0;
-static GLfloat camHeight = -2.0;
+static double timeOffset;
+static double view_rotx = 0.0, view_roty = 30.0, view_rotz = 0.0;
+static double sceneAngle = 0.0;
+static double camDip = 0.0;
+static double sunAngle = 0.0;
+static double sunAngle2 = 0.0;
+static double sunAngle3 = 0.0;
+static double range = 20.0;
+static double camHeight = -2.0;
 #define HUDWIDTH 36
 #define HUDHEIGHT 20
-static GLfloat xHUDscale = HUDWIDTH / 2;
-static GLfloat HUDscale = HUDHEIGHT / 2;
+static double xHUDscale = HUDWIDTH / 2;
+static double HUDscale = HUDHEIGHT / 2;
 //static int xCursor = -(HUDWIDTH / 2);
 //static int yCursor = -(HUDHEIGHT / 2);
 static int xCursor = 0;
 static int yCursor = 0;
 
 /* Calculate the cross product */
-static void calcCross(float * c1, float * c2, float * c3,
-        float a1, float a2, float a3,
-        float b1, float b2, float b3) {
+static void calcCross(double * c1, double * c2, double * c3,
+        double a1, double a2, double a3,
+        double b1, double b2, double b3) {
     * c1 = a2 * b3 - a3 * b2;
     * c2 = a3 * b1 - a1 * b3;
     * c3 = a1 * b2 - a2 * b1;
 }
 
 /* Normalize a vector in place */
-static void normVec(float * a1, float * a2, float * a3) {
-    float d = sqrt(* a1 * * a1 + * a2 * * a2 + * a3 * * a3);
+static void normVec(double * a1, double * a2, double * a3) {
+    double d = sqrt(* a1 * * a1 + * a2 * * a2 + * a3 * * a3);
     * a1 /= d;
     * a2 /= d;
     * a3 /= d;
@@ -122,11 +121,11 @@ static void normVec(float * a1, float * a2, float * a3) {
 /* Calculate the normal vector for a triangle with vertices
    at a,b,c and store the result in d */
 static void triNorm(
-        float a1, float a2, float a3,
-        float b1, float b2, float b3,
-        float c1, float c2, float c3) {
-    float d1,d2,d3;
-    float v1,v2,v3,w1,w2,w3;
+        double a1, double a2, double a3,
+        double b1, double b2, double b3,
+        double c1, double c2, double c3) {
+    double d1,d2,d3;
+    double v1,v2,v3,w1,w2,w3;
     v1 = b1 - a1; v2 = b2 - a2; v3 = b3 - a3;
     w1 = c1 - a1; w2 = c2 - a2; w3 = c3 - a3;
     calcCross(&d1,&d2,&d3,v1,v2,v3,w1,w2,w3);
@@ -141,31 +140,31 @@ static void triNorm(
 #define BOLDCOUNT 5
 #define BOLDFINE 25
 
-static void boldline2(float x1,float y1,float x2,float y2,
-        float *xout,float *yout) {
-    float dx = x2 - x1;
-    float dy = y2 - y1;
-    float mag = sqrt(dx*dx + dy*dy);
+static void boldline2(double x1,double y1,double x2,double y2,
+        double *xout,double *yout) {
+    double dx = x2 - x1;
+    double dy = y2 - y1;
+    double mag = sqrt(dx*dx + dy*dy);
     dx /= mag;
     dy /= mag;
-    float temp = dx;
+    double temp = dx;
     dx = -dy;
     dy = temp;
     dx /= BOLDFINE;
     dy /= BOLDFINE;
-    dx *= (float) BOLDCOUNT / 2.0;
-    dy *= (float) BOLDCOUNT / 2.0;
+    dx *= (double) BOLDCOUNT / 2.0;
+    dy *= (double) BOLDCOUNT / 2.0;
     xout[0] = x1 + dx; yout[0] = y1 + dy;
     xout[1] = x1 - dx; yout[1] = y1 - dy;
     xout[2] = x2 + dx; yout[2] = y2 + dy;
     xout[3] = x2 - dx; yout[3] = y2 - dy;
 }
 
-float marqueeWidth = 0.1;
+double marqueeWidth = 0.1;
 
-static void drawboldline2(float x1,float y1,float x2,float y2) {
-    float xout[4];
-    float yout[4];
+static void drawboldline2(double x1,double y1,double x2,double y2) {
+    double xout[4];
+    double yout[4];
     boldline2(x1,y1,x2,y2,xout,yout);
     triNorm(
         xout[0],yout[0],marqueeWidth,
@@ -203,14 +202,14 @@ static void drawboldline2(float x1,float y1,float x2,float y2) {
         xout[2],yout[2], marqueeWidth);
 }
 
-static void boldline(float x1,float y1,float x2,float y2,
-        float *x1out,float *y1out,float *x2out,float *y2out) {
-    float dx = x2 - x1;
-    float dy = y2 - y1;
-    float mag = sqrt(dx*dx + dy*dy);
+static void boldline(double x1,double y1,double x2,double y2,
+        double *x1out,double *y1out,double *x2out,double *y2out) {
+    double dx = x2 - x1;
+    double dy = y2 - y1;
+    double mag = sqrt(dx*dx + dy*dy);
     dx /= mag;
     dy /= mag;
-    float temp = dx;
+    double temp = dx;
     dx = -dy;
     dy = temp;
     dx /= BOLDFINE;
@@ -232,12 +231,12 @@ static void boldline(float x1,float y1,float x2,float y2,
     }
 }
 
-static void drawboldline(float x1,float y1,float x2,float y2) {
+static void drawboldline(double x1,double y1,double x2,double y2) {
   int i;
-  float x1r[BOLDCOUNT];
-  float x2r[BOLDCOUNT];
-  float y1r[BOLDCOUNT];
-  float y2r[BOLDCOUNT];
+  double x1r[BOLDCOUNT];
+  double x2r[BOLDCOUNT];
+  double y1r[BOLDCOUNT];
+  double y2r[BOLDCOUNT];
   boldline(x1,y1,x2,y2,x1r,y1r,x2r,y2r);
   for (i = 0; i < BOLDCOUNT; i += 1) {
       glVertex3f(x1r[i],y1r[i],marqueeWidth);
@@ -330,9 +329,9 @@ void ldPalette(Palette * p, GLfloat * c) {
 
 void ldPalette3i(Palette * p, int R, int G, int B) {
   GLfloat c[4];
-  c[0] = (float) R / 255.0;
-  c[1] = (float) G / 255.0;
-  c[2] = (float) B / 255.0;
+  c[0] = (double) R / 255.0;
+  c[1] = (double) G / 255.0;
+  c[2] = (double) B / 255.0;
   c[3] = CONEALPHA;
   ldPalette(p,c);
 }
@@ -363,13 +362,13 @@ GLfloat * sbPalette(Palette * p, int i) {
 //static GLfloat tigger[4] =    {0.725 / 0.8, 0.45 / 0.8, 0.2 / 0.8, 1.0};
 //static GLfloat tigger2[4] =    {0.725 * 0.8 , 0.45 * 0.8,    0.2 * 0.8, 1.0};
 
-static float sunRadius = 1.0;
-static float spikeRadius = 0.125;
-static float sunRadius2[2] = {1.0,0.25};
-//static float sunThickness = 1.0;
+static double sunRadius = 1.0;
+static double spikeRadius = 0.125;
+static double sunRadius2[2] = {1.0,0.25};
+//static double sunThickness = 1.0;
 
-float cursor2x;
-float cursor2y;
+double cursor2x;
+double cursor2y;
 int dc = 0;
 int vermilionPeriod = 30;
 /* OpenGL draw function & timing */
@@ -427,7 +426,7 @@ static void draw(void) {
   glRotatef(view_rotx, 1.0, 0.0, 0.0);
   glRotatef(view_roty, 0.0, 1.0, 0.0);
   glTranslatef(0.0,camHeight,0.0);
-  glRotatef(sceneAngle, 0.0, 1.0, 0.0);
+  glRotatef(fmod(sceneAngle,360.0), 0.0, 1.0, 0.0);
   glTranslatef(0.0, -4.0, 0.0);
   glPushMatrix(); /* (green grid, cursor, marquee, Sol) */
   glBegin(GL_LINES); /* green grid */
@@ -435,34 +434,34 @@ static void draw(void) {
   if (1) {
       glColor3f(0.1,0.8,0.1);
       for (i = 0; i < 10; i += 1) {
-          glVertex3f( 0.0 , (float) i, 0.0);
-          glVertex3f( 10.0, (float) i, 0.0);
+          glVertex3f( 0.0 , (double) i, 0.0);
+          glVertex3f( 10.0, (double) i, 0.0);
       }
       for (i = 0; i < 10; i += 1) {
-          glVertex3f((float) i, 0.0 , 0.0);
-          glVertex3f((float) i, 10.0, 0.0);
+          glVertex3f((double) i, 0.0 , 0.0);
+          glVertex3f((double) i, 10.0, 0.0);
       }
       glEnd(); /* end green grid */
       glColor3f(0.1,0.1,0.8);
       glBegin(GL_LINES); /* blue grid */
       for (i = 0; i < 10; i += 1) {
-          glVertex3f( 0.0 , 0.0, (float) i);
-          glVertex3f( 10.0, 0.0, (float) i);
+          glVertex3f( 0.0 , 0.0, (double) i);
+          glVertex3f( 10.0, 0.0, (double) i);
       }
       for (i = 0; i < 10; i += 1) {
-          glVertex3f((float) i, 0.0 , 0.0);
-          glVertex3f((float) i, 0.0, 10.0);
+          glVertex3f((double) i, 0.0 , 0.0);
+          glVertex3f((double) i, 0.0, 10.0);
       }
       glEnd(); /* end blue grid */
       for (i = 0; i < 10; i += 1) {
           ;
-          //glVertex3f( 0.0, 0.0 , (float) i);
-          //glVertex3f( 0.0, 10.0, (float) i);
+          //glVertex3f( 0.0, 0.0 , (double) i);
+          //glVertex3f( 0.0, 10.0, (double) i);
       }
       for (i = 0; i < 10; i += 1) {
           ;
-          //glVertex3f( 0.0, (float) i, 0.0);
-          //glVertex3f( 0.0, (float) i, 10.0);
+          //glVertex3f( 0.0, (double) i, 0.0);
+          //glVertex3f( 0.0, (double) i, 10.0);
       }
   }
   glTranslatef(0.0, 4.0, 0.0);
@@ -482,7 +481,7 @@ static void draw(void) {
   glPushMatrix(); /* (cursor, cursor 2, marquee) */
 
   glPushMatrix();
-  glRotatef(sunAngle3,cursor2x,cursor2y,0.0);
+  glRotatef(fmod(sunAngle3,360.0),cursor2x,cursor2y,0.0);
 
   //glBegin(GL_TRIANGLES); /* cursor 2 */
   //drawboldline2(cursor2x - 0.5, cursor2y - 0.5,cursor2x + 0.5, cursor2y + 0.5);
@@ -493,11 +492,11 @@ static void draw(void) {
   glPopMatrix();
 
   gearMaterial(GL_FRONT, cerulean);
-  float sideWidth = 6.0;
-  float platHeight = 1.0;
-  float sideWidth2 = 3.0;
-  float platHeight2 = 0.125;
-  float platRange = 4.0;
+  double sideWidth = 6.0;
+  double platHeight = 1.0;
+  double sideWidth2 = 3.0;
+  double platHeight2 = 0.125;
+  double platRange = 4.0;
   for (i = 0;i < 4;i += 1) {
       glPushMatrix(); /* platform */
       if (i == 1) {
@@ -605,7 +604,7 @@ static void draw(void) {
   // 84-85% idle @ k = 0..10000
 
   int ci = 0;
-  glRotatef(sunAngle,0.0,1.0,0.0);
+  glRotatef(fmod(sunAngle,360.0),0.0,1.0,0.0);
   for (p1 = 0; p1 < 3; p1 += 1) {
   for (p2 = 0; p2 < 3; p2 += 1) {
   for (p3 = 0; p3 < 3; p3 += 1) {
@@ -619,8 +618,8 @@ static void draw(void) {
   }
   */
   glPushMatrix(); /* Sol */
-  float disp = 2.75;
-  float disp2 = disp;
+  double disp = 2.75;
+  double disp2 = disp;
   glTranslatef(-disp2 + disp * p1,-disp2 + disp * p2,-disp2 + disp * p3);
   //glRotatef(ci * 15.0,0.0,1.0,0.0);
   //glRotatef(ci * 15.0,0.0,0.0,1.0);
@@ -628,9 +627,9 @@ static void draw(void) {
   if (ci % 2 == 0) {
       rsgn = -1;
   }
-  float asgn = 0.0;
-  float bsgn = 0.0;
-  float csgn = 0.0;
+  double asgn = 0.0;
+  double bsgn = 0.0;
+  double csgn = 0.0;
   if (ci % 6 < 2) {
       asgn = 1.0;
   } else if (ci % 6 < 4) {
@@ -639,11 +638,11 @@ static void draw(void) {
       csgn = 1.0;
   }
   //int keplerMod = 144;
-  //float kepler = fmodf(ci + gearsGetTime(0),(float) keplerMod);
-  //float kepler = fmodf(9 * ci,(float) keplerMod);
-  //float keplerDelta = 360.0 / ((float) keplerMod);
+  //double kepler = fmod(ci + gearsGetTime(0),(double) keplerMod);
+  //double kepler = fmod(9 * ci,(double) keplerMod);
+  //double keplerDelta = 360.0 / ((double) keplerMod);
   //glRotatef(kepler * keplerDelta,1.0,1.0,1.0);
-  glRotatef(rsgn * sunAngle2,asgn,bsgn,csgn);
+  glRotatef(fmod(rsgn * sunAngle2,360.0),asgn,bsgn,csgn);
   //glRotatef(-kepler * keplerDelta,1.0,1.0,1.0);
   //glRotatef(-rsgn * sunAngle2,asgn,bsgn,csgn);
   int CONES;
@@ -657,12 +656,12 @@ static void draw(void) {
           }
           glPushMatrix(); // fold
           glTranslatef(0.0,sunRadius,0.0);
-          glRotatef(60.0 + sunAngle3/64.0,1.0,0.0,0.0);
+          glRotatef(fmod(60.0 + sunAngle3/64.0,360.0),1.0,0.0,0.0);
           for (i = 0; i < 2; i += 1) {
               glBegin(GL_TRIANGLES);
               int FACES = 9;
-              float xx[FACES];
-              float yy[FACES];
+              double xx[FACES];
+              double yy[FACES];
               // line segments define arc of cone base
               yy[0] = xx[8] = 0.0;
               yy[1] = xx[7] = 0.19509032201612825;
@@ -704,10 +703,10 @@ static void draw(void) {
               glScalef(-1.0,1.0,-1.0);
           }
           glPopMatrix(); // end fold
-          glRotatef(45.0 + sunAngle3/27.0,0.0,0.0,1.0);
+          glRotatef(fmod(45.0 + sunAngle3/27.0,360.0),0.0,0.0,1.0);
           glTranslatef(0.1,0.0,0.0);
       }
-      glRotatef(60.0 + sunAngle3/64.0,1.0,0.0,0.0);
+      glRotatef(fmod(60.0 + sunAngle3/64.0,360.0),1.0,0.0,0.0);
   }
   glPopMatrix(); /* end Sol */
   }
@@ -723,22 +722,22 @@ static int animIndex = 0;
 // pulse function 3a and 3b
 //
 /*
-float pulseFunction(float x) {
+double pulseFunction(double x) {
     int i = (int) x;
     if (i % 2 == 0) {
-        float f = x - (float) i;
+        double f = x - (double) i;
         return x + f;
     } else {
-        return (float) i + 1.0;
+        return (double) i + 1.0;
     }
 }
-float pulseFunction2(float x) {
+double pulseFunction2(double x) {
     int i = (int) x;
     if (i % 2 == 0) {
-        return (float) i;
+        return (double) i;
     } else {
-        float f = x - (float) i;
-        return (float) i - 1.0 + f + f;
+        double f = x - (double) i;
+        return (double) i - 1.0 + f + f;
     }
 }
 */
@@ -748,15 +747,15 @@ float pulseFunction2(float x) {
 // 2 : mobile param 2
 //
 double gearsGetTime(int lighting) {
-    float f = (double) 2.5 * (timeOffset + glfwGetTime());
+    double f = (double) 2.5 * (timeOffset + glfwGetTime());
     if (lighting == 0) {
         f *= 0.2;
-        float timeShim = 1.0 - cos(f);
+        double timeShim = 1.0 - cos(f);
         return 5.0 * f + 4.0 * timeShim;
     } else if (lighting == 1) {
         return 0.25 * f;
     } else {
-        //float timeShim = 1.0 - cos(f);
+        //double timeShim = 1.0 - cos(f);
         return 0.05 * f;
     }
 }
@@ -765,13 +764,13 @@ double gearsGetTime(int lighting) {
 static void animate(void) {
   int sceneRotate = 1;
   if (sceneRotate) {
-      sceneAngle = 90 + 60.0 * (float) gearsGetTime(2);
+      sceneAngle = 90 + 60.0 * (double) gearsGetTime(2);
   } else {
       sceneAngle = -45;
   }
   static GLfloat lightAngle;
   static GLfloat lightHeight;
-  lightAngle = (float) gearsGetTime(1);
+  lightAngle = (double) gearsGetTime(1);
   lightAngle *= 0.16;
   lightHeight = 600.0 + 400.0 * sin(lightAngle * M_PI);
   lightAngle = 90 + 3450.0 * lightAngle;
@@ -792,9 +791,9 @@ static void animate(void) {
   pos[1] *= -1.0;
   glLightfv(GL_LIGHT3, GL_POSITION, pos);
   sunAngle = 0;
-  //sunAngle2 = 15.0 * (float) pulseFunction2(gearsGetTime(0));
-  sunAngle2 = 15.0 * (float) gearsGetTime(0);
-  sunAngle3 = 30.0 * (float) gearsGetTime(2);
+  //sunAngle2 = 15.0 * (double) pulseFunction2(gearsGetTime(0));
+  sunAngle2 = 15.0 * (double) gearsGetTime(0);
+  sunAngle3 = 30.0 * (double) gearsGetTime(2);
   camDip = 5.0;
   animIndex += 1;
   if (0 == animIndex % animPeriod) {
@@ -838,8 +837,8 @@ void key( GLFWwindow* window, int k, int s, int action, int mods ) {
     return;
   }
 }
-float windowWidth;
-float windowHeight;
+double windowWidth;
+double windowHeight;
 void cursor(GLFWwindow * window, double x, double y) {
     x -= windowWidth / 2.0;
     x /= windowWidth / 2.0;
@@ -852,7 +851,7 @@ void cursor(GLFWwindow * window, double x, double y) {
 }
 /* new window size */
 void reshape( GLFWwindow * window, int width, int height ) {
-  //printf("reshape: %f %f\n",(float) width,(float) height);
+  //printf("reshape: %f %f\n",(double) width,(double) height);
   windowWidth = width / 2;
   windowHeight = height / 2;
   GLfloat h = (GLfloat) height / (GLfloat) width;
@@ -973,8 +972,8 @@ static void init(void) {
 
 void readTimeOffset(void) {
     FILE * f = fopen(OFFSET_FILENAME,"r");
-    float g;
-    fscanf(f,"%f",& g);
+    double g;
+    fscanf(f,"%lg",& g);
     //printf("%f\n",g);
     //fflush(stdout);
     timeOffset = g;
@@ -983,7 +982,7 @@ void readTimeOffset(void) {
 
 void writeTimeOffset(void) {
     FILE * f = fopen(OFFSET_FILENAME,"w");
-    float haltTime = timeOffset + glfwGetTime();
+    double haltTime = timeOffset + glfwGetTime();
     fprintf(f,"%f\n",haltTime);
     printf("%f\n",haltTime);
     fflush(stdout);
