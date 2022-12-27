@@ -806,36 +806,38 @@ static void animate(void) {
   }
 }
 
+static int sizeChange = 0;
 
 /* change view angle, exit upon ESC */
-void key( GLFWwindow* window, int k, int s, int action, int mods ) {
-  if (!(action == GLFW_PRESS || action == GLFW_REPEAT)) return;
-
-  switch (k) {
-  case GLFW_KEY_Z:
-    if( mods & GLFW_MOD_SHIFT )
-      view_rotz -= 5.0;
-    else
-      view_rotz += 5.0;
-    break;
-  case GLFW_KEY_ESCAPE:
-    glfwSetWindowShouldClose(window, GLFW_TRUE);
-    break;
-  case GLFW_KEY_UP:
-    view_rotx += 5.0;
-    break;
-  case GLFW_KEY_DOWN:
-    view_rotx -= 5.0;
-    break;
-  case GLFW_KEY_LEFT:
-    view_roty += 5.0;
-    break;
-  case GLFW_KEY_RIGHT:
-    view_roty -= 5.0;
-    break;
-  default:
-    return;
-  }
+void key(GLFWwindow * window,int k,int s,int action,int mods) {
+    if (!(action == GLFW_PRESS || action == GLFW_REPEAT)) return;
+    switch (k) {
+    case GLFW_KEY_A:
+        sizeChange = 1;
+    case GLFW_KEY_Z:
+      if( mods & GLFW_MOD_SHIFT )
+        view_rotz -= 5.0;
+      else
+        view_rotz += 5.0;
+      break;
+    case GLFW_KEY_ESCAPE:
+      glfwSetWindowShouldClose(window, GLFW_TRUE);
+      break;
+    case GLFW_KEY_UP:
+      view_rotx += 5.0;
+      break;
+    case GLFW_KEY_DOWN:
+      view_rotx -= 5.0;
+      break;
+    case GLFW_KEY_LEFT:
+      view_roty += 5.0;
+      break;
+    case GLFW_KEY_RIGHT:
+      view_roty -= 5.0;
+      break;
+    default:
+      return;
+    }
 }
 double windowWidth;
 double windowHeight;
@@ -1018,24 +1020,38 @@ int main(int argc, char *argv[]) {
         }
     }
     window = glfwCreateWindow(windowWidth, windowHeight, "Gears", NULL, NULL );
-    if (!window) {
+    if (! window) {
         fprintf( stderr, "Failed to open GLFW window\n" );
         glfwTerminate();
         exit( EXIT_FAILURE );
     }
     // Set callback functions
-    glfwSetFramebufferSizeCallback(window, reshape);
-    glfwSetKeyCallback(window, key);
-    glfwSetCursorPosCallback(window, cursor);
+    glfwSetFramebufferSizeCallback(window,reshape);
+    glfwSetKeyCallback(window,key);
+    glfwSetCursorPosCallback(window,cursor);
     glfwMakeContextCurrent(window);
     gladLoadGL(glfwGetProcAddress);
-    glfwSwapInterval( 1 );
-    glfwGetFramebufferSize(window, &width, &height);
-    reshape(window, width, height);
+    glfwSwapInterval(1);
+    glfwGetFramebufferSize(window,& width,& height);
+    reshape(window,width,height);
     // Parse command-line options
     init();
     // Main loop
+    int xpos,ypos;
     while( !glfwWindowShouldClose(window) ) {
+        if (sizeChange) {
+            glfwGetWindowPos(window,& xpos,& ypos);
+            xpos -= 5;
+            //ypos -= 5;
+            glfwSetWindowPos(window,xpos,ypos);
+            windowWidth += 10;
+            windowHeight += 10;
+            // Set callback functions
+            glfwSetWindowSize(window,windowWidth,windowHeight);
+            glfwGetFramebufferSize(window,& width,& height);
+            reshape(window,width,height);
+            sizeChange = 0;
+        }
         // Update animation
         animate();
         // Draw gears
@@ -1044,6 +1060,7 @@ int main(int argc, char *argv[]) {
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
+    glfwDestroyWindow(window);
     writeTimeOffset();
     // Terminate GLFW
     glfwTerminate();
