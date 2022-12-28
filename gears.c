@@ -611,9 +611,18 @@ static void draw(void) {
   for (p2 = 0; p2 < div; p2 += 1) {
   for (p3 = 0; p3 < div; p3 += 1) {
   ci += 1;
+  int outerp = p1 % 2 == 0 && p2 % 2 == 0 && p3 % 2 == 0;
+  int outerp2 = ( (p1 + p2 + p3) / 2) % 2 == 0;
+  int innerp = p1 >= 1 && p1 <= 3 && p2 >= 1 && p2 <= 3 && p3 >= 1 && p3 <= 3;
+  int innerp2 = (p1 + p2 + p3) % 3 != 0;
+  if ( !( (outerp && outerp2) || (innerp && innerp2) ) ) {
+      continue;
+  }
+  /*
   if (ci % 7 != 0) {
       continue;
   }
+  */
   /*
   if (p3 == 0) {
       ci += 1;
@@ -1008,8 +1017,10 @@ int main(int argc, char *argv[]) {
     }
     glfwWindowHint(GLFW_DEPTH_BITS, 16);
     glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, GLFW_TRUE);
-	windowWidth = 720;
-	windowHeight = 480;
+	//windowWidth = 720;
+	//windowHeight = 480;
+	windowWidth = 600;
+	windowHeight = 400;
     if (argc >= 2) {
         if (0 == strcmp("-0",argv[1])) {
             windowWidth = 576;
