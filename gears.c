@@ -90,8 +90,8 @@ static double camDip = 0.0;
 static double sunAngle = 0.0;
 static double sunAngle2 = 0.0;
 static double sunAngle3 = 0.0;
-static double range = 20.0;
-static double camHeight = -2.0;
+static double range = 18.0;
+static double camHeight = -1.5;
 #define HUDWIDTH 36
 #define HUDHEIGHT 20
 static double xHUDscale = HUDWIDTH / 2;
@@ -421,6 +421,7 @@ static void draw(void) {
   glVertex3f(-xHUDscale,HUDscale, 0.0);
   glEnd(); /* end HUD */
   glPushMatrix(); /* scene */
+  camDip = 5.0;
   glRotatef(camDip, 1.0, 0.0, 0.0);
   glTranslatef(0.0,0.0,-range);
   glRotatef(view_rotx, 1.0, 0.0, 0.0);
@@ -595,7 +596,7 @@ static void draw(void) {
   //glRotatef(45.0,0.0,1.0,0.0);
   int j,k;
   int p1,p2,p3;
-  // draw Sol
+  // Draw Sol
   // CPU utilization notes:
   //    91% idle @ k = 0..30
   //    89% idle @ k = 0..300
@@ -604,11 +605,15 @@ static void draw(void) {
   // 84-85% idle @ k = 0..10000
 
   int ci = 0;
+  int div = 5;
   glRotatef(fmod(sunAngle,360.0),0.0,1.0,0.0);
-  for (p1 = 0; p1 < 3; p1 += 1) {
-  for (p2 = 0; p2 < 3; p2 += 1) {
-  for (p3 = 0; p3 < 3; p3 += 1) {
+  for (p1 = 0; p1 < div; p1 += 1) {
+  for (p2 = 0; p2 < div; p2 += 1) {
+  for (p3 = 0; p3 < div; p3 += 1) {
   ci += 1;
+  if (ci % 3 != 0) {
+      continue;
+  }
   /*
   if (p3 == 0) {
       ci += 1;
@@ -618,8 +623,9 @@ static void draw(void) {
   }
   */
   glPushMatrix(); /* Sol */
+  glScalef(0.5,0.5,0.5);
   double disp = 2.75;
-  double disp2 = disp;
+  double disp2 = 2 * disp;
   glTranslatef(-disp2 + disp * p1,-disp2 + disp * p2,-disp2 + disp * p3);
   //glRotatef(ci * 15.0,0.0,1.0,0.0);
   //glRotatef(ci * 15.0,0.0,0.0,1.0);
@@ -647,8 +653,9 @@ static void draw(void) {
   //glRotatef(-rsgn * sunAngle2,asgn,bsgn,csgn);
   int CONES;
   CONES = 10;
+  int copy = 8;
   for (k = 0;k < CONES;k += 1) {
-      for (j = 0;j < 4;j += 1) {
+      for (j = 0;j < copy;j += 1) {
           if (ci % 2 == 0) {
               gearMaterial(GL_FRONT, sbPalette(pa1,k));
           } else {
@@ -794,7 +801,6 @@ static void animate(void) {
   //sunAngle2 = 15.0 * (double) pulseFunction2(gearsGetTime(0));
   sunAngle2 = 15.0 * (double) gearsGetTime(0);
   sunAngle3 = 30.0 * (double) gearsGetTime(2);
-  camDip = 5.0;
   animIndex += 1;
   if (0 == animIndex % animPeriod) {
       xCursor += 1;
