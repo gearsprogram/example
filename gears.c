@@ -611,7 +611,7 @@ static void draw(void) {
   for (p2 = 0; p2 < div; p2 += 1) {
   for (p3 = 0; p3 < div; p3 += 1) {
   ci += 1;
-  if (ci % 3 != 0) {
+  if (ci % 7 != 0) {
       continue;
   }
   /*
@@ -758,7 +758,7 @@ double gearsGetTime(int lighting) {
     if (lighting == 0) {
         f *= 0.2;
         double timeShim = 1.0 - cos(f);
-        return 5.0 * f + 4.0 * timeShim;
+        return 3.0 * f + 2.0 * timeShim;
     } else if (lighting == 1) {
         return 0.25 * f;
     } else {
@@ -1008,10 +1008,13 @@ int main(int argc, char *argv[]) {
     }
     glfwWindowHint(GLFW_DEPTH_BITS, 16);
     glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, GLFW_TRUE);
-	windowWidth = 576;
-	windowHeight = 256;
+	windowWidth = 720;
+	windowHeight = 480;
     if (argc >= 2) {
-        if (0 == strcmp("-1",argv[1])) {
+        if (0 == strcmp("-0",argv[1])) {
+            windowWidth = 576;
+            windowHeight = 256;
+        } else if (0 == strcmp("-1",argv[1])) {
             windowWidth = 720;
             windowHeight = 320;
         } else if (0 == strcmp("-2",argv[1])) {
@@ -1023,6 +1026,18 @@ int main(int argc, char *argv[]) {
         } else if (0 == strcmp("-4",argv[1])) {
             windowWidth = 1296;
             windowHeight = 576;
+        } else if (0 == strcmp("-5",argv[1])) {
+            windowWidth = 600;
+            windowHeight = 400;
+        } else if (0 == strcmp("-6",argv[1])) {
+            windowWidth = 720;
+            windowHeight = 480;
+        } else if (0 == strcmp("-7",argv[1])) {
+            windowWidth = 800;
+            windowHeight = 600;
+        } else if (0 == strcmp("-8",argv[1])) {
+            windowWidth = 1024;
+            windowHeight = 768;
         }
     }
     window = glfwCreateWindow(windowWidth, windowHeight, "Gears", NULL, NULL );
