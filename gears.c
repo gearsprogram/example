@@ -90,7 +90,7 @@ static double camDip = 0.0;
 static double sunAngle = 0.0;
 static double sunAngle2 = 0.0;
 static double sunAngle3 = 0.0;
-static double range = 18.0;
+static double range = 15.0;
 static double camHeight = -1.5;
 #define HUDWIDTH 36
 #define HUDHEIGHT 20
@@ -1017,10 +1017,8 @@ int main(int argc, char *argv[]) {
     }
     glfwWindowHint(GLFW_DEPTH_BITS, 16);
     glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, GLFW_TRUE);
-	//windowWidth = 720;
-	//windowHeight = 480;
-	windowWidth = 600;
-	windowHeight = 400;
+    windowWidth = 864;
+    windowHeight = 576;
     if (argc >= 2) {
         if (0 == strcmp("-0",argv[1])) {
             windowWidth = 576;
@@ -1044,9 +1042,12 @@ int main(int argc, char *argv[]) {
             windowWidth = 720;
             windowHeight = 480;
         } else if (0 == strcmp("-7",argv[1])) {
+            windowWidth = 864;
+            windowHeight = 576;
+        } else if (0 == strcmp("-8",argv[1])) {
             windowWidth = 800;
             windowHeight = 600;
-        } else if (0 == strcmp("-8",argv[1])) {
+        } else if (0 == strcmp("-9",argv[1])) {
             windowWidth = 1024;
             windowHeight = 768;
         }
