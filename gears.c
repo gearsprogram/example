@@ -369,8 +369,8 @@ static double sunRadius2[2] = {1.0,0.25};
 
 double cursor2x;
 double cursor2y;
-int dc = 0;
-int vermilionPeriod = 30;
+int dc = 0; // draw frame counter
+static int VENUS = 1; // Venus fly trap design
 /* OpenGL draw function & timing */
 static void draw(void) {
   dc += 1;
@@ -455,44 +455,11 @@ static void draw(void) {
           glVertex3f((double) i, 0.0, 10.0);
       }
       glEnd(); /* end blue grid */
-      for (i = 0; i < 10; i += 1) {
-          ;
-          //glVertex3f( 0.0, 0.0 , (double) i);
-          //glVertex3f( 0.0, 10.0, (double) i);
-      }
-      for (i = 0; i < 10; i += 1) {
-          ;
-          //glVertex3f( 0.0, (double) i, 0.0);
-          //glVertex3f( 0.0, (double) i, 10.0);
-      }
   }
   glTranslatef(0.0, 4.0, 0.0);
-  /* apply a general 2D linear transformation
-     to an array of x-y coordinates */
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
-  /*
-
-  glEnable(GL_LIGHT1);
-  glEnable(GL_LIGHT2);
-  glEnable(GL_LIGHT3);
-  */
-  
-  //glColor3f(0.8,0.8,0.8);
-  gearMaterial(GL_FRONT, skyblue);
   glPushMatrix(); /* (cursor, cursor 2, marquee) */
-
-  glPushMatrix();
-  glRotatef(fmod(sunAngle3,360.0),cursor2x,cursor2y,0.0);
-
-  //glBegin(GL_TRIANGLES); /* cursor 2 */
-  //drawboldline2(cursor2x - 0.5, cursor2y - 0.5,cursor2x + 0.5, cursor2y + 0.5);
-  //drawboldline2(cursor2x - 0.5, cursor2y + 0.5,cursor2x + 0.5, cursor2y - 0.5);
-  //drawboldline2(0.0,0.0,cursor2x,cursor2y);
-  //glEnd(); /* cursor 2 */
-
-  glPopMatrix();
-
   gearMaterial(GL_FRONT, cerulean);
   double sideWidth = 6.0;
   double platHeight = 1.0;
@@ -523,7 +490,6 @@ static void draw(void) {
            0.0,0.0, 0.0,
           sideWidth,0.0,sideWidth,
           sideWidth,0.0, 0.0);
-
       triNorm(
            0.0,-platHeight, 0.0,
            sideWidth,-platHeight,sideWidth,
@@ -532,7 +498,6 @@ static void draw(void) {
            0.0,-platHeight, 0.0,
           sideWidth,-platHeight, 0.0,
           sideWidth,-platHeight,sideWidth);
-
       triNorm(
            0.0,-platHeight,0.0,
            0.0, 0.0,0.0,
@@ -541,7 +506,6 @@ static void draw(void) {
            0.0,-platHeight,0.0,
           sideWidth, 0.0,0.0,
           sideWidth,-platHeight,0.0);
-
       triNorm(
            0.0, 0.0,sideWidth,
            0.0,-platHeight,sideWidth,
@@ -550,7 +514,6 @@ static void draw(void) {
           sideWidth, 0.0,sideWidth,
            0.0,-platHeight,sideWidth,
           sideWidth,-platHeight,sideWidth);
-
       triNorm(
            0.0, 0.0,0.0,
            0.0,-platHeight,0.0,
@@ -559,7 +522,6 @@ static void draw(void) {
            0.0, 0.0,sideWidth,
            0.0,-platHeight,0.0,
            0.0,-platHeight,sideWidth);
-
       triNorm(
            sideWidth,-platHeight,0.0,
            sideWidth, 0.0,0.0,
@@ -572,16 +534,15 @@ static void draw(void) {
       glEnd(); /* end platform */
       glPopMatrix(); /* end platform */
   }
-
   gearMaterial(GL_FRONT, pink);
   int Rwidth = 1;
   for (i = 0; i < 1; i += 1) {
-      glBegin(GL_TRIANGLES); /* cursor */
+      glBegin(GL_TRIANGLES); /* Draw cursor */
       drawboldline2(xCursor - 0.5, yCursor - 0.5,xCursor + 0.5, yCursor + 0.5);
       drawboldline2(xCursor - 0.5, yCursor + 0.5,xCursor + 0.5, yCursor - 0.5);
       drawboldline2(0.0,0.0,xCursor,yCursor);
-      //glEnd(); /* end cursor */
-      //glBegin(GL_TRIANGLES); /* marquee R */
+      /* end cursor */
+      /* Draw marquee R */
       drawboldline2(0.0         ,4.0,0.0 + Rwidth,4.0);
       drawboldline2(0.0 + Rwidth,4.0,1.0 + Rwidth,3.0);
       drawboldline2(1.0 + Rwidth,3.0,0.0 + Rwidth,2.0);
@@ -593,18 +554,9 @@ static void draw(void) {
       glRotatef(45.0,0.0,1.0,0.0);
   }
   glPopMatrix(); /* (cursor, marquee) */
-  //glRotatef(-90.0,1.0,0.0,0.0);
-  //glRotatef(45.0,0.0,1.0,0.0);
   int j,k;
   int p1,p2,p3;
   // Draw Sol
-  // CPU utilization notes:
-  //    91% idle @ k = 0..30
-  //    89% idle @ k = 0..300
-  // 88-89% idle @ k = 0..1000
-  // 85-86% idle @ k = 0..3000
-  // 84-85% idle @ k = 0..10000
-
   int ci = 0;
   int div = 5;
   glRotatef(fmod(sunAngle,360.0),0.0,1.0,0.0);
@@ -619,26 +571,29 @@ static void draw(void) {
   if ( !( (outerp && outerp2) || (innerp && innerp2) ) ) {
       continue;
   }
-  /*
-  if (ci % 7 != 0) {
-      continue;
+  // Cone figure parameters
+  int FACES = 9;
+  double xx[FACES];
+  double yy[FACES];
+  // line segments define arc of cone base
+  yy[0] = xx[8] = 0.0;
+  yy[1] = xx[7] = 0.19509032201612825;
+  yy[2] = xx[6] = 0.3826834323650898;
+  yy[3] = xx[5] = 0.5555702330196022;
+  yy[4] = xx[4] = 0.7071067811865475;
+  yy[5] = xx[3] = 0.8314696123025451;
+  yy[6] = xx[2] = 0.9238795325112867;
+  yy[7] = xx[1] = 0.9807852804032304;
+  yy[8] = xx[0] = 1.0;
+  for (i = 0; i < FACES; i += 1) {
+      xx[i] *= spikeRadius;
+      yy[i] *= spikeRadius;
   }
-  */
-  /*
-  if (p3 == 0) {
-      ci += 1;
-      if (p2 == 0) {
-          ci += 1;
-      }
-  }
-  */
   glPushMatrix(); /* Sol */
   glScalef(0.5,0.5,0.5);
   double disp = 2.75;
   double disp2 = 2 * disp;
   glTranslatef(-disp2 + disp * p1,-disp2 + disp * p2,-disp2 + disp * p3);
-  //glRotatef(ci * 15.0,0.0,1.0,0.0);
-  //glRotatef(ci * 15.0,0.0,0.0,1.0);
   int rsgn = 1;
   if (ci % 2 == 0) {
       rsgn = -1;
@@ -653,14 +608,7 @@ static void draw(void) {
   } else {
       csgn = 1.0;
   }
-  //int keplerMod = 144;
-  //double kepler = fmod(ci + gearsGetTime(0),(double) keplerMod);
-  //double kepler = fmod(9 * ci,(double) keplerMod);
-  //double keplerDelta = 360.0 / ((double) keplerMod);
-  //glRotatef(kepler * keplerDelta,1.0,1.0,1.0);
   glRotatef(fmod(rsgn * sunAngle2,360.0),asgn,bsgn,csgn);
-  //glRotatef(-kepler * keplerDelta,1.0,1.0,1.0);
-  //glRotatef(-rsgn * sunAngle2,asgn,bsgn,csgn);
   double mobileWave;
   if ( innerp ) {
       mobileWave = sin(fmod(gearsGetTime(0),2.0 * M_PI));
@@ -675,35 +623,21 @@ static void draw(void) {
   CONES = 14;
   int copy = 7;
   for (k = 0;k < CONES;k += 1) {
+      if ( VENUS && k == CONES / 2 ) {
+          glRotatef(180.0,1.0,0.0,0.0);
+      }
+      if (ci % 2 == 0) {
+          gearMaterial(GL_FRONT, sbPalette(pa1,k));
+      } else {
+          gearMaterial(GL_FRONT, sbPalette(pa3,k));
+      }
       for (j = 0;j < copy;j += 1) {
-          if (ci % 2 == 0) {
-              gearMaterial(GL_FRONT, sbPalette(pa1,k));
-          } else {
-              gearMaterial(GL_FRONT, sbPalette(pa3,k));
-          }
           glPushMatrix(); // fold
           glTranslatef(0.0,sunRadius,0.0);
           glRotatef(fmod(60.0 + sunAngle3/64.0,360.0),1.0,0.0,0.0);
           for (i = 0; i < 2; i += 1) {
               glBegin(GL_TRIANGLES);
-              int FACES = 9;
-              double xx[FACES];
-              double yy[FACES];
-              // line segments define arc of cone base
-              yy[0] = xx[8] = 0.0;
-              yy[1] = xx[7] = 0.19509032201612825;
-              yy[2] = xx[6] = 0.3826834323650898;
-              yy[3] = xx[5] = 0.5555702330196022;
-              yy[4] = xx[4] = 0.7071067811865475;
-              yy[5] = xx[3] = 0.8314696123025451;
-              yy[6] = xx[2] = 0.9238795325112867;
-              yy[7] = xx[1] = 0.9807852804032304;
-              yy[8] = xx[0] = 1.0;
               int ii;
-              for (ii = 0; ii < FACES; ii += 1) {
-                  xx[ii] *= spikeRadius;
-                  yy[ii] *= spikeRadius;
-              }
               for (ii = 0; ii < FACES - 1; ii += 1) {
                   triNorm(
                       xx[ii + 0],0.0,yy[ii + 0],
@@ -714,7 +648,6 @@ static void draw(void) {
                       0.0,-sunRadius2[1],0.0,
                       xx[ii + 0],0.0,yy[ii + 0],
                       xx[ii + 1],0.0,yy[ii + 1]);
-
                   triNorm(
                       -xx[ii + 0],0.0,yy[ii + 0],
                       -xx[ii + 1],0.0,yy[ii + 1],
@@ -745,29 +678,6 @@ static void draw(void) {
 
 static int animPeriod = 45;
 static int animIndex = 0;
-//
-// pulse function 3a and 3b
-//
-/*
-double pulseFunction(double x) {
-    int i = (int) x;
-    if (i % 2 == 0) {
-        double f = x - (double) i;
-        return x + f;
-    } else {
-        return (double) i + 1.0;
-    }
-}
-double pulseFunction2(double x) {
-    int i = (int) x;
-    if (i % 2 == 0) {
-        return (double) i;
-    } else {
-        double f = x - (double) i;
-        return (double) i - 1.0 + f + f;
-    }
-}
-*/
 //
 // 0 : mobile param 1
 // 1 : lights
@@ -825,7 +735,6 @@ static void animate(void) {
   pos[1] *= -1.0;
   glLightfv(GL_LIGHT3, GL_POSITION, pos);
   sunAngle = 0;
-  //sunAngle2 = 15.0 * (double) pulseFunction2(gearsGetTime(0));
   sunAngle2 = 15.0 * (double) gearsGetTime(0);
   sunAngle3 = 30.0 * (double) gearsGetTime(2);
   animIndex += 1;
@@ -1029,7 +938,7 @@ int main(int argc, char *argv[]) {
     GLFWwindow* window;
     int width, height;
     readTimeOffset();
-    if( !glfwInit() ) {
+    if ( !glfwInit() ) {
         fprintf( stderr, "Failed to initialize GLFW\n" );
         exit( EXIT_FAILURE );
     }
@@ -1037,37 +946,45 @@ int main(int argc, char *argv[]) {
     glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, GLFW_TRUE);
     windowWidth = 864;
     windowHeight = 576;
+    int i;
     if (argc >= 2) {
-        if (0 == strcmp("-0",argv[1])) {
-            windowWidth = 576;
-            windowHeight = 256;
-        } else if (0 == strcmp("-1",argv[1])) {
-            windowWidth = 720;
-            windowHeight = 320;
-        } else if (0 == strcmp("-2",argv[1])) {
-            windowWidth = 900;
-            windowHeight = 400;
-        } else if (0 == strcmp("-3",argv[1])) {
-            windowWidth = 1080;
-            windowHeight = 480;
-        } else if (0 == strcmp("-4",argv[1])) {
-            windowWidth = 1296;
-            windowHeight = 576;
-        } else if (0 == strcmp("-5",argv[1])) {
-            windowWidth = 600;
-            windowHeight = 400;
-        } else if (0 == strcmp("-6",argv[1])) {
-            windowWidth = 720;
-            windowHeight = 480;
-        } else if (0 == strcmp("-7",argv[1])) {
-            windowWidth = 864;
-            windowHeight = 576;
-        } else if (0 == strcmp("-8",argv[1])) {
-            windowWidth = 800;
-            windowHeight = 600;
-        } else if (0 == strcmp("-9",argv[1])) {
-            windowWidth = 1024;
-            windowHeight = 768;
+        // parse command line arguments
+        for (i = 1;i < argc;i += 1) {
+            if (0 == strcmp("-0",argv[i])) {
+                windowWidth = 576;
+                windowHeight = 256;
+            } else if (0 == strcmp("-1",argv[i])) {
+                windowWidth = 720;
+                windowHeight = 320;
+            } else if (0 == strcmp("-2",argv[i])) {
+                windowWidth = 900;
+                windowHeight = 400;
+            } else if (0 == strcmp("-3",argv[i])) {
+                windowWidth = 1080;
+                windowHeight = 480;
+            } else if (0 == strcmp("-4",argv[i])) {
+                windowWidth = 1296;
+                windowHeight = 576;
+            } else if (0 == strcmp("-5",argv[i])) {
+                windowWidth = 600;
+                windowHeight = 400;
+            } else if (0 == strcmp("-6",argv[i])) {
+                windowWidth = 720;
+                windowHeight = 480;
+            } else if (0 == strcmp("-7",argv[i])) {
+                windowWidth = 864;
+                windowHeight = 576;
+            } else if (0 == strcmp("-8",argv[i])) {
+                windowWidth = 800;
+                windowHeight = 600;
+            } else if (0 == strcmp("-9",argv[i])) {
+                windowWidth = 1024;
+                windowHeight = 768;
+            } else if (0 == strcmp("-v",argv[i])) {
+                VENUS = 1; // use Venus fly trap design
+            } else if (0 == strcmp("-nov",argv[i])) {
+                VENUS = 0; // don't use Venus fly trap design
+            }
         }
     }
     window = glfwCreateWindow(windowWidth, windowHeight, "Gears", NULL, NULL );
