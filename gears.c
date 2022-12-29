@@ -614,7 +614,7 @@ static void draw(void) {
   int outerp = p1 % 2 == 0 && p2 % 2 == 0 && p3 % 2 == 0;
   int outerp2 = ( (p1 + p2 + p3) / 2) % 2 == 0;
   int innerp = p1 >= 1 && p1 <= 3 && p2 >= 1 && p2 <= 3 && p3 >= 1 && p3 <= 3;
-  int innerp2 = (p1 + p2 + p3) % 3 != 0;
+  int innerp2 = (p1 + p2 + p3) % 5 != 0;
   if ( !( (outerp && outerp2) || (innerp && innerp2) ) ) {
       continue;
   }
@@ -664,9 +664,11 @@ static void draw(void) {
   if ( innerp ) {
       mobileWave = sin(fmod(gearsGetTime(0),2.0 * M_PI));
       glTranslatef(mobileWave,0.0,0.0);
+      glScalef(0.5,0.5,0.5);
   } else if ( outerp ) {
-      mobileWave = cos(fmod(gearsGetTime(3),2.0 * M_PI));
+      mobileWave = 0.25 * cos(fmod(gearsGetTime(3),2.0 * M_PI));
       glTranslatef(0.0,mobileWave,0.0);
+      glScalef(0.25,0.25,0.25);
   }
   int CONES;
   CONES = 10;
@@ -783,7 +785,7 @@ double gearsGetTime(int lighting) {
     } else if (lighting == 2) {
         return 0.05 * f;
     } else if (lighting == 3) {
-        f *= 0.2;
+        f *= 0.45;
         timeShim = 1.0 + sin(fmod(f,2.0 * M_PI));
         return 4.0 * f + 3.0 * timeShim;
     } else {
