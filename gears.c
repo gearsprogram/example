@@ -1,51 +1,10 @@
-/*
- * 3-D gear wheels.  This program is in the public domain.
- *
- * Command line options:
- *    -info      print GL implementation information
- *    -exit      automatically exit after 30 seconds
- *
- *
- * Brian Paul
- *
- *
- * Marcus Geelnard:
- *   - Conversion to GLFW
- *   - Time based rendering (frame rate independent)
- *   - Slightly modified camera that should work better for stereo viewing
- *
- *
- * Camilla Löwy:
- *   - Removed FPS counter (this is not a benchmark)
- *   - Added a few comments
- *   - Enabled vsync
- */
-
-#if defined(_MSC_VER)
- // Make MS math.h define M_PI
- #define _USE_MATH_DEFINES
-#endif
-
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-
 #include <glad/gl.h>
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
-
-/**
-
-  Draw a gear wheel.  You'll probably want to call this function when
-  building a display list since we do a lot of trig here.
-
-  Input:  inner_radius - radius of hole at center
-          outer_radius - radius at center of teeth
-          width - width of gear teeth - number of teeth
-          tooth_depth - depth of tooth
-
- **/
 
 double gearsGetTime(int lighting);
 
@@ -77,7 +36,6 @@ void gearMaterial(GLenum f,const GLfloat * ps) {
     hatps[2] = ps[2];
     hatps[3] = matAlpha;
     glMaterialfv(f,GL_SPECULAR,hatps);
-    //glMaterialfv(f,GL_AMBIENT,rrs);
     glMaterialfv(f,GL_DIFFUSE,rrs);
     GLfloat s[] = {50.0};
     glMaterialfv(f,GL_SHININESS,s);
@@ -95,8 +53,6 @@ static double camHeight = 0.5;
 #define HUDHEIGHT 20
 static double xHUDscale = HUDWIDTH / 2;
 static double HUDscale = HUDHEIGHT / 2;
-//static int xCursor = -(HUDWIDTH / 2);
-//static int yCursor = -(HUDHEIGHT / 2);
 static int xCursor = 0;
 static int yCursor = 0;
 
@@ -118,7 +74,7 @@ static void normVec(double * a1, double * a2, double * a3) {
 }
 
 /* Calculate the normal vector for a triangle with vertices
-   at a,b,c and store the result in d */
+   at a,b,c */
 static void triNorm(
         double a1, double a2, double a3,
         double b1, double b2, double b3,
@@ -129,16 +85,13 @@ static void triNorm(
     w1 = c1 - a1; w2 = c2 - a2; w3 = c3 - a3;
     calcCross(&d1,&d2,&d3,v1,v2,v3,w1,w2,w3);
     normVec(&d1,&d2,&d3);
-    //* d1 *= -1; * d2 *= -1; * d3 *= -1;
     glNormal3f(d1,d2,d3);
     glVertex3f(a1,a2,a3);
     glVertex3f(b1,b2,b3);
     glVertex3f(c1,c2,c3);
 }
 
-#define BOLDCOUNT 5
-#define BOLDFINE 25
-
+static double BOLDTHICK = 0.1;
 static void boldline2(double x1,double y1,double x2,double y2,
         double *xout,double *yout) {
     double dx = x2 - x1;
@@ -149,17 +102,15 @@ static void boldline2(double x1,double y1,double x2,double y2,
     double temp = dx;
     dx = -dy;
     dy = temp;
-    dx /= BOLDFINE;
-    dy /= BOLDFINE;
-    dx *= (double) BOLDCOUNT / 2.0;
-    dy *= (double) BOLDCOUNT / 2.0;
+    dx *= BOLDTHICK / 2.0;
+    dy *= BOLDTHICK / 2.0;
     xout[0] = x1 + dx; yout[0] = y1 + dy;
     xout[1] = x1 - dx; yout[1] = y1 - dy;
     xout[2] = x2 + dx; yout[2] = y2 + dy;
     xout[3] = x2 - dx; yout[3] = y2 - dy;
 }
 
-double marqueeWidth = 0.1;
+double marqueeWidth = 0.05;
 
 static void drawboldline2(double x1,double y1,double x2,double y2) {
     double xout[4];
@@ -199,48 +150,6 @@ static void drawboldline2(double x1,double y1,double x2,double y2) {
         xout[2],yout[2],-marqueeWidth,
         xout[0],yout[0],-marqueeWidth,
         xout[2],yout[2], marqueeWidth);
-}
-
-static void boldline(double x1,double y1,double x2,double y2,
-        double *x1out,double *y1out,double *x2out,double *y2out) {
-    double dx = x2 - x1;
-    double dy = y2 - y1;
-    double mag = sqrt(dx*dx + dy*dy);
-    dx /= mag;
-    dy /= mag;
-    double temp = dx;
-    dx = -dy;
-    dy = temp;
-    dx /= BOLDFINE;
-    dy /= BOLDFINE;
-    x1 -= (BOLDCOUNT / 2) * dx;
-    x2 -= (BOLDCOUNT / 2) * dx;
-    y1 -= (BOLDCOUNT / 2) * dy;
-    y2 -= (BOLDCOUNT / 2) * dy;
-    int i;
-    for (i = 0; i < BOLDCOUNT; i += 1) {
-        x1out[i] = x1;
-        x2out[i] = x2;
-        y1out[i] = y1;
-        y2out[i] = y2;
-        x1 += dx;
-        x2 += dx;
-        y1 += dy;
-        y2 += dy;
-    }
-}
-
-static void drawboldline(double x1,double y1,double x2,double y2) {
-  int i;
-  double x1r[BOLDCOUNT];
-  double x2r[BOLDCOUNT];
-  double y1r[BOLDCOUNT];
-  double y2r[BOLDCOUNT];
-  boldline(x1,y1,x2,y2,x1r,y1r,x2r,y2r);
-  for (i = 0; i < BOLDCOUNT; i += 1) {
-      glVertex3f(x1r[i],y1r[i],marqueeWidth);
-      glVertex3f(x2r[i],y2r[i],marqueeWidth);
-  }
 }
 
 //static GLfloat copper[4] =    {0.725 * 0.8, 0.45 * 0.8, 0.2 * 0.8, 1.0};
