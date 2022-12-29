@@ -647,7 +647,7 @@ static void animate(void) {
   pos[1] *= -1.0;
   glLightfv(GL_LIGHT3, GL_POSITION, pos);
   sunAngle2 = 15.0 * (double) gearsGetTime(0);
-  sunAngle3 = 900.0 * (double) gearsGetTime(2);
+  sunAngle3 = 1350.0 * (double) gearsGetTime(2);
   animIndex += 1;
   if (0 == animIndex % animPeriod) {
       xCursor += 1;
