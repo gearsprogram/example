@@ -363,8 +363,6 @@ GLfloat * sbPalette(Palette * p, int i) {
 
 static double sunRadius = 1.0;
 static double spikeRadius = 0.125;
-static double sunRadius2[2] = {1.0,0.25};
-//static double sunThickness = 1.0;
 
 double cursor2x;
 double cursor2y;
@@ -608,18 +606,25 @@ static void draw(void) {
   }
   glRotatef(fmod(rsgn * sunAngle2,360.0),asgn,bsgn,csgn);
   double mobileWave;
+  double sunRadius2[2];
+  int copy;
   if ( innerp ) {
       mobileWave = sin(fmod(gearsGetTime(0),2.0 * M_PI));
       glTranslatef(mobileWave,0.0,0.0);
-      glScalef(0.7,0.7,0.7);
+      sunRadius2[0] = 1.25;
+      sunRadius2[1] = 0.5;
+      glScalef(0.9,0.9,0.9);
+      copy = 3;
   } else if ( outerp ) {
       mobileWave = 0.25 * cos(fmod(gearsGetTime(3),2.0 * M_PI));
       glTranslatef(0.0,mobileWave,0.0);
+      sunRadius2[0] = 1.0;
+      sunRadius2[1] = 0.25;
       glScalef(0.4,0.4,0.4);
+      copy = 7;
   }
   int CONES;
   CONES = 14;
-  int copy = 7;
   for (k = 0;k < CONES;k += 1) {
       if ( VENUS && k == CONES / 2 ) {
           glRotatef(180.0,1.0,0.0,0.0);
