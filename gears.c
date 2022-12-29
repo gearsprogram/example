@@ -87,11 +87,10 @@ static double timeOffset;
 static double view_rotx = 180.0, view_roty = 30.0, view_rotz = 0.0;
 static double sceneAngle = 0.0;
 static double camDip = 0.0;
-static double sunAngle = 0.0;
 static double sunAngle2 = 0.0;
 static double sunAngle3 = 0.0;
-static double range = 15.0;
-static double camHeight = -1.5;
+static double range = 18.0;
+static double camHeight = 0.5;
 #define HUDWIDTH 36
 #define HUDHEIGHT 20
 static double xHUDscale = HUDWIDTH / 2;
@@ -559,7 +558,6 @@ static void draw(void) {
   // Draw Sol
   int ci = 0;
   int div = 5;
-  glRotatef(fmod(sunAngle,360.0),0.0,1.0,0.0);
   for (p1 = 0; p1 < div; p1 += 1) {
   for (p2 = 0; p2 < div; p2 += 1) {
   for (p3 = 0; p3 < div; p3 += 1) {
@@ -613,11 +611,12 @@ static void draw(void) {
   if ( innerp ) {
       mobileWave = sin(fmod(gearsGetTime(0),2.0 * M_PI));
       glTranslatef(mobileWave,0.0,0.0);
-      glScalef(0.7,0.7,0.7);
+      //glScalef(0.7,0.7,0.7);
   } else if ( outerp ) {
       mobileWave = 0.25 * cos(fmod(gearsGetTime(3),2.0 * M_PI));
       glTranslatef(0.0,mobileWave,0.0);
-      glScalef(0.4,0.4,0.4);
+      //glScalef(0.4,0.4,0.4);
+      glScalef(0.7,0.7,0.7);
   }
   int CONES;
   CONES = 14;
@@ -734,9 +733,8 @@ static void animate(void) {
   pos[0] *= -1.0;
   pos[1] *= -1.0;
   glLightfv(GL_LIGHT3, GL_POSITION, pos);
-  sunAngle = 0;
   sunAngle2 = 15.0 * (double) gearsGetTime(0);
-  sunAngle3 = 30.0 * (double) gearsGetTime(2);
+  sunAngle3 = 900.0 * (double) gearsGetTime(2);
   animIndex += 1;
   if (0 == animIndex % animPeriod) {
       xCursor += 1;
