@@ -660,7 +660,14 @@ static void draw(void) {
   glRotatef(fmod(rsgn * sunAngle2,360.0),asgn,bsgn,csgn);
   //glRotatef(-kepler * keplerDelta,1.0,1.0,1.0);
   //glRotatef(-rsgn * sunAngle2,asgn,bsgn,csgn);
-  glTranslatef(sin(gearsGetTime(0)),0.0,0.0);
+  double mobileWave;
+  if ( innerp ) {
+      mobileWave = sin(fmod(gearsGetTime(0),2.0 * M_PI));
+      glTranslatef(mobileWave,0.0,0.0);
+  } else if ( outerp ) {
+      mobileWave = cos(fmod(gearsGetTime(3),2.0 * M_PI));
+      glTranslatef(0.0,mobileWave,0.0);
+  }
   int CONES;
   CONES = 10;
   int copy = 8;
@@ -761,19 +768,26 @@ double pulseFunction2(double x) {
 //
 // 0 : mobile param 1
 // 1 : lights
-// 2 : mobile param 2
+// 2 : mobile param 2 (scene rotation)
+// 3 : mobile param 3 (parameter for outer mobiles)
 //
 double gearsGetTime(int lighting) {
-    double f = (double) 2.5 * (timeOffset + glfwGetTime());
+    double f = 2.5 * (timeOffset + glfwGetTime());
+    double timeShim;
     if (lighting == 0) {
         f *= 0.2;
-        double timeShim = 1.0 - cos(f);
+        timeShim = 1.0 - cos(fmod(f,2.0 * M_PI));
         return 3.0 * f + 2.0 * timeShim;
     } else if (lighting == 1) {
         return 0.25 * f;
-    } else {
-        //double timeShim = 1.0 - cos(f);
+    } else if (lighting == 2) {
         return 0.05 * f;
+    } else if (lighting == 3) {
+        f *= 0.2;
+        timeShim = 1.0 + sin(fmod(f,2.0 * M_PI));
+        return 4.0 * f + 3.0 * timeShim;
+    } else {
+        return 0.0;
     }
 }
 
