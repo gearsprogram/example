@@ -374,7 +374,8 @@ int vermilionPeriod = 30;
 /* OpenGL draw function & timing */
 static void draw(void) {
   dc += 1;
-  glClearColor(0.0625, 0.0625, 0.0625, 0.0);
+  glClearColor(0.0225, 0.0325, 0.0425, 0.0);
+  //glClearColor(0.0, 0.0, 0.0, 0.0);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   gearMaterial(GL_FRONT, skyblue);
   glDisable(GL_LIGHTING);
