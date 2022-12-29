@@ -798,7 +798,7 @@ double gearsGetTime(int lighting) {
 static void animate(void) {
   int sceneRotate = 1;
   if (sceneRotate) {
-      sceneAngle = 90 + 60.0 * (double) gearsGetTime(2);
+      sceneAngle = 90 + 20.0 * (double) gearsGetTime(2);
   } else {
       sceneAngle = -45;
   }
