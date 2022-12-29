@@ -611,12 +611,11 @@ static void draw(void) {
   if ( innerp ) {
       mobileWave = sin(fmod(gearsGetTime(0),2.0 * M_PI));
       glTranslatef(mobileWave,0.0,0.0);
-      //glScalef(0.7,0.7,0.7);
+      glScalef(0.7,0.7,0.7);
   } else if ( outerp ) {
       mobileWave = 0.25 * cos(fmod(gearsGetTime(3),2.0 * M_PI));
       glTranslatef(0.0,mobileWave,0.0);
-      //glScalef(0.4,0.4,0.4);
-      glScalef(0.7,0.7,0.7);
+      glScalef(0.4,0.4,0.4);
   }
   int CONES;
   CONES = 14;
