@@ -84,7 +84,7 @@ void gearMaterial(GLenum f,const GLfloat * ps) {
 }
 
 static double timeOffset;
-static double view_rotx = 0.0, view_roty = 30.0, view_rotz = 0.0;
+static double view_rotx = 180.0, view_roty = 30.0, view_rotz = 0.0;
 static double sceneAngle = 0.0;
 static double camDip = 0.0;
 static double sunAngle = 0.0;
