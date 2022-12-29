@@ -660,6 +660,7 @@ static void draw(void) {
   glRotatef(fmod(rsgn * sunAngle2,360.0),asgn,bsgn,csgn);
   //glRotatef(-kepler * keplerDelta,1.0,1.0,1.0);
   //glRotatef(-rsgn * sunAngle2,asgn,bsgn,csgn);
+  glTranslatef(sin(gearsGetTime(0)),0.0,0.0);
   int CONES;
   CONES = 10;
   int copy = 8;
