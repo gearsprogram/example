@@ -273,6 +273,8 @@ GLfloat * sbPalette(Palette * p, int i) {
 static double sunRadius = 1.0;
 static double spikeRadius = 0.125;
 
+static int CONES;
+
 double cursor2x;
 double cursor2y;
 int dc = 0; // draw frame counter
@@ -532,8 +534,6 @@ static void draw(void) {
       glScalef(0.6,0.6,0.6);
       copy = 5;
   }
-  int CONES;
-  CONES = 14;
   for (k = 0;k < CONES;k += 1) {
       if ( VENUS && k == CONES / 2 ) {
           glRotatef(180.0,1.0,0.0,0.0);
@@ -857,6 +857,7 @@ int main(int argc, char *argv[]) {
     glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, GLFW_TRUE);
     windowWidth = 864;
     windowHeight = 576;
+    CONES = 14;
     int i;
     if (argc >= 2) {
         // parse command line arguments
@@ -895,6 +896,10 @@ int main(int argc, char *argv[]) {
                 VENUS = 1; // use Venus fly trap design
             } else if (0 == strcmp("-nov",argv[i])) {
                 VENUS = 0; // don't use Venus fly trap design
+            } else if (0 == strcmp("-w",argv[i])) {
+                CONES = 144; // warm circuits
+            } else if (0 == strcmp("-c",argv[i])) {
+                CONES = 14; // cat temperature
             }
         }
     }
