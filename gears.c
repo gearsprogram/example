@@ -278,7 +278,7 @@ static int CONES;
 double cursor2x;
 double cursor2y;
 int dc = 0; // draw frame counter
-static int VENUS = 1; // Venus fly trap design
+static int VENUS = 0; // Venus fly trap design
 /* OpenGL draw function & timing */
 static void draw(void) {
   dc += 1;
@@ -668,7 +668,19 @@ void key(GLFWwindow * window,int k,int s,int action,int mods) {
     if (!(action == GLFW_PRESS || action == GLFW_REPEAT)) return;
     switch (k) {
     case GLFW_KEY_A:
-        sizeChange = 1;
+      if ( CONES == 14 ) {
+          CONES = 144;
+      } else {
+          CONES = 14;
+      }
+      break;
+    case GLFW_KEY_S:
+      if ( VENUS ) {
+          VENUS = 0;
+      } else {
+          VENUS = 1;
+      }
+      break;
     case GLFW_KEY_Z:
       if( mods & GLFW_MOD_SHIFT )
         view_rotz -= 5.0;
@@ -895,7 +907,7 @@ int main(int argc, char *argv[]) {
             } else if (0 == strcmp("-v",argv[i])) {
                 VENUS = 1; // use Venus fly trap design
             } else if (0 == strcmp("-nov",argv[i])) {
-                VENUS = 0; // don't use Venus fly trap design
+                VENUS = 0; // don't use Venus fly trap design; objet d'art
             } else if (0 == strcmp("-w",argv[i])) {
                 CONES = 144; // warm circuits
             } else if (0 == strcmp("-now",argv[i])) {
