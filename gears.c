@@ -846,7 +846,7 @@ void writeTimeOffset(void) {
 }
 
 int main(int argc, char *argv[]) {
-    GLFWwindow* window;
+    GLFWwindow * window;
     int width, height;
     readTimeOffset();
     if ( !glfwInit() ) {
@@ -857,7 +857,7 @@ int main(int argc, char *argv[]) {
     glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, GLFW_TRUE);
     windowWidth = 864;
     windowHeight = 576;
-    CONES = 14;
+    CONES = 144;
     int i;
     if (argc >= 2) {
         // parse command line arguments
@@ -898,8 +898,8 @@ int main(int argc, char *argv[]) {
                 VENUS = 0; // don't use Venus fly trap design
             } else if (0 == strcmp("-w",argv[i])) {
                 CONES = 144; // warm circuits
-            } else if (0 == strcmp("-c",argv[i])) {
-                CONES = 14; // cat temperature
+            } else if (0 == strcmp("-now",argv[i])) {
+                CONES = 14; // don't warm circuits; cat temperature
             }
         }
     }
