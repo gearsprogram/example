@@ -190,7 +190,7 @@ typedef struct Palette {
 } Palette;
 
 Palette * pa1;
-// Palette * pa2;
+Palette * pa2;
 Palette * pa3;
 
 /* make object */
@@ -529,8 +529,8 @@ static void draw(void) {
       glTranslatef(0.0,mobileWave,0.0);
       sunRadius2[0] = 1.0;
       sunRadius2[1] = 0.25;
-      glScalef(0.4,0.4,0.4);
-      copy = 7;
+      glScalef(0.6,0.6,0.6);
+      copy = 5;
   }
   int CONES;
   CONES = 14;
@@ -538,7 +538,9 @@ static void draw(void) {
       if ( VENUS && k == CONES / 2 ) {
           glRotatef(180.0,1.0,0.0,0.0);
       }
-      if (ci % 2 == 0) {
+      if (outerp) {
+          gearMaterial(GL_FRONT, sbPalette(pa2,k));
+      } else if (ci % 2 == 0) {
           gearMaterial(GL_FRONT, sbPalette(pa1,k));
       } else {
           gearMaterial(GL_FRONT, sbPalette(pa3,k));
@@ -766,7 +768,6 @@ static void init(void) {
   ldPalette3i(pa1,153,102,204); /* amethyst */
   ldPalette(pa1,luislemon);
   ldPalette(pa1,canary);
-  /*
   pa2 = mkPalette();
   ldPalette(pa2,skyblue2);
   ldPalette(pa2,vermilion2);
@@ -779,7 +780,6 @@ static void init(void) {
   ldPalette(pa2,chestnut2);
   ldPalette(pa2,black);
   ldPalette(pa2,white);
-  */
   pa3 = mkPalette(); /* Mexican Fiesta */
   //ldPalette3i(pa3,  0,168,107); /* jade */
   //ldPalette3i(pa3, 11,218, 81); /* malachite */
