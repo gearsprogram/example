@@ -273,12 +273,11 @@ GLfloat * sbPalette(Palette * p, int i) {
 static double sunRadius = 1.0;
 static double spikeRadius = 0.125;
 
-static int CONES;
-
 double cursor2x;
 double cursor2y;
 int dc = 0; // draw frame counter
 static int VENUS = 0; // Venus fly trap design
+static int WARM = 0; // warm up the circuits
 /* OpenGL draw function & timing */
 static void draw(void) {
   dc += 1;
@@ -534,6 +533,7 @@ static void draw(void) {
       glScalef(0.6,0.6,0.6);
       copy = 5;
   }
+  int CONES = ( WARM ? 144 : 14 );
   for (k = 0;k < CONES;k += 1) {
       if ( VENUS && k == CONES / 2 ) {
           glRotatef(180.0,1.0,0.0,0.0);
@@ -668,10 +668,10 @@ void key(GLFWwindow * window,int k,int s,int action,int mods) {
     if (!(action == GLFW_PRESS || action == GLFW_REPEAT)) return;
     switch (k) {
     case GLFW_KEY_A:
-      if ( CONES == 14 ) {
-          CONES = 144;
+      if ( WARM ) {
+          WARM = 0;
       } else {
-          CONES = 14;
+          WARM = 1;
       }
       break;
     case GLFW_KEY_S:
@@ -835,31 +835,70 @@ static void init(void) {
   //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
-#define OFFSET_FILENAME "/Users/dbp/offset"
+#define OFFSET_FILENAME "/Users/dbp/gears/offset"
+#define DEFAULT_FILENAME "/Users/dbp/gears/default"
+
+// Read default settings
+void readDefault(void) {
+    FILE * f = fopen(DEFAULT_FILENAME,"r");
+    if (f == NULL) {
+        return;
+    }
+    int c;
+    int parseInvert = 0;
+    while (1) {
+        c = fgetc(f);
+        if (c == EOF) {
+            return;
+        } else if (c == '!') {
+            parseInvert = 1;
+        } else if (c == 'v') {
+            if (parseInvert) {
+                VENUS = 0;
+                printf("set novenus\n");
+            } else {
+                VENUS = 1;
+                printf("set venus\n");
+            }
+            parseInvert = 0;
+        } else if (c == 'w') {
+            if (parseInvert) {
+                WARM = 0;
+                printf("set nowarm\n");
+            } else {
+                WARM = 1;
+                printf("set warm\n");
+            }
+            parseInvert = 0;
+        }
+    }
+    fflush(stdout);
+}
 
 void readTimeOffset(void) {
     FILE * f = fopen(OFFSET_FILENAME,"r");
     double g;
-    fscanf(f,"%lg",& g);
-    //printf("%f\n",g);
-    //fflush(stdout);
+    fscanf(f,"%lf",& g);
     timeOffset = g;
     fclose(f);
+    printf("%f\n",g);
+    fflush(stdout);
 }
 
 void writeTimeOffset(void) {
     FILE * f = fopen(OFFSET_FILENAME,"w");
     double haltTime = timeOffset + glfwGetTime();
     fprintf(f,"%f\n",haltTime);
-    printf("%f\n",haltTime);
-    fflush(stdout);
     fflush(f);
     fclose(f);
+    printf("%f\n",haltTime);
+    fflush(stdout);
 }
 
 int main(int argc, char *argv[]) {
     GLFWwindow * window;
     int width, height;
+    readDefault();
     readTimeOffset();
     if ( !glfwInit() ) {
         fprintf( stderr, "Failed to initialize GLFW\n" );
@@ -869,7 +908,6 @@ int main(int argc, char *argv[]) {
     glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, GLFW_TRUE);
     windowWidth = 864;
     windowHeight = 576;
-    CONES = 144;
     int i;
     if (argc >= 2) {
         // parse command line arguments
@@ -909,9 +947,9 @@ int main(int argc, char *argv[]) {
             } else if (0 == strcmp("-nov",argv[i])) {
                 VENUS = 0; // don't use Venus fly trap design; objet d'art
             } else if (0 == strcmp("-w",argv[i])) {
-                CONES = 144; // warm circuits
+                WARM = 1; // warm circuits
             } else if (0 == strcmp("-now",argv[i])) {
-                CONES = 14; // don't warm circuits; cat temperature
+                WARM = 0; // don't warm circuits; cat temperature
             }
         }
     }
