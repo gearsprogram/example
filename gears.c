@@ -897,6 +897,28 @@ void readDefault(void) {
     fflush(stdout);
 }
 
+void writeDefault(void) {
+    FILE * f = fopen(DEFAULT_FILENAME,"w");
+    if ( VENUS ) {
+        fprintf(f,"v");
+        printf("set venus\n");
+    } else {
+        fprintf(f,"!v");
+        printf("set novenus\n");
+    }
+    if ( WARM ) {
+        fprintf(f,"w");
+        printf("set warm\n");
+    } else {
+        fprintf(f,"!w");
+        printf("set nowarm\n");
+    }
+    fprintf(f,"\n");
+    fflush(f);
+    fclose(f);
+    fflush(stdout);
+}
+
 void readTimeOffset(void) {
     FILE * f = fopen(OFFSET_FILENAME,"r");
     double g;
@@ -976,6 +998,7 @@ int main(int argc, char *argv[]) {
         }
     }
     VENUS2 = VENUS;
+    WARM2 = WARM;
     window = glfwCreateWindow(windowWidth, windowHeight, "Gears", NULL, NULL );
     if (! window) {
         fprintf( stderr, "Failed to open GLFW window\n" );
@@ -1018,6 +1041,7 @@ int main(int argc, char *argv[]) {
         glfwPollEvents();
     }
     glfwDestroyWindow(window);
+    writeDefault();
     writeTimeOffset();
     // Terminate GLFW
     glfwTerminate();
