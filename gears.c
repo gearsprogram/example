@@ -277,7 +277,9 @@ double cursor2x;
 double cursor2y;
 int dc = 0; // draw frame counter
 static int VENUS = 0; // Venus fly trap design
+static double VENUS2;
 static int WARM = 0; // warm up the circuits
+static double WARM2;
 /* OpenGL draw function & timing */
 static void draw(void) {
   dc += 1;
@@ -533,10 +535,12 @@ static void draw(void) {
       glScalef(0.6,0.6,0.6);
       copy = 5;
   }
-  int CONES = ( WARM ? 144 : 14 );
+  int CONES = 14.0 + 30.0 * WARM2;
+  CONES = CONES <= 0 ? 0 : CONES;
+  CONES = CONES >= 144 ? 144 : CONES;
   for (k = 0;k < CONES;k += 1) {
-      if ( VENUS && k == CONES / 2 ) {
-          glRotatef(180.0,1.0,0.0,0.0);
+      if ( k == CONES / 2 ) {
+          glRotatef(VENUS2 * 180.0,1.0,0.0,0.0);
       }
       if (outerp) {
           gearMaterial(GL_FRONT, sbPalette(pa2,k));
@@ -618,8 +622,26 @@ double gearsGetTime(int lighting) {
     }
 }
 
+static double maxVenusMove = 0.01;
+static double maxWarmMove = 0.01;
 /* update animation parameters */
 static void animate(void) {
+  double venusMoveAbs = fabs(VENUS - VENUS2);
+  if ( venusMoveAbs <= maxVenusMove) {
+    VENUS2 = VENUS;
+  } else {
+    venusMoveAbs = venusMoveAbs >= maxVenusMove ? maxVenusMove : venusMoveAbs;
+    double venusMoveDelta = VENUS2 < VENUS ? venusMoveAbs : -venusMoveAbs;
+    VENUS2 = VENUS2 + venusMoveDelta;
+  }
+  double warmMoveAbs = fabs(WARM - WARM2);
+  if ( warmMoveAbs <= maxWarmMove) {
+    WARM2 = WARM;
+  } else {
+    warmMoveAbs = warmMoveAbs >= maxWarmMove ? maxWarmMove : warmMoveAbs;
+    double warmMoveDelta = WARM2 < WARM ? warmMoveAbs : -warmMoveAbs;
+    WARM2 = WARM2 + warmMoveDelta;
+  }
   int sceneRotate = 1;
   if (sceneRotate) {
       sceneAngle = 90 + 20.0 * (double) gearsGetTime(2);
@@ -953,6 +975,7 @@ int main(int argc, char *argv[]) {
             }
         }
     }
+    VENUS2 = VENUS;
     window = glfwCreateWindow(windowWidth, windowHeight, "Gears", NULL, NULL );
     if (! window) {
         fprintf( stderr, "Failed to open GLFW window\n" );
