@@ -521,14 +521,14 @@ static void draw(void) {
   double sunRadius2[2];
   int copy;
   if ( innerp ) {
-      mobileWave = sin(fmod(gearsGetTime(0),2.0 * M_PI));
+      mobileWave = sin(fmod(gearsGetTime(4),2.0 * M_PI));
       glTranslatef(mobileWave,0.0,0.0);
       sunRadius2[0] = 1.25;
       sunRadius2[1] = 0.5;
       glScalef(0.9,0.9,0.9);
       copy = 3;
   } else if ( outerp ) {
-      mobileWave = 0.25 * cos(fmod(gearsGetTime(3),2.0 * M_PI));
+      mobileWave = 0.25 * cos(fmod(gearsGetTime(4),2.0 * M_PI));
       glTranslatef(0.0,mobileWave,0.0);
       sunRadius2[0] = 1.0;
       sunRadius2[1] = 0.25;
@@ -596,17 +596,19 @@ static void draw(void) {
 
 static int animPeriod = 45;
 static int animIndex = 0;
+static double mobileSpeed = 3.0;
 //
 // 0 : mobile param 1
 // 1 : lights
 // 2 : mobile param 2 (scene rotation)
 // 3 : mobile param 3 (parameter for outer mobiles)
+// 4 : mobile param 4 (wave)
 //
 double gearsGetTime(int lighting) {
     double f = 2.5 * (timeOffset + glfwGetTime());
     double timeShim;
     if (lighting == 0) {
-        f *= 0.2;
+        f *= mobileSpeed * 0.2;
         timeShim = 1.0 - cos(fmod(f,2.0 * M_PI));
         return 3.0 * f + 2.0 * timeShim;
     } else if (lighting == 1) {
@@ -614,9 +616,12 @@ double gearsGetTime(int lighting) {
     } else if (lighting == 2) {
         return 0.05 * f;
     } else if (lighting == 3) {
-        f *= 0.45;
-        timeShim = 1.0 + sin(fmod(f,2.0 * M_PI));
-        return 4.0 * f + 3.0 * timeShim;
+        return 0;
+        //f *= mobileSpeed * 0.45;
+        //timeShim = 1.0 + sin(fmod(f,2.0 * M_PI));
+        //return 4.0 * f + 3.0 * timeShim;
+    } else if (lighting == 4) {
+        return f ;
     } else {
         return 0.0;
     }
