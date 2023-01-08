@@ -8,9 +8,27 @@
 
 double gearsGetTime(int lighting);
 
+static double matAlpha = 0.0;
+static double timeOffset;
+static double view_rotx = 180.0, view_roty = 30.0, view_rotz = 0.0;
+static double sceneAngle = 0.0;
+static double camDip = 0.0;
+static double sunAngle2 = 0.0;
+static double sunAngle3 = 0.0;
+static double range = 18.0;
+static double camHeight = 0.5;
+#define HUDWIDTH 36
+#define HUDHEIGHT 20
+static double xHUDscale = HUDWIDTH / 2;
+static double HUDscale = HUDHEIGHT / 2;
+static int xCursor = 0;
+static int yCursor = 0;
+static int animPeriod = 45;
+static int animIndex = 0;
+static double mobileSpeed = 3.0;
+
 void gearMaterial(GLenum f,const GLfloat * ps) {
     GLfloat qqs[4];
-    double matAlpha = (1.0+sin(gearsGetTime(2)))/2.0;
     qqs[0] = ps[0] / 2;
     qqs[1] = ps[1] / 2;
     qqs[2] = ps[2] / 2;
@@ -41,20 +59,35 @@ void gearMaterial(GLenum f,const GLfloat * ps) {
     glMaterialfv(f,GL_SHININESS,s);
 }
 
-static double timeOffset;
-static double view_rotx = 180.0, view_roty = 30.0, view_rotz = 0.0;
-static double sceneAngle = 0.0;
-static double camDip = 0.0;
-static double sunAngle2 = 0.0;
-static double sunAngle3 = 0.0;
-static double range = 18.0;
-static double camHeight = 0.5;
-#define HUDWIDTH 36
-#define HUDHEIGHT 20
-static double xHUDscale = HUDWIDTH / 2;
-static double HUDscale = HUDHEIGHT / 2;
-static int xCursor = 0;
-static int yCursor = 0;
+//
+// 0 : mobile param 1
+// 1 : lights
+// 2 : mobile param 2 (scene rotation)
+// 3 : mobile param 3 (parameter for outer mobiles)
+// 4 : mobile param 4 (wave)
+//
+double gearsGetTime(int lighting) {
+    double f = 2.5 * (timeOffset + glfwGetTime());
+    double timeShim;
+    if (lighting == 0) {
+        f *= mobileSpeed * 0.2;
+        timeShim = 1.0 - cos(fmod(f,2.0 * M_PI));
+        return 3.0 * f + 2.0 * timeShim;
+    } else if (lighting == 1) {
+        return 0.25 * f;
+    } else if (lighting == 2) {
+        return 0.05 * f;
+    } else if (lighting == 3) {
+        return 0;
+        //f *= mobileSpeed * 0.45;
+        //timeShim = 1.0 + sin(fmod(f,2.0 * M_PI));
+        //return 4.0 * f + 3.0 * timeShim;
+    } else if (lighting == 4) {
+        return f ;
+    } else {
+        return 0.0;
+    }
+}
 
 /* Calculate the cross product */
 static void calcCross(double * c1, double * c2, double * c3,
@@ -280,11 +313,16 @@ static int VENUS = 0; // Venus fly trap design
 static double VENUS2;
 static int WARM = 0; // warm up the circuits
 static double WARM2;
+static double bgColor[3] = {0.7225,0.8325,0.9425};
 /* OpenGL draw function & timing */
 static void draw(void) {
   dc += 1;
-  glClearColor(0.0225, 0.0325, 0.0425, 0.0);
-  //glClearColor(0.0, 0.0, 0.0, 0.0);
+  double bgColorShade[3];
+  int i;
+  for (i = 0;i < 3;i += 1) {
+      bgColorShade[i] = (1.0 - matAlpha) * matAlpha * bgColor[i];
+  }
+  glClearColor(bgColorShade[0],bgColorShade[1],bgColorShade[2],1.0 - matAlpha);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   gearMaterial(GL_FRONT, skyblue);
   glDisable(GL_LIGHTING);
@@ -341,7 +379,6 @@ static void draw(void) {
   glTranslatef(0.0, -4.0, 0.0);
   glPushMatrix(); /* (green grid, cursor, marquee, Sol) */
   glBegin(GL_LINES); /* green grid */
-  int i;
   if (1) {
       glColor3f(0.1,0.8,0.1);
       for (i = 0; i < 10; i += 1) {
@@ -594,43 +631,11 @@ static void draw(void) {
   glPopMatrix(); /* end scene */
 }
 
-static int animPeriod = 45;
-static int animIndex = 0;
-static double mobileSpeed = 3.0;
-//
-// 0 : mobile param 1
-// 1 : lights
-// 2 : mobile param 2 (scene rotation)
-// 3 : mobile param 3 (parameter for outer mobiles)
-// 4 : mobile param 4 (wave)
-//
-double gearsGetTime(int lighting) {
-    double f = 2.5 * (timeOffset + glfwGetTime());
-    double timeShim;
-    if (lighting == 0) {
-        f *= mobileSpeed * 0.2;
-        timeShim = 1.0 - cos(fmod(f,2.0 * M_PI));
-        return 3.0 * f + 2.0 * timeShim;
-    } else if (lighting == 1) {
-        return 0.25 * f;
-    } else if (lighting == 2) {
-        return 0.05 * f;
-    } else if (lighting == 3) {
-        return 0;
-        //f *= mobileSpeed * 0.45;
-        //timeShim = 1.0 + sin(fmod(f,2.0 * M_PI));
-        //return 4.0 * f + 3.0 * timeShim;
-    } else if (lighting == 4) {
-        return f ;
-    } else {
-        return 0.0;
-    }
-}
-
 static double maxVenusMove = 0.01;
 static double maxWarmMove = 0.01;
 /* update animation parameters */
 static void animate(void) {
+  matAlpha = (1.0+sin(gearsGetTime(2)))/2.0;
   double venusMoveAbs = fabs(VENUS - VENUS2);
   if ( venusMoveAbs <= maxVenusMove) {
     VENUS2 = VENUS;
