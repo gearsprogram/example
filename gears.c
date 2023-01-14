@@ -6,8 +6,6 @@
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 
-double gearsGetTime(int lighting);
-
 static double matAlpha = 0.0;
 static double timeOffset;
 static double view_rotx = 180.0, view_roty = 30.0, view_rotz = 0.0;
@@ -636,7 +634,8 @@ static double maxVenusMove = 0.01;
 static double maxWarmMove = 0.01;
 /* update animation parameters */
 static void animate(void) {
-  matAlpha = (1.0+sin(gearsGetTime(2)))/2.0;
+  double rawMatAlpha = fmod(gearsGetTime(2),2.0 * M_PI);
+  matAlpha = ( 1.0 + sin(rawMatAlpha) ) / 2.0;
   double venusMoveAbs = fabs(VENUS - VENUS2);
   if ( venusMoveAbs <= maxVenusMove) {
     VENUS2 = VENUS;
@@ -655,25 +654,23 @@ static void animate(void) {
   }
   int sceneRotate = 1;
   if (sceneRotate) {
-      sceneAngle = 90 + 20.0 * (double) gearsGetTime(2);
+      sceneAngle = 90 + 20.0 * gearsGetTime(2);
   } else {
       sceneAngle = -45;
   }
-  static GLfloat lightAngle;
-  static GLfloat lightHeight;
-  lightAngle = (double) gearsGetTime(1);
-  lightAngle *= 0.16;
-  lightHeight = 600.0 + 400.0 * sin(lightAngle * M_PI);
-  lightAngle = 90 + 3450.0 * lightAngle;
-  static GLfloat pos[4] = {0.0,0.0,0.0,0.0};
-  pos[0] = 200.0 * cos(lightAngle * M_PI / 180.0);
-  pos[1] = 200.0 * sin(lightAngle * M_PI / 180.0);
+  double lightAngle,lightHeight;
+  lightAngle = 0.48 * gearsGetTime(1);
+  lightHeight = 600.0 + 400.0 * sin(fmod(lightAngle,2.0 * M_PI));
+  lightAngle = 1.5 + 57.0 * lightAngle;
+  GLfloat pos[4] = {0.0,0.0,0.0,0.0};
+  pos[0] = 200.0 * cos(fmod(lightAngle,2.0 * M_PI));
+  pos[1] = 200.0 * sin(fmod(lightAngle,2.0 * M_PI));
   pos[2] = lightHeight;
   glLightfv(GL_LIGHT0, GL_POSITION, pos);
   pos[0] *= -1.0;
   pos[1] *= -1.0;
   glLightfv(GL_LIGHT1, GL_POSITION, pos);
-  static GLfloat temp;
+  GLfloat temp;
   temp = pos[0];
   pos[0] = -pos[1];
   pos[1] = temp;
@@ -681,8 +678,8 @@ static void animate(void) {
   pos[0] *= -1.0;
   pos[1] *= -1.0;
   glLightfv(GL_LIGHT3, GL_POSITION, pos);
-  sunAngle2 = 15.0 * (double) gearsGetTime(0);
-  sunAngle3 = 1350.0 * (double) gearsGetTime(2);
+  sunAngle2 = 15.0 * gearsGetTime(0);
+  sunAngle3 = 1350.0 * gearsGetTime(2);
   animIndex += 1;
   if (0 == animIndex % animPeriod) {
       xCursor += 1;
