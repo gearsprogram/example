@@ -589,6 +589,7 @@ static void draw(void) {
       for (j = 0;j < copy;j += 1) {
           glPushMatrix(); // fold
           glTranslatef(0.0,sunRadius,0.0);
+          glScalef(2.0,2.0,2.0);
           glRotatef(fmod(60.0 + sunAngle3/64.0,360.0),1.0,0.0,0.0);
           for (i = 0; i < 2; i += 1) {
               glBegin(GL_TRIANGLES);
