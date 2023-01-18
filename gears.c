@@ -736,8 +736,25 @@ void key(GLFWwindow * window,int k,int s,int action,int mods) {
       return;
     }
 }
-double windowWidth;
-double windowHeight;
+
+#define MAX_RES 9
+int resWidth[MAX_RES+1] =  {576,720,900,1080,1296,600,720,864,800,1024};
+int resHeight[MAX_RES+1] = {256,320,400, 480, 576,400,480,576,600, 768};
+static double windowWidth;
+static double windowHeight;
+static int resNum = 0;
+void setResolution(int n) {
+  if (n <= 0) {
+      n = 0;
+  }
+  if (n >= MAX_RES) {
+      n = MAX_RES;
+  }
+  resNum = n;
+  windowWidth = resWidth[n];
+  windowHeight = resHeight[n];
+}
+
 void cursor(GLFWwindow * window, double x, double y) {
     x -= windowWidth / 2.0;
     x /= windowWidth / 2.0;
@@ -868,6 +885,7 @@ static void init(void) {
 #define OFFSET_FILENAME "/Users/dbp/gears/offset"
 #define DEFAULT_FILENAME "/Users/dbp/gears/default"
 
+
 // Read default settings
 void readDefault(void) {
     FILE * f = fopen(DEFAULT_FILENAME,"r");
@@ -876,12 +894,22 @@ void readDefault(void) {
     }
     int c;
     int parseInvert = 0;
+    int parseCount = 0;
     while (1) {
         c = fgetc(f);
         if (c == EOF) {
             return;
         } else if (c == '!') {
             parseInvert = 1;
+        } else if (c == '+') {
+            parseCount += 1;
+        } else if (c == 'r') {
+            if (parseCount >= MAX_RES) {
+                parseCount = MAX_RES;
+            }
+            setResolution(parseCount);
+            printf("set resolution=%d [%dx%d] \n",parseCount,
+                    resWidth[parseCount],resHeight[parseCount]);
         } else if (c == 'v') {
             if (parseInvert) {
                 VENUS = 0;
@@ -907,6 +935,7 @@ void readDefault(void) {
 
 void writeDefault(void) {
     FILE * f = fopen(DEFAULT_FILENAME,"w");
+    // write venus state
     if ( VENUS ) {
         fprintf(f,"v");
         printf("set venus\n");
@@ -914,6 +943,7 @@ void writeDefault(void) {
         fprintf(f,"!v");
         printf("set novenus\n");
     }
+    // write warm state
     if ( WARM ) {
         fprintf(f,"w");
         printf("set warm\n");
@@ -921,6 +951,14 @@ void writeDefault(void) {
         fprintf(f,"!w");
         printf("set nowarm\n");
     }
+    // write resolution number
+    int i;
+    for (i = 0;i < resNum;i += 1) {
+        fprintf(f,"+");
+    }
+    fprintf(f,"r");
+    printf("set resolution=%d [%dx%d] \n",resNum,
+        resWidth[resNum],resHeight[resNum]);
     fprintf(f,"\n");
     fflush(f);
     fclose(f);
@@ -950,6 +988,7 @@ void writeTimeOffset(void) {
 int main(int argc, char *argv[]) {
     GLFWwindow * window;
     int width, height;
+    setResolution(0);
     readDefault();
     readTimeOffset();
     if ( !glfwInit() ) {
@@ -958,42 +997,32 @@ int main(int argc, char *argv[]) {
     }
     glfwWindowHint(GLFW_DEPTH_BITS, 16);
     glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, GLFW_TRUE);
-    windowWidth = 864;
-    windowHeight = 576;
     int i;
+    int cmdResSwitch = 0;
+    int cmdRes = 0;
     if (argc >= 2) {
         // parse command line arguments
         for (i = 1;i < argc;i += 1) {
             if (0 == strcmp("-0",argv[i])) {
-                windowWidth = 576;
-                windowHeight = 256;
+                cmdResSwitch = 1; cmdRes = 0;
             } else if (0 == strcmp("-1",argv[i])) {
-                windowWidth = 720;
-                windowHeight = 320;
+                cmdResSwitch = 1; cmdRes = 1;
             } else if (0 == strcmp("-2",argv[i])) {
-                windowWidth = 900;
-                windowHeight = 400;
+                cmdResSwitch = 1; cmdRes = 2;
             } else if (0 == strcmp("-3",argv[i])) {
-                windowWidth = 1080;
-                windowHeight = 480;
+                cmdResSwitch = 1; cmdRes = 3;
             } else if (0 == strcmp("-4",argv[i])) {
-                windowWidth = 1296;
-                windowHeight = 576;
+                cmdResSwitch = 1; cmdRes = 4;
             } else if (0 == strcmp("-5",argv[i])) {
-                windowWidth = 600;
-                windowHeight = 400;
+                cmdResSwitch = 1; cmdRes = 5;
             } else if (0 == strcmp("-6",argv[i])) {
-                windowWidth = 720;
-                windowHeight = 480;
+                cmdResSwitch = 1; cmdRes = 6;
             } else if (0 == strcmp("-7",argv[i])) {
-                windowWidth = 864;
-                windowHeight = 576;
+                cmdResSwitch = 1; cmdRes = 7;
             } else if (0 == strcmp("-8",argv[i])) {
-                windowWidth = 800;
-                windowHeight = 600;
+                cmdResSwitch = 1; cmdRes = 8;
             } else if (0 == strcmp("-9",argv[i])) {
-                windowWidth = 1024;
-                windowHeight = 768;
+                cmdResSwitch = 1; cmdRes = 9;
             } else if (0 == strcmp("-v",argv[i])) {
                 VENUS = 1; // use Venus fly trap design
             } else if (0 == strcmp("-nov",argv[i])) {
@@ -1004,6 +1033,11 @@ int main(int argc, char *argv[]) {
                 WARM = 0; // don't warm circuits; cat temperature
             }
         }
+    }
+    if (cmdResSwitch) {
+        setResolution(cmdRes);
+        printf("set resolution=%d [%dx%d] \n",cmdRes,
+            resWidth[cmdRes],resHeight[cmdRes]);
     }
     VENUS2 = VENUS;
     WARM2 = WARM;
