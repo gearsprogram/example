@@ -737,9 +737,10 @@ void key(GLFWwindow * window,int k,int s,int action,int mods) {
     }
 }
 
-#define MAX_RES 9
-int resWidth[MAX_RES+1] =  {576,720,900,1080,1296,600,720,864,800,1024};
-int resHeight[MAX_RES+1] = {256,320,400, 480, 576,400,480,576,600, 768};
+#define MAX_RES 14
+/*                   0   1   2   3   4   5   6   7   8   9  10  11   12   13   14 */
+int resWidth[] =  {360,480,480,576,576,576,600,720,720,800,864,900,1024,1080,1296};
+int resHeight[] = {576,360,480,256,480,576,400,320,480,600,576,400, 768, 480, 576};
 static double windowWidth;
 static double windowHeight;
 static int resNum = 0;
