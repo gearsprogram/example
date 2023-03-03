@@ -737,14 +737,15 @@ void key(GLFWwindow * window,int k,int s,int action,int mods) {
     }
 }
 
-#define MAX_RES 14
-/*                   0   1   2   3   4   5   6   7   8   9  10  11   12   13   14 */
-int resWidth[] =  {360,480,480,576,576,576,600,720,720,800,864,900,1024,1080,1296};
-int resHeight[] = {576,360,480,256,480,576,400,320,480,600,576,400, 768, 480, 576};
+#define MAX_RES 23
+/*                   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19  20   21   22   23 */
+int resWidth[] =  {300,300,300,360,360,480,480,480,480,576,576,576,600,600,720,720,800,840,864,900,960,1024,1080,1296};
+int resHeight[] = {300,360,480,480,576,300,360,480,600,256,480,576,400,480,320,480,600,480,576,400,600, 768, 480, 576};
 static double windowWidth;
 static double windowHeight;
 static int resNum = 0;
 void setResolution(int n) {
+  printf("[setResolution] %d\n",n);
   if (n <= 0) {
       n = 0;
   }
@@ -904,6 +905,8 @@ void readDefault(void) {
             parseInvert = 1;
         } else if (c == '+') {
             parseCount += 1;
+        } else if (c == 'x') {
+            parseCount += 5;
         } else if (c == 'r') {
             if (parseCount >= MAX_RES) {
                 parseCount = MAX_RES;
@@ -953,10 +956,16 @@ void writeDefault(void) {
         printf("set nowarm\n");
     }
     // write resolution number
+    int savedResNum = resNum;
     int i;
+    while (resNum >= 5) {
+        fprintf(f,"x");
+        resNum -= 5;
+    }
     for (i = 0;i < resNum;i += 1) {
         fprintf(f,"+");
     }
+    resNum = savedResNum;
     fprintf(f,"r");
     printf("set resolution=%d [%dx%d] \n",resNum,
         resWidth[resNum],resHeight[resNum]);
