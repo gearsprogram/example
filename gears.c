@@ -21,7 +21,7 @@ static double xHUDscale = HUDWIDTH / 2;
 static double HUDscale = HUDHEIGHT / 2;
 static int xCursor = 0;
 static int yCursor = 0;
-static int animPeriod = 45;
+static int animPeriod = 3;
 static int animIndex = 0;
 static double mobileSpeed = 3.0;
 
@@ -65,7 +65,7 @@ void gearMaterial(GLenum f,const GLfloat * ps) {
 // 4 : mobile param 4 (wave)
 //
 double gearsGetTime(int lighting) {
-    double f = 2.5 * (timeOffset + glfwGetTime());
+    double f = 7.5 * (timeOffset + glfwGetTime());
     double timeShim;
     if (lighting == 0) {
         f *= mobileSpeed * 0.2;
@@ -683,6 +683,8 @@ static void animate(void) {
   animIndex += 1;
   if (0 == animIndex % animPeriod) {
       xCursor += 1;
+      /* ... */
+
       if (xCursor > (HUDWIDTH / 2)) {
           xCursor = -(HUDWIDTH / 2);
           yCursor += 1;
