@@ -65,7 +65,9 @@ void gearMaterial(GLenum f,const GLfloat * ps) {
 // 4 : mobile param 4 (wave)
 //
 double gearsGetTime(int lighting) {
-    double f = 7.5 * (timeOffset + glfwGetTime());
+    double f = (timeOffset + glfwGetTime());
+    f = 2 * f + sin(f);
+    f *= 2.5;
     double timeShim;
     if (lighting == 0) {
         f *= mobileSpeed * 0.2;
