@@ -24,6 +24,7 @@ static int yCursor = 0;
 static int animPeriod = 3;
 static int animIndex = 0;
 static double mobileSpeed = 3.0;
+static int FAST = 0; // Fast rate of mobile shape change
 
 void gearMaterial(GLenum f,const GLfloat * ps) {
     GLfloat qqs[4];
@@ -66,8 +67,10 @@ void gearMaterial(GLenum f,const GLfloat * ps) {
 //
 double gearsGetTime(int lighting) {
     double f = (timeOffset + glfwGetTime());
-    f = 2 * f + 1.5 * sin(f / 3.0) + 0.5 * sin(f);
-    f *= 1.25;
+    double m = ( FAST ? 10.0 : 4.0 );
+    f *= m;
+    f = 2 * f + 20.25 * sin(f / 81.0) + 2.25 * sin(f / 9.0) + 0.75 * sin(f / 3.0) + 0.25 * sin(f);
+    f /= m;
     double timeShim;
     if (lighting == 0) {
         f *= mobileSpeed * 0.2;
@@ -715,6 +718,13 @@ void key(GLFWwindow * window,int k,int s,int action,int mods) {
           VENUS = 1;
       }
       break;
+    case GLFW_KEY_T:
+      if ( FAST ) {
+          FAST = 0;
+      } else {
+          FAST = 1;
+      }
+      break;
     case GLFW_KEY_Z:
       if( mods & GLFW_MOD_SHIFT )
         view_rotz -= 5.0;
@@ -918,6 +928,15 @@ void readDefault(void) {
             setResolution(parseCount);
             printf("set resolution=%d [%dx%d] \n",parseCount,
                     resWidth[parseCount],resHeight[parseCount]);
+        } else if (c == 'f') {
+            if (parseInvert) {
+                FAST = 0;
+                printf("set nofast\n");
+            } else {
+                FAST = 1;
+                printf("set fast\n");
+            }
+            parseInvert = 0;
         } else if (c == 'v') {
             if (parseInvert) {
                 VENUS = 0;
@@ -943,6 +962,14 @@ void readDefault(void) {
 
 void writeDefault(void) {
     FILE * f = fopen(DEFAULT_FILENAME,"w");
+    // write fast state
+    if ( FAST ) {
+        fprintf(f,"f");
+        printf ("set fast\n");
+    } else {
+        fprintf(f,"!f");
+        printf("set nofast\n");
+    }
     // write venus state
     if ( VENUS ) {
         fprintf(f,"v");
