@@ -76,7 +76,7 @@ double gearsGetTime(int lighting) {
     double f = (timeOffset + glfwGetTime());
     double m = FAST2 >= 0.5 ? 4.0 : 0.25;
     f *= m;
-    f = 3 * f + 40.5 * sin(f / 81.0) + 4.5 * sin(f / 9.0) + 1.5 * sin(f / 3.0) + 0.5 * sin(f);
+    f = 3.0 * f + 2.5/2.0 * ( 40.5 * sin(f / 81.0) + 4.5 * sin(f / 9.0) + 1.5 * sin(f / 3.0) + 0.5 * sin(f) );
     f /= m;
     double timeShim;
     if (lighting == 0) {
