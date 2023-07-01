@@ -24,7 +24,14 @@ static int yCursor = 0;
 static int animPeriod = 3;
 static int animIndex = 0;
 static double mobileSpeed = 3.0;
+
+// Business logic parameters
 static int FAST = 0; // Fast rate of mobile shape change
+static double FAST2;
+static int VENUS = 0; // Venus fly trap design
+static double VENUS2;
+static int WARM = 0; // warm up the circuits
+static double WARM2;
 
 void gearMaterial(GLenum f,const GLfloat * ps) {
     GLfloat qqs[4];
@@ -67,9 +74,9 @@ void gearMaterial(GLenum f,const GLfloat * ps) {
 //
 double gearsGetTime(int lighting) {
     double f = (timeOffset + glfwGetTime());
-    double m = ( FAST ? 10.0 : 4.0 );
+    double m = FAST2 >= 0.5 ? 4.0 : 0.25;
     f *= m;
-    f = 2 * f + 20.25 * sin(f / 81.0) + 2.25 * sin(f / 9.0) + 0.75 * sin(f / 3.0) + 0.25 * sin(f);
+    f = 3 * f + 40.5 * sin(f / 81.0) + 4.5 * sin(f / 9.0) + 1.5 * sin(f / 3.0) + 0.5 * sin(f);
     f /= m;
     double timeShim;
     if (lighting == 0) {
@@ -312,10 +319,6 @@ static double spikeRadius = 0.125;
 double cursor2x;
 double cursor2y;
 int dc = 0; // draw frame counter
-static int VENUS = 0; // Venus fly trap design
-static double VENUS2;
-static int WARM = 0; // warm up the circuits
-static double WARM2;
 static double bgColor[3] = {0.7225,0.8325,0.9425};
 /* OpenGL draw function & timing */
 static void draw(void) {
@@ -538,6 +541,8 @@ static void draw(void) {
       yy[i] *= spikeRadius;
   }
   glPushMatrix(); /* Sol */
+  double solscale = 2.0 * fabs(FAST2 - 0.5);
+  glScalef(solscale,solscale,solscale);
   glScalef(0.5,0.5,0.5);
   double disp = 2.75;
   double disp2 = 2 * disp;
@@ -635,22 +640,34 @@ static void draw(void) {
   glPopMatrix(); /* end scene */
 }
 
+static double maxFastMove = 0.01;
 static double maxVenusMove = 0.01;
 static double maxWarmMove = 0.01;
 /* update animation parameters */
 static void animate(void) {
   double rawMatAlpha = fmod(gearsGetTime(2),2.0 * M_PI);
   matAlpha = ( 1.0 + sin(rawMatAlpha) ) / 2.0;
+  // calculate FAST2
+  double fastMoveAbs = fabs(FAST - FAST2);
+  if ( fastMoveAbs <= maxFastMove ) {
+      FAST2 = FAST;
+  } else {
+      fastMoveAbs = fastMoveAbs >= maxFastMove ? maxFastMove : fastMoveAbs;
+      double fastMoveDelta = FAST2 < FAST ? fastMoveAbs : -fastMoveAbs;
+      FAST2 = FAST2 + fastMoveDelta;
+  }
+  // calculate VENUS2
   double venusMoveAbs = fabs(VENUS - VENUS2);
-  if ( venusMoveAbs <= maxVenusMove) {
+  if ( venusMoveAbs <= maxVenusMove ) {
     VENUS2 = VENUS;
   } else {
     venusMoveAbs = venusMoveAbs >= maxVenusMove ? maxVenusMove : venusMoveAbs;
     double venusMoveDelta = VENUS2 < VENUS ? venusMoveAbs : -venusMoveAbs;
     VENUS2 = VENUS2 + venusMoveDelta;
   }
+  // calculate WARM2
   double warmMoveAbs = fabs(WARM - WARM2);
-  if ( warmMoveAbs <= maxWarmMove) {
+  if ( warmMoveAbs <= maxWarmMove ) {
     WARM2 = WARM;
   } else {
     warmMoveAbs = warmMoveAbs >= maxWarmMove ? maxWarmMove : warmMoveAbs;
@@ -1080,6 +1097,7 @@ int main(int argc, char *argv[]) {
         printf("set resolution=%d [%dx%d] \n",cmdRes,
             resWidth[cmdRes],resHeight[cmdRes]);
     }
+    FAST2 = FAST;
     VENUS2 = VENUS;
     WARM2 = WARM;
     window = glfwCreateWindow(windowWidth, windowHeight, "Gears", NULL, NULL );
