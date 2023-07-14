@@ -583,6 +583,20 @@ static void draw(void) {
   int CONES = 14.0 + 30.0 * WARM2;
   CONES = CONES <= 0 ? 0 : CONES;
   CONES = CONES >= 144 ? 144 : CONES;
+  // obtain first rotation matrix
+  double theta1[16];
+  glPushMatrix();
+  glLoadIdentity();
+  glRotatef(fmod(60.0 + sunAngle3/64.0,360.0),1.0,0.0,0.0);
+  glGetDoublev(GL_MODELVIEW_MATRIX,theta1);
+  glPopMatrix();
+  // obtain second rotation matrix
+  double theta2[16];
+  glPushMatrix();
+  glLoadIdentity();
+  glRotatef(fmod(45.0 + sunAngle3/27.0,360.0),0.0,0.0,1.0);
+  glGetDoublev(GL_MODELVIEW_MATRIX,theta2);
+  glPopMatrix();
   for (k = 0;k < CONES;k += 1) {
       if ( k == CONES / 2 ) {
           glRotatef(VENUS2 * 180.0,1.0,0.0,0.0);
@@ -598,7 +612,7 @@ static void draw(void) {
           glPushMatrix(); // fold
           glTranslatef(0.0,sunRadius,0.0);
           glScalef(2.0,2.0,2.0);
-          glRotatef(fmod(60.0 + sunAngle3/64.0,360.0),1.0,0.0,0.0);
+          //glMultMatrixd(theta1);
           for (i = 0; i < 2; i += 1) {
               glBegin(GL_TRIANGLES);
               int ii;
@@ -623,14 +637,13 @@ static void draw(void) {
                       -xx[ii + 1],0.0,yy[ii + 1]);
               }
               glEnd();
-              //glTranslatef(0.0,-sunRadius,0.0);
               glScalef(-1.0,1.0,-1.0);
           }
           glPopMatrix(); // end fold
-          glRotatef(fmod(45.0 + sunAngle3/27.0,360.0),0.0,0.0,1.0);
+          //glMultMatrixd(theta2);
           glTranslatef(0.1,0.0,0.0);
       }
-      glRotatef(fmod(60.0 + sunAngle3/64.0,360.0),1.0,0.0,0.0);
+      //glMultMatrixd(theta1);
   }
   glPopMatrix(); /* end Sol */
   }
