@@ -511,17 +511,6 @@ static void draw(void) {
   // Draw Sol
   int ci = 0;
   int div = 5;
-  for (p1 = 0; p1 < div; p1 += 1) {
-  for (p2 = 0; p2 < div; p2 += 1) {
-  for (p3 = 0; p3 < div; p3 += 1) {
-  ci += 1;
-  int outerp = p1 % 2 == 0 && p2 % 2 == 0 && p3 % 2 == 0;
-  int outerp2 = ( (p1 + p2 + p3) / 2) % 2 == 0;
-  int innerp = p1 >= 1 && p1 <= 3 && p2 >= 1 && p2 <= 3 && p3 >= 1 && p3 <= 3;
-  int innerp2 = (p1 + p2 + p3) % 5 == 4;
-  if ( !( (outerp && outerp2) || (innerp && innerp2) ) ) {
-      continue;
-  }
   // Cone figure parameters
   int FACES = 9;
   double xx[FACES];
@@ -540,12 +529,44 @@ static void draw(void) {
       xx[i] *= spikeRadius;
       yy[i] *= spikeRadius;
   }
-  glPushMatrix(); /* Sol */
+  // obtain first rotation matrix
+  double theta1[16];
+  glPushMatrix();
+  glLoadIdentity();
+  glRotatef(fmod(60.0 + sunAngle3/64.0,360.0),1.0,0.0,0.0);
+  glGetDoublev(GL_MODELVIEW_MATRIX,theta1);
+  glPopMatrix();
+  // obtain second rotation matrix
+  double theta2[16];
+  glPushMatrix();
+  glLoadIdentity();
+  glRotatef(fmod(45.0 + sunAngle3/27.0,360.0),0.0,0.0,1.0);
+  glGetDoublev(GL_MODELVIEW_MATRIX,theta2);
+  glPopMatrix();
+  // Calculate the number of cones
+  int CONES = 14.0 + 30.0 * WARM2;
+  CONES = CONES <= 0 ? 0 : CONES;
+  CONES = CONES >= 144 ? 144 : CONES;
   double solscale = 2.0 * fabs(FAST2 - 0.5);
-  glScalef(solscale,solscale,solscale);
-  glScalef(0.5,0.5,0.5);
   double disp = 2.75;
   double disp2 = 2 * disp;
+  double mobileWave;
+  double sunRadius2[2];
+  int copy;
+  for (p1 = 0; p1 < div; p1 += 1) {
+  for (p2 = 0; p2 < div; p2 += 1) {
+  for (p3 = 0; p3 < div; p3 += 1) {
+  ci += 1;
+  int outerp = p1 % 2 == 0 && p2 % 2 == 0 && p3 % 2 == 0;
+  int outerp2 = ( (p1 + p2 + p3) / 2) % 2 == 0;
+  int innerp = p1 >= 1 && p1 <= 3 && p2 >= 1 && p2 <= 3 && p3 >= 1 && p3 <= 3;
+  int innerp2 = (p1 + p2 + p3) % 5 == 4;
+  if ( !( (outerp && outerp2) || (innerp && innerp2) ) ) {
+      continue;
+  }
+  glPushMatrix(); /* Sol */
+  glScalef(solscale,solscale,solscale);
+  glScalef(0.5,0.5,0.5);
   glTranslatef(-disp2 + disp * p1,-disp2 + disp * p2,-disp2 + disp * p3);
   int rsgn = 1;
   if (ci % 2 == 0) {
@@ -562,9 +583,6 @@ static void draw(void) {
       csgn = 1.0;
   }
   glRotatef(fmod(rsgn * sunAngle2,360.0),asgn,bsgn,csgn);
-  double mobileWave;
-  double sunRadius2[2];
-  int copy;
   if ( innerp ) {
       mobileWave = sin(fmod(gearsGetTime(4),2.0 * M_PI));
       glTranslatef(mobileWave,0.0,0.0);
@@ -580,23 +598,6 @@ static void draw(void) {
       glScalef(0.6,0.6,0.6);
       copy = 5;
   }
-  int CONES = 14.0 + 30.0 * WARM2;
-  CONES = CONES <= 0 ? 0 : CONES;
-  CONES = CONES >= 144 ? 144 : CONES;
-  // obtain first rotation matrix
-  double theta1[16];
-  glPushMatrix();
-  glLoadIdentity();
-  glRotatef(fmod(60.0 + sunAngle3/64.0,360.0),1.0,0.0,0.0);
-  glGetDoublev(GL_MODELVIEW_MATRIX,theta1);
-  glPopMatrix();
-  // obtain second rotation matrix
-  double theta2[16];
-  glPushMatrix();
-  glLoadIdentity();
-  glRotatef(fmod(45.0 + sunAngle3/27.0,360.0),0.0,0.0,1.0);
-  glGetDoublev(GL_MODELVIEW_MATRIX,theta2);
-  glPopMatrix();
   for (k = 0;k < CONES;k += 1) {
       if ( k == CONES / 2 ) {
           glRotatef(VENUS2 * 180.0,1.0,0.0,0.0);
