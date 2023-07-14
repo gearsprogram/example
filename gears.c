@@ -17,6 +17,9 @@ static double range = 18.0;
 static double camHeight = 0.5;
 #define HUDWIDTH 36
 #define HUDHEIGHT 20
+#define FACES 9
+#define CONE_MIN 3
+#define CONE_DELTA 30
 static double xHUDscale = HUDWIDTH / 2;
 static double HUDscale = HUDHEIGHT / 2;
 static int xCursor = 0;
@@ -31,24 +34,10 @@ static double FAST2;
 static int VENUS = 0; // Venus fly trap design
 static double VENUS2;
 static int WARM = 0; // warm up the circuits
+static int PINWHEEL = 0; // pinwheel design
 static double WARM2;
 
 void gearMaterial(GLenum f,const GLfloat * ps) {
-    GLfloat qqs[4];
-    qqs[0] = ps[0] / 2;
-    qqs[1] = ps[1] / 2;
-    qqs[2] = ps[2] / 2;
-    qqs[3] = matAlpha;
-    GLfloat qs[4];
-    qs[0] = ps[0] / 4;
-    qs[1] = ps[1] / 4;
-    qs[2] = ps[2] / 4;
-    qs[3] = matAlpha;
-    GLfloat rs[4];
-    rs[0] = ps[0] / 5;
-    rs[1] = ps[1] / 5;
-    rs[2] = ps[2] / 5;
-    rs[3] = matAlpha;
     GLfloat rrs[4];
     rrs[0] = 2 * ps[0] / 5;
     rrs[1] = 2 * ps[1] / 5;
@@ -114,6 +103,38 @@ static void normVec(double * a1, double * a2, double * a3) {
     * a1 /= d;
     * a2 /= d;
     * a3 /= d;
+}
+
+typedef struct tnrec {
+    double d[3];
+    double a[3];
+    double b[3];
+    double c[4];
+} tnrec;
+
+/* Calculate the normal vector for a triangle with vertices
+   at a,b,c */
+static void triNormc(tnrec * x,
+        double a1, double a2, double a3,
+        double b1, double b2, double b3,
+        double c1, double c2, double c3) {
+    double d1,d2,d3;
+    double v1,v2,v3,w1,w2,w3;
+    v1 = b1 - a1; v2 = b2 - a2; v3 = b3 - a3;
+    w1 = c1 - a1; w2 = c2 - a2; w3 = c3 - a3;
+    calcCross(&d1,&d2,&d3,v1,v2,v3,w1,w2,w3);
+    normVec(&d1,&d2,&d3);
+    x->d[0] = d1; x->d[1] = d2; x->d[2] = d3;
+    x->a[0] = a1; x->a[1] = a2; x->a[2] = a3;
+    x->b[0] = b1; x->b[1] = b2; x->b[2] = b3;
+    x->c[0] = c1; x->c[1] = c2; x->c[2] = c3;
+}
+
+static void triNormd(tnrec * x) {
+    glNormal3f(x->d[0],x->d[1],x->d[2]);
+    glVertex3f(x->a[0],x->a[1],x->a[2]);
+    glVertex3f(x->b[0],x->b[1],x->b[2]);
+    glVertex3f(x->c[0],x->c[1],x->c[2]);
 }
 
 /* Calculate the normal vector for a triangle with vertices
@@ -316,6 +337,14 @@ GLfloat * sbPalette(Palette * p, int i) {
 static double sunRadius = 1.0;
 static double spikeRadius = 0.125;
 
+static tnrec t1[FACES];
+static tnrec t2[FACES];
+static tnrec t3[FACES];
+static tnrec t4[FACES];
+static tnrec u1[FACES];
+static tnrec u2[FACES];
+static tnrec u3[FACES];
+static tnrec u4[FACES];
 double cursor2x;
 double cursor2y;
 int dc = 0; // draw frame counter
@@ -512,7 +541,6 @@ static void draw(void) {
   int ci = 0;
   int div = 5;
   // Cone figure parameters
-  int FACES = 9;
   double xx[FACES];
   double yy[FACES];
   // line segments define arc of cone base
@@ -526,8 +554,30 @@ static void draw(void) {
   yy[7] = xx[1] = 0.9807852804032304;
   yy[8] = xx[0] = 1.0;
   for (i = 0; i < FACES; i += 1) {
-      xx[i] *= spikeRadius;
-      yy[i] *= spikeRadius;
+    xx[i] *= spikeRadius;
+    yy[i] *= spikeRadius;
+  }
+  double sunRadius2[2];
+  sunRadius2[0] = 1.25;
+  sunRadius2[1] = 0.45;
+  int ii;
+  for (ii = 0; ii < FACES - 1;ii += 1) {
+    triNormc(& t1[ii],xx[ii + 0],0.0,yy[ii + 0],0.0,sunRadius2[0],0.0,xx[ii + 1],0.0,yy[ii + 1]);
+    // end cap A
+    triNormc(& t2[ii],0.0,-sunRadius2[1],0.0,xx[ii + 0],0.0,yy[ii + 0],xx[ii + 1],0.0,yy[ii + 1]);
+    triNormc(& t3[ii],-xx[ii + 0],0.0,yy[ii + 0],-xx[ii + 1],0.0,yy[ii + 1],0.0,sunRadius2[0],0.0);
+    // end cap B
+    triNormc(& t4[ii],-xx[ii + 0],0.0,yy[ii + 0],0.0,-sunRadius2[1],0.0,-xx[ii + 1],0.0,yy[ii + 1]);
+  }
+  sunRadius2[0] = 0.95;
+  sunRadius2[1] = 0.15;
+  for (ii = 0; ii < FACES - 1;ii += 1) {
+    triNormc(& u1[ii],xx[ii + 0],0.0,yy[ii + 0],0.0,sunRadius2[0],0.0,xx[ii + 1],0.0,yy[ii + 1]);
+    // end cap A
+    triNormc(& u2[ii],0.0,-sunRadius2[1],0.0,xx[ii + 0],0.0,yy[ii + 0],xx[ii + 1],0.0,yy[ii + 1]);
+    triNormc(& u3[ii],-xx[ii + 0],0.0,yy[ii + 0],-xx[ii + 1],0.0,yy[ii + 1],0.0,sunRadius2[0],0.0);
+    // end cap B
+    triNormc(& u4[ii],-xx[ii + 0],0.0,yy[ii + 0],0.0,-sunRadius2[1],0.0,-xx[ii + 1],0.0,yy[ii + 1]);
   }
   // obtain first rotation matrix
   double theta1[16];
@@ -544,111 +594,97 @@ static void draw(void) {
   glGetDoublev(GL_MODELVIEW_MATRIX,theta2);
   glPopMatrix();
   // Calculate the number of cones
-  int CONES = 14.0 + 30.0 * WARM2;
+  int CONES = ((float) CONE_MIN) + ((float) CONE_DELTA) * WARM2;
   CONES = CONES <= 0 ? 0 : CONES;
-  CONES = CONES >= 144 ? 144 : CONES;
+  CONES = CONES >= (CONE_MIN + CONE_DELTA) ? (CONE_MIN + CONE_DELTA) : CONES;
   double solscale = 2.0 * fabs(FAST2 - 0.5);
   double disp = 2.75;
   double disp2 = 2 * disp;
   double mobileWave;
-  double sunRadius2[2];
+  double asgn,bsgn,csgn;
   int copy;
   for (p1 = 0; p1 < div; p1 += 1) {
-  for (p2 = 0; p2 < div; p2 += 1) {
-  for (p3 = 0; p3 < div; p3 += 1) {
-  ci += 1;
-  int outerp = p1 % 2 == 0 && p2 % 2 == 0 && p3 % 2 == 0;
-  int outerp2 = ( (p1 + p2 + p3) / 2) % 2 == 0;
-  int innerp = p1 >= 1 && p1 <= 3 && p2 >= 1 && p2 <= 3 && p3 >= 1 && p3 <= 3;
-  int innerp2 = (p1 + p2 + p3) % 5 == 4;
-  if ( !( (outerp && outerp2) || (innerp && innerp2) ) ) {
-      continue;
-  }
-  glPushMatrix(); /* Sol */
-  glScalef(solscale,solscale,solscale);
-  glScalef(0.5,0.5,0.5);
-  glTranslatef(-disp2 + disp * p1,-disp2 + disp * p2,-disp2 + disp * p3);
-  int rsgn = 1;
-  if (ci % 2 == 0) {
-      rsgn = -1;
-  }
-  double asgn = 0.0;
-  double bsgn = 0.0;
-  double csgn = 0.0;
-  if (ci % 6 < 2) {
-      asgn = 1.0;
-  } else if (ci % 6 < 4) {
-      bsgn = 1.0;
-  } else {
-      csgn = 1.0;
-  }
-  glRotatef(fmod(rsgn * sunAngle2,360.0),asgn,bsgn,csgn);
-  if ( innerp ) {
-      mobileWave = sin(fmod(gearsGetTime(4),2.0 * M_PI));
-      glTranslatef(mobileWave,0.0,0.0);
-      sunRadius2[0] = 1.25;
-      sunRadius2[1] = 0.5;
-      glScalef(0.9,0.9,0.9);
-      copy = 3;
-  } else if ( outerp ) {
-      mobileWave = 0.25 * cos(fmod(gearsGetTime(4),2.0 * M_PI));
-      glTranslatef(0.0,mobileWave,0.0);
-      sunRadius2[0] = 1.0;
-      sunRadius2[1] = 0.25;
-      glScalef(0.6,0.6,0.6);
-      copy = 5;
-  }
-  for (k = 0;k < CONES;k += 1) {
-      if ( k == CONES / 2 ) {
-          glRotatef(VENUS2 * 180.0,1.0,0.0,0.0);
+    for (p2 = 0; p2 < div; p2 += 1) {
+      for (p3 = 0; p3 < div; p3 += 1) {
+        ci += 1;
+        int outerp = p1 % 2 == 0 && p2 % 2 == 0 && p3 % 2 == 0;
+        int outerp2 = ( (p1 + p2 + p3) / 2) % 2 == 0;
+        int innerp = p1 >= 1 && p1 <= 3 && p2 >= 1 && p2 <= 3 && p3 >= 1 && p3 <= 3;
+        int innerp2 = (p1 + p2 + p3) % 5 == 4;
+        if ( !( (outerp && outerp2) || (innerp && innerp2) ) ) {
+            continue;
+        }
+        glPushMatrix(); /* Sol */
+        glScalef(solscale,solscale,solscale);
+        glScalef(0.5,0.5,0.5);
+        glTranslatef(-disp2 + disp * p1,-disp2 + disp * p2,-disp2 + disp * p3);
+        int rsgn = 1;
+        if (ci % 2 == 0) {
+            rsgn = -1;
+        }
+        asgn = bsgn = csgn = 0.0;
+        if (ci % 6 < 2) {
+            asgn = 1.0;
+        } else if (ci % 6 < 4) {
+            bsgn = 1.0;
+        } else {
+            csgn = 1.0;
+        }
+        glRotatef(fmod(rsgn * sunAngle2,360.0),asgn,bsgn,csgn);
+        if ( innerp ) {
+            mobileWave = sin(fmod(gearsGetTime(4),2.0 * M_PI));
+            glTranslatef(mobileWave,0.0,0.0);
+            glScalef(0.9,0.9,0.9);
+            copy = 2;
+        } else if ( outerp ) {
+            mobileWave = 0.25 * cos(fmod(gearsGetTime(4),2.0 * M_PI));
+            glTranslatef(0.0,mobileWave,0.0);
+            glScalef(0.6,0.6,0.6);
+            copy = 3;
+        }
+        for (k = 0;k < CONES;k += 1) {
+            if ( k == CONES / 2 ) {
+                glRotatef(VENUS2 * 180.0,1.0,0.0,0.0);
+            }
+            if (outerp) {
+                gearMaterial(GL_FRONT, sbPalette(pa2,k));
+            } else if (ci % 2 == 0) {
+                gearMaterial(GL_FRONT, sbPalette(pa1,k));
+            } else {
+                gearMaterial(GL_FRONT, sbPalette(pa3,k));
+            }
+            for (j = 0;j < copy;j += 1) {
+                glPushMatrix(); // fold
+                glTranslatef(0.0,sunRadius,0.0);
+                glScalef(2.0,2.0,2.0);
+                if ( PINWHEEL ) { glMultMatrixd(theta1); }
+                for (i = 0; i < 2; i += 1) {
+                    glBegin(GL_TRIANGLES);
+                    for (ii = 0; ii < FACES - 1; ii += 1) {
+                        if ( innerp ) {
+                            triNormd(& t1[ii]);
+                            triNormd(& t2[ii]);
+                            triNormd(& t3[ii]);
+                            triNormd(& t4[ii]);
+                        } else if ( outerp ) {
+                            triNormd(& u1[ii]);
+                            triNormd(& u2[ii]);
+                            triNormd(& u3[ii]);
+                            triNormd(& u4[ii]);
+                        }
+                    }
+                    glEnd();
+                    glScalef(-1.0,1.0,-1.0);
+                }
+                glPopMatrix(); // end fold
+                if ( PINWHEEL ) { glMultMatrixd(theta2); }
+                glTranslatef(0.1,0.0,0.0);
+            }
+            if ( PINWHEEL ) { glMultMatrixd(theta1); }
+        }
+        glPopMatrix(); /* end Sol */
       }
-      if (outerp) {
-          gearMaterial(GL_FRONT, sbPalette(pa2,k));
-      } else if (ci % 2 == 0) {
-          gearMaterial(GL_FRONT, sbPalette(pa1,k));
-      } else {
-          gearMaterial(GL_FRONT, sbPalette(pa3,k));
-      }
-      for (j = 0;j < copy;j += 1) {
-          glPushMatrix(); // fold
-          glTranslatef(0.0,sunRadius,0.0);
-          glScalef(2.0,2.0,2.0);
-          //glMultMatrixd(theta1);
-          for (i = 0; i < 2; i += 1) {
-              glBegin(GL_TRIANGLES);
-              int ii;
-              for (ii = 0; ii < FACES - 1; ii += 1) {
-                  triNorm(
-                      xx[ii + 0],0.0,yy[ii + 0],
-                      0.0,sunRadius2[0],0.0,
-                      xx[ii + 1],0.0,yy[ii + 1]);
-                  // end cap A
-                  triNorm(
-                      0.0,-sunRadius2[1],0.0,
-                      xx[ii + 0],0.0,yy[ii + 0],
-                      xx[ii + 1],0.0,yy[ii + 1]);
-                  triNorm(
-                      -xx[ii + 0],0.0,yy[ii + 0],
-                      -xx[ii + 1],0.0,yy[ii + 1],
-                       0.0,sunRadius2[0],0.0);
-                  // end cap B
-                  triNorm(
-                      -xx[ii + 0],0.0,yy[ii + 0],
-                       0.0,-sunRadius2[1],0.0,
-                      -xx[ii + 1],0.0,yy[ii + 1]);
-              }
-              glEnd();
-              glScalef(-1.0,1.0,-1.0);
-          }
-          glPopMatrix(); // end fold
-          //glMultMatrixd(theta2);
-          glTranslatef(0.1,0.0,0.0);
-      }
-      //glMultMatrixd(theta1);
-  }
-  glPopMatrix(); /* end Sol */
-  }
-  }
+    }
   }
   glPopMatrix(); /* end (green grid, cursor, marquee, Sol) */
   glPopMatrix(); /* end scene */
@@ -735,6 +771,13 @@ static int sizeChange = 0;
 void key(GLFWwindow * window,int k,int s,int action,int mods) {
     if (!(action == GLFW_PRESS || action == GLFW_REPEAT)) return;
     switch (k) {
+    case GLFW_KEY_W:
+      if ( PINWHEEL ) {
+          PINWHEEL = 0;
+      } else {
+          PINWHEEL = 1;
+      }
+      break;
     case GLFW_KEY_A:
       if ( WARM ) {
           WARM = 0;
@@ -968,6 +1011,15 @@ void readDefault(void) {
                 printf("set fast\n");
             }
             parseInvert = 0;
+        } else if (c == 'p') {
+            if (parseInvert) {
+                PINWHEEL = 0;
+                printf("set nopinwheel\n");
+            } else {
+                PINWHEEL = 1;
+                printf("set pinwheel\n");
+            }
+            parseInvert = 0;
         } else if (c == 'v') {
             if (parseInvert) {
                 VENUS = 0;
@@ -1000,6 +1052,14 @@ void writeDefault(void) {
     } else {
         fprintf(f,"!f");
         printf("set nofast\n");
+    }
+    // write pinwheel state
+    if ( PINWHEEL ) {
+        fprintf(f,"p");
+        printf("set pinwheel\n");
+    } else {
+        fprintf(f,"!p");
+        printf("set nopinwheel\n");
     }
     // write venus state
     if ( VENUS ) {
