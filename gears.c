@@ -34,7 +34,6 @@ static double FAST2;
 static int VENUS = 0; // Venus fly trap design
 static double VENUS2;
 static int WARM = 0; // warm up the circuits
-static int PINWHEEL = 0; // pinwheel design
 static double WARM2;
 
 void gearMaterial(GLenum f,const GLfloat * ps) {
@@ -657,7 +656,7 @@ static void draw(void) {
                 glPushMatrix(); // fold
                 glTranslatef(0.0,sunRadius,0.0);
                 glScalef(2.0,2.0,2.0);
-                if ( PINWHEEL ) { glMultMatrixd(theta1); }
+                glMultMatrixd(theta1);
                 for (i = 0; i < 2; i += 1) {
                     glBegin(GL_TRIANGLES);
                     for (ii = 0; ii < FACES - 1; ii += 1) {
@@ -677,10 +676,10 @@ static void draw(void) {
                     glScalef(-1.0,1.0,-1.0);
                 }
                 glPopMatrix(); // end fold
-                if ( PINWHEEL ) { glMultMatrixd(theta2); }
+                glMultMatrixd(theta2);
                 glTranslatef(0.1,0.0,0.0);
             }
-            if ( PINWHEEL ) { glMultMatrixd(theta1); }
+            glMultMatrixd(theta1);
         }
         glPopMatrix(); /* end Sol */
       }
@@ -771,13 +770,6 @@ static int sizeChange = 0;
 void key(GLFWwindow * window,int k,int s,int action,int mods) {
     if (!(action == GLFW_PRESS || action == GLFW_REPEAT)) return;
     switch (k) {
-    case GLFW_KEY_W:
-      if ( PINWHEEL ) {
-          PINWHEEL = 0;
-      } else {
-          PINWHEEL = 1;
-      }
-      break;
     case GLFW_KEY_A:
       if ( WARM ) {
           WARM = 0;
@@ -1011,15 +1003,6 @@ void readDefault(void) {
                 printf("set fast\n");
             }
             parseInvert = 0;
-        } else if (c == 'p') {
-            if (parseInvert) {
-                PINWHEEL = 0;
-                printf("set nopinwheel\n");
-            } else {
-                PINWHEEL = 1;
-                printf("set pinwheel\n");
-            }
-            parseInvert = 0;
         } else if (c == 'v') {
             if (parseInvert) {
                 VENUS = 0;
@@ -1052,14 +1035,6 @@ void writeDefault(void) {
     } else {
         fprintf(f,"!f");
         printf("set nofast\n");
-    }
-    // write pinwheel state
-    if ( PINWHEEL ) {
-        fprintf(f,"p");
-        printf("set pinwheel\n");
-    } else {
-        fprintf(f,"!p");
-        printf("set nopinwheel\n");
     }
     // write venus state
     if ( VENUS ) {
