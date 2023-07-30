@@ -18,8 +18,8 @@ static double camHeight = 0.5;
 #define HUDWIDTH 36
 #define HUDHEIGHT 20
 #define FACES 9
-#define CONE_MIN 3
-#define CONE_DELTA 30
+#define CONE_MIN 4
+#define CONE_DELTA 16
 static double xHUDscale = HUDWIDTH / 2;
 static double HUDscale = HUDHEIGHT / 2;
 static int xCursor = 0;
