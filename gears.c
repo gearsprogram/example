@@ -792,10 +792,11 @@ void key(GLFWwindow * window,int k,int s,int action,int mods) {
       }
       break;
     case GLFW_KEY_Z:
-      if( mods & GLFW_MOD_SHIFT )
-        view_rotz -= 5.0;
-      else
-        view_rotz += 5.0;
+      if ( mods & GLFW_MOD_SHIFT ) {
+        range -= 1.0;
+      } else {
+        range += 1.0;
+      }
       break;
     case GLFW_KEY_ESCAPE:
       glfwSetWindowShouldClose(window, GLFW_TRUE);
