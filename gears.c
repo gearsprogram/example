@@ -802,10 +802,18 @@ void key(GLFWwindow * window,int k,int s,int action,int mods) {
       glfwSetWindowShouldClose(window, GLFW_TRUE);
       break;
     case GLFW_KEY_UP:
-      view_rotx += 5.0;
+      if ( mods & GLFW_MOD_SHIFT ) {
+          camHeight += 0.5;
+      } else {
+          view_rotx += 5.0;
+      }
       break;
     case GLFW_KEY_DOWN:
-      view_rotx -= 5.0;
+      if ( mods & GLFW_MOD_SHIFT ) {
+          camHeight -= 0.5;
+      } else {
+          view_rotx -= 5.0;
+      }
       break;
     case GLFW_KEY_LEFT:
       view_roty += 5.0;
