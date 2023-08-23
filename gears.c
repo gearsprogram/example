@@ -8,13 +8,14 @@
 
 static double matAlpha = 0.0;
 static double timeOffset;
-static double view_rotx = 180.0, view_roty = 30.0, view_rotz = 0.0;
+static double view_rotx = 0.0, view_roty = 30.0, view_rotz = 0.0;
 static double sceneAngle = 0.0;
 static double camDip = 0.0;
 static double sunAngle2 = 0.0;
 static double sunAngle3 = 0.0;
 static double range = 18.0;
 static double camHeight = 0.5;
+static double floorOffset = 0.0;
 #define HUDWIDTH 36
 #define HUDHEIGHT 20
 #define FACES 9
@@ -410,6 +411,7 @@ static void draw(void) {
   glRotatef(view_roty, 0.0, 1.0, 0.0);
   glTranslatef(0.0,camHeight,0.0);
   glRotatef(fmod(sceneAngle,360.0), 0.0, 1.0, 0.0);
+  glTranslatef(floorOffset,0.0,floorOffset);
   glTranslatef(0.0, -4.0, 0.0);
   glPushMatrix(); /* (green grid, cursor, marquee, Sol) */
   glBegin(GL_LINES); /* green grid */
@@ -816,10 +818,18 @@ void key(GLFWwindow * window,int k,int s,int action,int mods) {
       }
       break;
     case GLFW_KEY_LEFT:
-      view_roty += 5.0;
+      if ( mods & GLFW_MOD_SHIFT ) {
+          floorOffset -= 1.0;
+      } else {
+          view_roty += 5.0;
+      }
       break;
     case GLFW_KEY_RIGHT:
-      view_roty -= 5.0;
+      if ( mods & GLFW_MOD_SHIFT ) {
+          floorOffset += 1.0;
+      } else {
+          view_roty -= 5.0;
+      }
       break;
     default:
       return;
