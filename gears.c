@@ -1156,6 +1156,7 @@ void writeTimeOffset(void) {
 
 void writeRotx(void) {
     FILE * f = fopen(ROTX_FILENAME,"w");
+    view_rotx = fmod(view_rotx,360.0);
     fprintf(f,"%f\n",view_rotx);
     fflush(f);
     fclose(f);
@@ -1165,6 +1166,7 @@ void writeRotx(void) {
 
 void writeRoty(void) {
     FILE * f = fopen(ROTY_FILENAME,"w");
+    view_roty = fmod(view_roty,360.0);
     fprintf(f,"%f\n",view_roty);
     fflush(f);
     fclose(f);
