@@ -985,7 +985,10 @@ static void init(void) {
 
 #define OFFSET_FILENAME "/Users/dbp/gears/offset"
 #define DEFAULT_FILENAME "/Users/dbp/gears/default"
-
+#define ROTX_FILENAME "/Users/dbp/gears/rotx"
+#define ROTY_FILENAME "/Users/dbp/gears/roty"
+#define CAMHEIGHT_FILENAME "/Users/dbp/gears/camheight"
+#define FLOOROFFSET_FILENAME "/Users/dbp/gears/flooroffset"
 
 // Read default settings
 void readDefault(void) {
@@ -1097,7 +1100,47 @@ void readTimeOffset(void) {
     fscanf(f,"%lf",& g);
     timeOffset = g;
     fclose(f);
-    printf("%f\n",g);
+    printf("read timeOffset = %f from '%s'\n",g,OFFSET_FILENAME);
+    fflush(stdout);
+}
+
+void readRotx(void) {
+    FILE * f = fopen(ROTX_FILENAME,"r");
+    double g;
+    fscanf(f,"%lf",& g);
+    view_rotx = g;
+    fclose(f);
+    printf("read view_rotx = %f from '%s'\n",g,ROTX_FILENAME);
+    fflush(stdout);
+}
+
+void readRoty(void) {
+    FILE * f = fopen(ROTY_FILENAME,"r");
+    double g;
+    fscanf(f,"%lf",& g);
+    view_roty = g;
+    fclose(f);
+    printf("read view_roty = %f from '%s'\n",g,ROTY_FILENAME);
+    fflush(stdout);
+}
+
+void readCamHeight(void) {
+    FILE * f = fopen(CAMHEIGHT_FILENAME,"r");
+    double g;
+    fscanf(f,"%lf",& g);
+    camHeight = g;
+    fclose(f);
+    printf("read camHeight = %f from '%s'\n",g,CAMHEIGHT_FILENAME);
+    fflush(stdout);
+}
+
+void readFloorOffset(void) {
+    FILE * f = fopen(FLOOROFFSET_FILENAME,"r");
+    double g;
+    fscanf(f,"%lf",& g);
+    floorOffset = g;
+    fclose(f);
+    printf("read floorOffset = %f from '%s'\n",g,FLOOROFFSET_FILENAME);
     fflush(stdout);
 }
 
@@ -1107,7 +1150,43 @@ void writeTimeOffset(void) {
     fprintf(f,"%f\n",haltTime);
     fflush(f);
     fclose(f);
-    printf("%f\n",haltTime);
+    printf("wrote haltTime = %f to '%s'\n",haltTime,OFFSET_FILENAME);
+    fflush(stdout);
+}
+
+void writeRotx(void) {
+    FILE * f = fopen(ROTX_FILENAME,"w");
+    fprintf(f,"%f\n",view_rotx);
+    fflush(f);
+    fclose(f);
+    printf("wrote view_rotx = %f to '%s'\n",view_rotx,ROTX_FILENAME);
+    fflush(stdout);
+}
+
+void writeRoty(void) {
+    FILE * f = fopen(ROTY_FILENAME,"w");
+    fprintf(f,"%f\n",view_roty);
+    fflush(f);
+    fclose(f);
+    printf("wrote view_roty = %f to '%s'\n",view_roty,ROTY_FILENAME);
+    fflush(stdout);
+}
+
+void writeCamHeight(void) {
+    FILE * f = fopen(CAMHEIGHT_FILENAME,"w");
+    fprintf(f,"%f\n",camHeight);
+    fflush(f);
+    fclose(f);
+    printf("wrote camHeight = %f to '%s'\n",camHeight,CAMHEIGHT_FILENAME);
+    fflush(stdout);
+}
+
+void writeFloorOffset(void) {
+    FILE * f = fopen(FLOOROFFSET_FILENAME,"w");
+    fprintf(f,"%f\n",floorOffset);
+    fflush(f);
+    fclose(f);
+    printf("wrote floorOffset = %f to '%s'\n",floorOffset,FLOOROFFSET_FILENAME);
     fflush(stdout);
 }
 
@@ -1117,6 +1196,10 @@ int main(int argc, char *argv[]) {
     setResolution(0);
     readDefault();
     readTimeOffset();
+    readRotx();
+    readRoty();
+    readCamHeight();
+    readFloorOffset();
     if ( !glfwInit() ) {
         fprintf( stderr, "Failed to initialize GLFW\n" );
         exit( EXIT_FAILURE );
@@ -1212,6 +1295,10 @@ int main(int argc, char *argv[]) {
     glfwDestroyWindow(window);
     writeDefault();
     writeTimeOffset();
+    writeRotx();
+    writeRoty();
+    writeCamHeight();
+    writeFloorOffset();
     // Terminate GLFW
     glfwTerminate();
     // Exit program
