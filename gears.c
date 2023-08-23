@@ -8,12 +8,12 @@
 
 static double matAlpha = 0.0;
 static double timeOffset;
-static double view_rotx = 0.0, view_roty = 30.0, view_rotz = 0.0;
+static double view_rotx = 0.0, view_roty = 0.0, view_rotz = 0.0;
 static double sceneAngle = 0.0;
 static double camDip = 0.0;
 static double sunAngle2 = 0.0;
 static double sunAngle3 = 0.0;
-static double range = 18.0;
+static double range = 0.0;
 static double camHeight = 0.5;
 static double floorOffset = 0.0;
 #define HUDWIDTH 36
@@ -989,6 +989,7 @@ static void init(void) {
 #define ROTY_FILENAME "/Users/dbp/gears/roty"
 #define CAMHEIGHT_FILENAME "/Users/dbp/gears/camheight"
 #define FLOOROFFSET_FILENAME "/Users/dbp/gears/flooroffset"
+#define RANGE_FILENAME "/Users/dbp/gears/range"
 
 // Read default settings
 void readDefault(void) {
@@ -1144,6 +1145,16 @@ void readFloorOffset(void) {
     fflush(stdout);
 }
 
+void readRange(void) {
+    FILE * f = fopen(RANGE_FILENAME,"r");
+    double g;
+    fscanf(f,"%lf",& g);
+    range = g;
+    fclose(f);
+    printf("read range = %f from '%s'\n",g,RANGE_FILENAME);
+    fflush(stdout);
+}
+
 void writeTimeOffset(void) {
     FILE * f = fopen(OFFSET_FILENAME,"w");
     double haltTime = timeOffset + glfwGetTime();
@@ -1192,6 +1203,15 @@ void writeFloorOffset(void) {
     fflush(stdout);
 }
 
+void writeRange(void) {
+    FILE * f = fopen(RANGE_FILENAME,"w");
+    fprintf(f,"%f\n",range);
+    fflush(f);
+    fclose(f);
+    printf("wrote range = %f to '%s'\n",range,RANGE_FILENAME);
+    fflush(stdout);
+}
+
 int main(int argc, char *argv[]) {
     GLFWwindow * window;
     int width, height;
@@ -1202,6 +1222,7 @@ int main(int argc, char *argv[]) {
     readRoty();
     readCamHeight();
     readFloorOffset();
+    readRange();
     if ( !glfwInit() ) {
         fprintf( stderr, "Failed to initialize GLFW\n" );
         exit( EXIT_FAILURE );
@@ -1301,6 +1322,7 @@ int main(int argc, char *argv[]) {
     writeRoty();
     writeCamHeight();
     writeFloorOffset();
+    writeRange();
     // Terminate GLFW
     glfwTerminate();
     // Exit program
