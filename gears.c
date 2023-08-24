@@ -16,8 +16,8 @@ static double sunAngle3 = 0.0;
 static double range = 0.0;
 static double camHeight = 0.5;
 static double floorOffset = 0.0;
-#define HUDWIDTH 36
-#define HUDHEIGHT 20
+#define HUDWIDTH 18
+#define HUDHEIGHT 12
 #define FACES 9
 #define CONE_MIN 4
 #define CONE_DELTA 16
@@ -365,44 +365,59 @@ static void draw(void) {
   glDisable(GL_LIGHT1);
   glDisable(GL_LIGHT2);
   glDisable(GL_LIGHT3);
-  glColor3f(0.1,0.4,0.8); /* set HUD color 1 */
+
+  float HUDz = -18.0;
   glBegin(GL_LINES); /* HUD outlines */
-  glVertex3f(0.0      ,0.0     , 0.0);
-  glVertex3f(xHUDscale,0.0     , 0.0);
-  glVertex3f(0.0      ,HUDscale, 0.0);
-  glVertex3f(xHUDscale,HUDscale, 0.0);
-  glVertex3f(0.0      ,0.0     , 0.0);
-  glVertex3f(0.0      ,HUDscale, 0.0);
-  glVertex3f(xHUDscale,0.0     , 0.0);
-  glVertex3f(xHUDscale,HUDscale, 0.0);
+  glColor3f(0.1,0.4,0.8); /* set HUD color 1 */
+  glVertex3f(1.0      ,1.0     , HUDz);
+  glVertex3f(xHUDscale,1.0     , HUDz);
+  glVertex3f(1.0      ,HUDscale, HUDz);
+  glVertex3f(xHUDscale,HUDscale, HUDz);
+  glVertex3f(1.0      ,1.0     , HUDz);
+  glVertex3f(1.0      ,HUDscale, HUDz);
+  glVertex3f(xHUDscale,1.0     , HUDz);
+  glVertex3f(xHUDscale,HUDscale, HUDz);
   glColor3f(0.8,0.4,0.1); /* set HUD color 2 */
-  glVertex3f(0.0      , 0.0     , 0.0);
-  glVertex3f(xHUDscale, 0.0     , 0.0);
-  glVertex3f(0.0      ,-HUDscale, 0.0);
-  glVertex3f(xHUDscale,-HUDscale, 0.0);
-  glVertex3f(0.0      , 0.0     , 0.0);
-  glVertex3f(0.0      ,-HUDscale, 0.0);
-  glVertex3f(xHUDscale, 0.0     , 0.0);
-  glVertex3f(xHUDscale,-HUDscale, 0.0);
+  glVertex3f(1.0      ,-1.0     , HUDz);
+  glVertex3f(xHUDscale,-1.0     , HUDz);
+  glVertex3f(1.0      ,-HUDscale, HUDz);
+  glVertex3f(xHUDscale,-HUDscale, HUDz);
+  glVertex3f(1.0      ,-1.0     , HUDz);
+  glVertex3f(1.0      ,-HUDscale, HUDz);
+  glVertex3f(xHUDscale,-1.0     , HUDz);
+  glVertex3f(xHUDscale,-HUDscale, HUDz);
   glColor3f(0.1,0.8,0.1); /* set HUD color 3 */
-  glVertex3f(0.0       , 0.0     , 0.0);
-  glVertex3f(-xHUDscale, 0.0     , 0.0);
-  glVertex3f(0.0       ,-HUDscale, 0.0);
-  glVertex3f(-xHUDscale,-HUDscale, 0.0);
-  glVertex3f(0.0       , 0.0     , 0.0);
-  glVertex3f(0.0       ,-HUDscale, 0.0);
-  glVertex3f(-xHUDscale, 0.0     , 0.0);
-  glVertex3f(-xHUDscale,-HUDscale, 0.0);
+  glVertex3f(-1.0      ,-1.0     , HUDz);
+  glVertex3f(-xHUDscale,-1.0     , HUDz);
+  glVertex3f(-1.0      ,-HUDscale, HUDz);
+  glVertex3f(-xHUDscale,-HUDscale, HUDz);
+  glVertex3f(-1.0      ,-1.0     , HUDz);
+  glVertex3f(-1.0      ,-HUDscale, HUDz);
+  glVertex3f(-xHUDscale,-1.0     , HUDz);
+  glVertex3f(-xHUDscale,-HUDscale, HUDz);
   glColor3f(0.8,0.8,0.1); /* set HUD color 4 */
-  glVertex3f(0.0       ,0.0     , 0.0);
-  glVertex3f(-xHUDscale,0.0     , 0.0);
-  glVertex3f(0.0       ,HUDscale, 0.0);
-  glVertex3f(-xHUDscale,HUDscale, 0.0);
-  glVertex3f(0.0       ,0.0     , 0.0);
-  glVertex3f(0.0       ,HUDscale, 0.0);
-  glVertex3f(-xHUDscale,0.0     , 0.0);
-  glVertex3f(-xHUDscale,HUDscale, 0.0);
+  glVertex3f(-1.0      ,1.0     , HUDz);
+  glVertex3f(-xHUDscale,1.0     , HUDz);
+  glVertex3f(-1.0      ,HUDscale, HUDz);
+  glVertex3f(-xHUDscale,HUDscale, HUDz);
+  glVertex3f(-1.0      ,1.0     , HUDz);
+  glVertex3f(-1.0      ,HUDscale, HUDz);
+  glVertex3f(-xHUDscale,1.0     , HUDz);
+  glVertex3f(-xHUDscale,HUDscale, HUDz);
   glEnd(); /* end HUD */
+
+  glBegin(GL_LINES);
+  glColor3f(0.8,0.8,0.8);
+  glVertex3f(0.0,0.0,HUDz);
+  glVertex3f(xHUDscale,0.0,HUDz);
+  glVertex3f(0.0,0.0,HUDz);
+  glVertex3f(-xHUDscale,0.0,HUDz);
+  glVertex3f(0.0,0.0,HUDz);
+  glVertex3f(0.0,HUDscale,HUDz);
+  glVertex3f(0.0,0.0,HUDz);
+  glVertex3f(0.0,-HUDscale,HUDz);
+  glEnd();
+
   glPushMatrix(); /* scene */
   camDip = 5.0;
   glRotatef(camDip, 1.0, 0.0, 0.0);
@@ -414,6 +429,7 @@ static void draw(void) {
   glTranslatef(floorOffset,0.0,floorOffset);
   glTranslatef(0.0, -4.0, 0.0);
   glPushMatrix(); /* (green grid, cursor, marquee, Sol) */
+
   glBegin(GL_LINES); /* green grid */
   if (1) {
       glColor3f(0.1,0.8,0.1);
@@ -563,22 +579,22 @@ static void draw(void) {
   sunRadius2[1] = 0.45;
   int ii;
   for (ii = 0; ii < FACES - 1;ii += 1) {
-    triNormc(& t1[ii],xx[ii + 0],0.0,yy[ii + 0],0.0,sunRadius2[0],0.0,xx[ii + 1],0.0,yy[ii + 1]);
+    triNormc(& t1[ii],xx[ii],0.0,yy[ii],0.0,sunRadius2[0],0.0,xx[ii + 1],0.0,yy[ii + 1]);
     // end cap A
     triNormc(& t2[ii],0.0,-sunRadius2[1],0.0,xx[ii + 0],0.0,yy[ii + 0],xx[ii + 1],0.0,yy[ii + 1]);
-    triNormc(& t3[ii],-xx[ii + 0],0.0,yy[ii + 0],-xx[ii + 1],0.0,yy[ii + 1],0.0,sunRadius2[0],0.0);
+    triNormc(& t3[ii],-xx[ii],0.0,yy[ii],-xx[ii + 1],0.0,yy[ii + 1],0.0,sunRadius2[0],0.0);
     // end cap B
-    triNormc(& t4[ii],-xx[ii + 0],0.0,yy[ii + 0],0.0,-sunRadius2[1],0.0,-xx[ii + 1],0.0,yy[ii + 1]);
+    triNormc(& t4[ii],-xx[ii],0.0,yy[ii],0.0,-sunRadius2[1],0.0,-xx[ii + 1],0.0,yy[ii + 1]);
   }
   sunRadius2[0] = 0.95;
   sunRadius2[1] = 0.15;
   for (ii = 0; ii < FACES - 1;ii += 1) {
-    triNormc(& u1[ii],xx[ii + 0],0.0,yy[ii + 0],0.0,sunRadius2[0],0.0,xx[ii + 1],0.0,yy[ii + 1]);
+    triNormc(& u1[ii],xx[ii],0.0,yy[ii],0.0,sunRadius2[0],0.0,xx[ii + 1],0.0,yy[ii + 1]);
     // end cap A
     triNormc(& u2[ii],0.0,-sunRadius2[1],0.0,xx[ii + 0],0.0,yy[ii + 0],xx[ii + 1],0.0,yy[ii + 1]);
-    triNormc(& u3[ii],-xx[ii + 0],0.0,yy[ii + 0],-xx[ii + 1],0.0,yy[ii + 1],0.0,sunRadius2[0],0.0);
+    triNormc(& u3[ii],-xx[ii],0.0,yy[ii],-xx[ii + 1],0.0,yy[ii + 1],0.0,sunRadius2[0],0.0);
     // end cap B
-    triNormc(& u4[ii],-xx[ii + 0],0.0,yy[ii + 0],0.0,-sunRadius2[1],0.0,-xx[ii + 1],0.0,yy[ii + 1]);
+    triNormc(& u4[ii],-xx[ii],0.0,yy[ii],0.0,-sunRadius2[1],0.0,-xx[ii + 1],0.0,yy[ii + 1]);
   }
   // obtain first rotation matrix
   double theta1[16];
@@ -839,7 +855,7 @@ void key(GLFWwindow * window,int k,int s,int action,int mods) {
 #define MAX_RES 23
 /*                   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19  20   21   22   23   24 */
 int resWidth[] =  {300,300,300,360,360,480,480,480,480,576,576,576,600,600,720,720,800,840,864,900,1400,1024,1080,1200,1296};
-int resHeight[] = {300,360,480,480,576,300,360,480,600,256,480,576,400,480,320,480,600,480,576,400, 900, 768, 480, 720, 576};
+int resHeight[] = {300,360,480,480,576,300,360,480,600,256,480,576,400,480,320,480,600,480,576,400, 960, 768, 480, 720, 576};
 static double windowWidth;
 static double windowHeight;
 static int resNum = 0;
@@ -1293,6 +1309,9 @@ int main(int argc, char *argv[]) {
     init();
     // Main loop
     int xpos,ypos;
+    float epsilon = 0.05;
+    xHUDscale -= epsilon;
+    HUDscale -= epsilon;
     while( !glfwWindowShouldClose(window) ) {
         if (sizeChange) {
             glfwGetWindowPos(window,& xpos,& ypos);
