@@ -1,3 +1,8 @@
+/********************************************
+ * you will know the value of the kind word *
+ * your kindness will lead you to happiness *
+ ********************************************/
+
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -1347,3 +1352,8 @@ int main(int argc, char *argv[]) {
     // Exit program
     exit( EXIT_SUCCESS );
 }
+
+/********************************************
+ * you will soon find new adventure in life *
+ * dearly your greatest wish will come true *
+ ********************************************/
