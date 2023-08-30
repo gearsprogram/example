@@ -629,8 +629,8 @@ static void draw(void) {
   for (p1 = 0; p1 < div; p1 += 1) {
     for (p2 = 0; p2 < div; p2 += 1) {
       for (p3 = 0; p3 < div; p3 += 1) {
+        ci += 1;
         for (fr = 0; fr < 2; fr += 1) {
-          ci += 1;
           int outerp = p1 % 2 == 0 && p2 % 2 == 0 && p3 % 2 == 0;
           int outerp2 = ( (p1 + p2 + p3) / 2) % 2 == 0;
           int innerp = p1 >= 1 && p1 <= 3 && p2 >= 1 && p2 <= 3 && p3 >= 1 && p3 <= 3;
