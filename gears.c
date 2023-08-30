@@ -625,46 +625,53 @@ static void draw(void) {
   double mobileWave;
   double asgn,bsgn,csgn;
   int copy;
+  int fr;
   for (p1 = 0; p1 < div; p1 += 1) {
     for (p2 = 0; p2 < div; p2 += 1) {
       for (p3 = 0; p3 < div; p3 += 1) {
-        ci += 1;
-        int outerp = p1 % 2 == 0 && p2 % 2 == 0 && p3 % 2 == 0;
-        int outerp2 = ( (p1 + p2 + p3) / 2) % 2 == 0;
-        int innerp = p1 >= 1 && p1 <= 3 && p2 >= 1 && p2 <= 3 && p3 >= 1 && p3 <= 3;
-        int innerp2 = (p1 + p2 + p3) % 5 == 4;
-        if ( !( (outerp && outerp2) || (innerp && innerp2) ) ) {
-            continue;
-        }
-        glPushMatrix(); /* Sol */
-        glScalef(solscale,solscale,solscale);
-        glScalef(0.5,0.5,0.5);
-        glTranslatef(-disp2 + disp * p1,-disp2 + disp * p2,-disp2 + disp * p3);
-        int rsgn = 1;
-        if (ci % 2 == 0) {
-            rsgn = -1;
-        }
-        asgn = bsgn = csgn = 0.0;
-        if (ci % 6 < 2) {
-            asgn = 1.0;
-        } else if (ci % 6 < 4) {
-            bsgn = 1.0;
-        } else {
-            csgn = 1.0;
-        }
-        glRotatef(fmod(rsgn * sunAngle2,360.0),asgn,bsgn,csgn);
-        if ( innerp ) {
-            mobileWave = sin(fmod(gearsGetTime(4),2.0 * M_PI));
-            glTranslatef(mobileWave,0.0,0.0);
-            glScalef(0.9,0.9,0.9);
-            copy = 2;
-        } else if ( outerp ) {
-            mobileWave = 0.25 * cos(fmod(gearsGetTime(4),2.0 * M_PI));
-            glTranslatef(0.0,mobileWave,0.0);
-            glScalef(0.6,0.6,0.6);
-            copy = 3;
-        }
-        for (k = 0;k < CONES;k += 1) {
+        for (fr = 0; fr < 2; fr += 1) {
+          ci += 1;
+          int outerp = p1 % 2 == 0 && p2 % 2 == 0 && p3 % 2 == 0;
+          int outerp2 = ( (p1 + p2 + p3) / 2) % 2 == 0;
+          int innerp = p1 >= 1 && p1 <= 3 && p2 >= 1 && p2 <= 3 && p3 >= 1 && p3 <= 3;
+          int innerp2 = (p1 + p2 + p3) % 5 == 4;
+          if ( !( (outerp && outerp2) || (innerp && innerp2) ) ) {
+              continue;
+          }
+          glPushMatrix(); /* Sol */
+          glScalef(solscale,solscale,solscale);
+          glTranslatef(0.0, (float) 5.0 * fr, 0.0);
+          float sx = 0.5 / ((float) 1.0 + 2.0 * fr);
+          glScalef(sx,sx,sx);
+          if (fr == 1) {
+              glScalef(-1.0,-1.0,1.0);
+          }
+          glTranslatef(-disp2 + disp * p1,-disp2 + disp * p2,-disp2 + disp * p3);
+          int rsgn = 1;
+          if (ci % 2 == 0) {
+              rsgn = -1;
+          }
+          asgn = bsgn = csgn = 0.0;
+          if (ci % 6 < 2) {
+              asgn = 1.0;
+          } else if (ci % 6 < 4) {
+              bsgn = 1.0;
+          } else {
+              csgn = 1.0;
+          }
+          glRotatef(fmod(rsgn * sunAngle2,360.0),asgn,bsgn,csgn);
+          if ( innerp ) {
+              mobileWave = sin(fmod(gearsGetTime(4),2.0 * M_PI));
+              glTranslatef(mobileWave,0.0,0.0);
+              glScalef(0.9,0.9,0.9);
+              copy = 2;
+          } else if ( outerp ) {
+              mobileWave = 0.25 * cos(fmod(gearsGetTime(4),2.0 * M_PI));
+              glTranslatef(0.0,mobileWave,0.0);
+              glScalef(0.6,0.6,0.6);
+              copy = 3;
+          }
+          for (k = 0;k < CONES;k += 1) {
             if ( k == CONES / 2 ) {
                 glRotatef(VENUS2 * 180.0,1.0,0.0,0.0);
             }
@@ -676,35 +683,36 @@ static void draw(void) {
                 gearMaterial(GL_FRONT, sbPalette(pa3,k));
             }
             for (j = 0;j < copy;j += 1) {
-                glPushMatrix(); // fold
-                glTranslatef(0.0,sunRadius,0.0);
-                glScalef(2.0,2.0,2.0);
-                glMultMatrixd(theta1);
-                for (i = 0; i < 2; i += 1) {
-                    glBegin(GL_TRIANGLES);
-                    for (ii = 0; ii < FACES - 1; ii += 1) {
-                        if ( innerp ) {
-                            triNormd(& t1[ii]);
-                            triNormd(& t2[ii]);
-                            triNormd(& t3[ii]);
-                            triNormd(& t4[ii]);
-                        } else if ( outerp ) {
-                            triNormd(& u1[ii]);
-                            triNormd(& u2[ii]);
-                            triNormd(& u3[ii]);
-                            triNormd(& u4[ii]);
-                        }
-                    }
-                    glEnd();
-                    glScalef(-1.0,1.0,-1.0);
+              glPushMatrix(); // fold
+              glTranslatef(0.0,sunRadius,0.0);
+              glScalef(2.0,2.0,2.0);
+              glMultMatrixd(theta1);
+              for (i = 0; i < 2; i += 1) {
+                glBegin(GL_TRIANGLES);
+                for (ii = 0; ii < FACES - 1; ii += 1) {
+                  if ( innerp ) {
+                    triNormd(& t1[ii]);
+                    triNormd(& t2[ii]);
+                    triNormd(& t3[ii]);
+                    triNormd(& t4[ii]);
+                  } else if ( outerp ) {
+                    triNormd(& u1[ii]);
+                    triNormd(& u2[ii]);
+                    triNormd(& u3[ii]);
+                    triNormd(& u4[ii]);
+                  }
                 }
-                glPopMatrix(); // end fold
-                glMultMatrixd(theta2);
-                glTranslatef(0.1,0.0,0.0);
+                glEnd();
+                glScalef(-1.0,1.0,-1.0);
+              }
+              glPopMatrix(); // end fold
+              glMultMatrixd(theta2);
+              glTranslatef(0.1,0.0,0.0);
             }
             glMultMatrixd(theta1);
+          }
+          glPopMatrix(); /* end Sol */
         }
-        glPopMatrix(); /* end Sol */
       }
     }
   }
