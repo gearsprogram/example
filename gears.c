@@ -10,6 +10,7 @@
 #include <glad/gl.h>
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
+#include <unistd.h>
 
 static double matAlpha = 0.0;
 static double timeOffset;
@@ -1343,6 +1344,7 @@ int main(int argc, char *argv[]) {
     xHUDscale -= epsilon;
     HUDscale -= epsilon;
     while( !glfwWindowShouldClose(window) ) {
+        usleep(15000);
         if (sizeChange) {
             glfwGetWindowPos(window,& xpos,& ypos);
             xpos -= 5;
