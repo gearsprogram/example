@@ -1362,12 +1362,13 @@ int main(int argc, char *argv[]) {
         flipWorld = 0;
         draw1();
         draw2();
-        glMatrixMode( GL_PROJECTION );
+        // left-right mirror
+        glPushMatrix();
         glScalef(-1.0,1.0,1.0);
-        glMatrixMode( GL_MODELVIEW );
         // change position of light to other side of scene
         lightpos[0] = - lightpos[0];
         glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
+        lightpos[0] = - lightpos[0];
         glDisable(GL_LIGHTING);
         glDisable(GL_LIGHT0);
         glDisable(GL_LIGHT1);
@@ -1375,9 +1376,39 @@ int main(int argc, char *argv[]) {
         glDisable(GL_LIGHT3);
         flipWorld = 1;
         draw2();
-        glMatrixMode( GL_PROJECTION );
-        glScalef(-1.0,1.0,1.0);
-        glMatrixMode( GL_MODELVIEW );
+        glPopMatrix();
+        // top-bottom mirror
+        glPushMatrix();
+        glScalef(1.0,-1.0,1.0);
+        // change position of light to other side of scene
+        lightpos[1] = - lightpos[1];
+        glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
+        lightpos[1] = - lightpos[1];
+        glDisable(GL_LIGHTING);
+        glDisable(GL_LIGHT0);
+        glDisable(GL_LIGHT1);
+        glDisable(GL_LIGHT2);
+        glDisable(GL_LIGHT3);
+        flipWorld = 1;
+        draw2();
+        glPopMatrix();
+        // 180 degree rotation
+        glPushMatrix();
+        glScalef(-1.0,-1.0,1.0);
+        // change position of light to other side of scene
+        lightpos[0] = - lightpos[0];
+        lightpos[1] = - lightpos[1];
+        glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
+        lightpos[0] = - lightpos[0];
+        lightpos[1] = - lightpos[1];
+        glDisable(GL_LIGHTING);
+        glDisable(GL_LIGHT0);
+        glDisable(GL_LIGHT1);
+        glDisable(GL_LIGHT2);
+        glDisable(GL_LIGHT3);
+        flipWorld = 0;
+        draw2();
+        glPopMatrix();
         // Swap buffers
         glfwSwapBuffers(window);
         glfwPollEvents();
