@@ -114,7 +114,7 @@ typedef struct tnrec {
     double d[3];
     double a[3];
     double b[3];
-    double c[4];
+    double c[3];
 } tnrec;
 
 /* Calculate the normal vector for a triangle with vertices
@@ -135,8 +135,14 @@ static void triNormc(tnrec * x,
     x->c[0] = c1; x->c[1] = c2; x->c[2] = c3;
 }
 
+static int flipWorld = 0;
+
 static void triNormd(tnrec * x) {
-    glNormal3f(x->d[0],x->d[1],x->d[2]);
+    if (flipWorld) {
+        glNormal3f(- x->d[0],- x->d[1],- x->d[2]);
+    } else {
+        glNormal3f(x->d[0],x->d[1],x->d[2]);
+    }
     glVertex3f(x->a[0],x->a[1],x->a[2]);
     glVertex3f(x->b[0],x->b[1],x->b[2]);
     glVertex3f(x->c[0],x->c[1],x->c[2]);
@@ -154,7 +160,11 @@ static void triNorm(
     w1 = c1 - a1; w2 = c2 - a2; w3 = c3 - a3;
     calcCross(&d1,&d2,&d3,v1,v2,v3,w1,w2,w3);
     normVec(&d1,&d2,&d3);
-    glNormal3f(d1,d2,d3);
+    if (flipWorld) {
+        glNormal3f(- d1,- d2,- d3);
+    } else {
+        glNormal3f(d1,d2,d3);
+    }
     glVertex3f(a1,a2,a3);
     glVertex3f(b1,b2,b3);
     glVertex3f(c1,c2,c3);
@@ -355,7 +365,7 @@ double cursor2y;
 int dc = 0; // draw frame counter
 static double bgColor[3] = {0.7225,0.8325,0.9425};
 /* OpenGL draw function & timing */
-static void draw(void) {
+static void draw1(void) {
   dc += 1;
   double bgColorShade[3];
   int i;
@@ -422,7 +432,10 @@ static void draw(void) {
   glVertex3f(0.0,0.0,HUDz);
   glVertex3f(0.0,-HUDscale,HUDz);
   glEnd();
+}
 
+static void draw2(void) {
+  int i;
   glPushMatrix(); /* scene */
   camDip = 5.0;
   glRotatef(camDip, 1.0, 0.0, 0.0);
@@ -723,6 +736,7 @@ static void draw(void) {
 static double maxFastMove = 0.01;
 static double maxVenusMove = 0.01;
 static double maxWarmMove = 0.01;
+static GLfloat lightpos[4] = {0.0,0.0,0.0,0.0};
 /* update animation parameters */
 static void animate(void) {
   double rawMatAlpha = fmod(gearsGetTime(2),2.0 * M_PI);
@@ -768,6 +782,9 @@ static void animate(void) {
   pos[0] = 200.0 * cos(fmod(lightAngle,2.0 * M_PI));
   pos[1] = 200.0 * sin(fmod(lightAngle,2.0 * M_PI));
   pos[2] = lightHeight;
+  lightpos[0] = pos[0];
+  lightpos[1] = pos[1];
+  lightpos[2] = pos[2];
   glLightfv(GL_LIGHT0, GL_POSITION, pos);
   pos[0] *= -1.0;
   pos[1] *= -1.0;
@@ -1342,7 +1359,25 @@ int main(int argc, char *argv[]) {
         // Update animation
         animate();
         // Draw gears
-        draw();
+        flipWorld = 0;
+        draw1();
+        draw2();
+        glMatrixMode( GL_PROJECTION );
+        glScalef(-1.0,1.0,1.0);
+        glMatrixMode( GL_MODELVIEW );
+        // change position of light to other side of scene
+        lightpos[0] = - lightpos[0];
+        glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
+        glDisable(GL_LIGHTING);
+        glDisable(GL_LIGHT0);
+        glDisable(GL_LIGHT1);
+        glDisable(GL_LIGHT2);
+        glDisable(GL_LIGHT3);
+        flipWorld = 1;
+        draw2();
+        glMatrixMode( GL_PROJECTION );
+        glScalef(-1.0,1.0,1.0);
+        glMatrixMode( GL_MODELVIEW );
         // Swap buffers
         glfwSwapBuffers(window);
         glfwPollEvents();
