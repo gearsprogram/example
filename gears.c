@@ -437,6 +437,11 @@ static void draw1(void) {
 
 static void draw2(void) {
   int i;
+  glDisable(GL_LIGHTING);
+  glDisable(GL_LIGHT0);
+  glDisable(GL_LIGHT1);
+  glDisable(GL_LIGHT2);
+  glDisable(GL_LIGHT3);
   glPushMatrix(); /* scene */
   camDip = 5.0;
   glRotatef(camDip, 1.0, 0.0, 0.0);
@@ -1364,6 +1369,7 @@ int main(int argc, char *argv[]) {
         flipWorld = 0;
         draw1();
         draw2();
+
         // left-right mirror
         glPushMatrix();
         glScalef(-1.0,1.0,1.0);
@@ -1371,14 +1377,11 @@ int main(int argc, char *argv[]) {
         lightpos[0] = - lightpos[0];
         glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
         lightpos[0] = - lightpos[0];
-        glDisable(GL_LIGHTING);
-        glDisable(GL_LIGHT0);
-        glDisable(GL_LIGHT1);
-        glDisable(GL_LIGHT2);
-        glDisable(GL_LIGHT3);
         flipWorld = 1;
         draw2();
         glPopMatrix();
+
+        /*
         // top-bottom mirror
         glPushMatrix();
         glScalef(1.0,-1.0,1.0);
@@ -1386,14 +1389,10 @@ int main(int argc, char *argv[]) {
         lightpos[1] = - lightpos[1];
         glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
         lightpos[1] = - lightpos[1];
-        glDisable(GL_LIGHTING);
-        glDisable(GL_LIGHT0);
-        glDisable(GL_LIGHT1);
-        glDisable(GL_LIGHT2);
-        glDisable(GL_LIGHT3);
         flipWorld = 1;
         draw2();
         glPopMatrix();
+
         // 180 degree rotation
         glPushMatrix();
         glScalef(-1.0,-1.0,1.0);
@@ -1403,14 +1402,11 @@ int main(int argc, char *argv[]) {
         glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
         lightpos[0] = - lightpos[0];
         lightpos[1] = - lightpos[1];
-        glDisable(GL_LIGHTING);
-        glDisable(GL_LIGHT0);
-        glDisable(GL_LIGHT1);
-        glDisable(GL_LIGHT2);
-        glDisable(GL_LIGHT3);
         flipWorld = 0;
         draw2();
         glPopMatrix();
+        */
+
         // Swap buffers
         glfwSwapBuffers(window);
         glfwPollEvents();
