@@ -70,9 +70,10 @@ void gearMaterial(GLenum f,const GLfloat * ps) {
 double gearsGetTime(int lighting) {
     double f = (timeOffset + glfwGetTime());
     double m = FAST2 >= 0.5 ? 4.0 : 0.25;
-    f *= m;
-    f = 3.0 * f + 2.5/2.0 * ( 40.5 * sin(f / 81.0) + 4.5 * sin(f / 9.0) + 1.5 * sin(f / 3.0) + 0.5 * sin(f) );
-    f /= m;
+    // f *= m;
+    // f = 3.0 * f + 2.5/2.0 * ( 40.5 * sin(f / 81.0) + 4.5 * sin(f / 9.0) + 1.5 * sin(f / 3.0) + 0.5 * sin(f) );
+    // f /= m;
+    f = f + 60.0 + 0.625 * ( 81.0 * cos(f / 81.0) + 9 * cos(f / 9.0) + 3 * sin(f / 3.0) + sin(f) );
     double timeShim;
     if (lighting == 0) {
         f *= mobileSpeed * 0.2;
